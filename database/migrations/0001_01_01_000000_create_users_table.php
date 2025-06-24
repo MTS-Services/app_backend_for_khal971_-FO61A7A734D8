@@ -3,9 +3,10 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Http\Traits\AuditColumnsTrait;
 
-return new class extends Migration
-{
+return new class extends Migration {
+    use AuditColumnsTrait;
     /**
      * Run the migrations.
      */
@@ -13,12 +14,39 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('order_index')->default(0);
+
+            $table->string('username')->unique()->nullable();
             $table->string('name');
+            $table->string('phone', 20)->unique();
             $table->string('email')->unique();
+            $table->string('image')->nullable();
+
+            $table->date('dob')->nullable();
+            $table->string('gender', 10)->nullable();
+            $table->string('country')->nullable();
+            $table->string('city')->nullable();
+            $table->string('school')->nullable();
+
+
+            $table->boolean('is_premium')->default(false);
+            $table->dateTime('premium_expires_at')->nullable();
+
             $table->timestamp('email_verified_at')->nullable();
+
+            $table->string('otp', 4)->nullable();
+            $table->dateTime('otp_sent_at')->nullable();
+            $table->dateTime('otp_expires_at')->nullable();
+
             $table->string('password');
+
+            $table->boolean('is_admin')->index()->default(false);
+            $table->string('status', 10)->index()->default('active')->comment('active, inactive');
+
             $table->rememberToken();
             $table->timestamps();
+            $this->addAuditColumns($table);
+
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

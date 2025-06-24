@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\API\User;
+namespace App\Http\Requests\API\Auth;
 
 use App\Http\Requests\API\BaseRequest;
 
-class LoginRequest extends BaseRequest
+class ForgotRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,7 @@ class LoginRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|string',
+            'email' => 'required|email|exists:users,email',
         ];
     }
 }

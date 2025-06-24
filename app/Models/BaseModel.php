@@ -11,11 +11,9 @@ class BaseModel extends Model
     protected $appends = [
         'created_at_formatted',
         'updated_at_formatted',
-        'deleted_at_formatted',
 
         'created_at_human',
         'updated_at_human',
-        'deleted_at_human',
     ];
 
     public function creater()
