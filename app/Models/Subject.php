@@ -15,9 +15,9 @@ class Subject extends BaseModel
         'updated_by',
     ];
     // Modified icon
-    public function getIconAttribute()
-    {
-        return $this->icon ? asset('storage/' . $this->icon) : null;
-    }
+    // public function getIconAttribute()
+    // {
+    //     return $this->icon ? asset('storage/' . $this->icon) : null;
+    // }
 
 }

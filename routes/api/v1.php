@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\API\AuthenticationController;
+use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\User\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\SubjectController;
 
 
 Route::controller(UserController::class)->group(function () {
@@ -12,3 +12,6 @@ Route::controller(UserController::class)->group(function () {
     Route::post('logout', 'logout')->name('logout');
 });
 
+
+Route::apiResources(['subject' => SubjectController::class]);
+Route::apiResource('course', CourseController::class);
