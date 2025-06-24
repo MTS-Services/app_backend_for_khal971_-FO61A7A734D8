@@ -36,7 +36,7 @@ class User extends Authenticatable
         'email_verified_at',
         'otp',
         'otp_sent_at',
-        'otp_exires_at',
+        'otp_expires_at',
         'password',
         'is_admin',
         'status',
@@ -76,11 +76,9 @@ class User extends Authenticatable
     protected $appends = [
         'created_at_formatted',
         'updated_at_formatted',
-        'deleted_at_formatted',
 
         'created_at_human',
         'updated_at_human',
-        'deleted_at_human',
     ];
 
     public function creater()
@@ -125,7 +123,7 @@ class User extends Authenticatable
 
     public function getImageAttribute()
     {
-        return $this->image ? asset("storage/$this->image") : null;
+        return $this->attributes['image'] ? asset("storage/{$this->attributes['image']}") : null;
     }
 
 

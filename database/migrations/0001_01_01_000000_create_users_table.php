@@ -34,9 +34,9 @@ return new class extends Migration {
 
             $table->timestamp('email_verified_at')->nullable();
 
-            $table->integer('otp')->nullable();
+            $table->string('otp', 4)->nullable();
             $table->dateTime('otp_sent_at')->nullable();
-            $table->dateTime('otp_exires_at')->nullable();
+            $table->dateTime('otp_expires_at')->nullable();
 
             $table->string('password');
 
