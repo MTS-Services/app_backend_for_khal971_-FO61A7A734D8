@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\UserClass;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +15,7 @@ return new class extends Migration {
             $table->id();
             $table->integer('order_index')->default(0);
             $table->string('name')->unique();
-            $table->string('status', 10)->index()->default('active')->comment('active, inactive');
+            $table->tinyInteger('status')->index()->default(UserClass::STATUS_ACTIVE);
 
             $table->timestamps();
             $this->addAuditColumns($table);

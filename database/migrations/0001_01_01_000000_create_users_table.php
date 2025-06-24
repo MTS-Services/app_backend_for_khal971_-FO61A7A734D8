@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -23,7 +24,7 @@ return new class extends Migration {
             $table->string('image')->nullable();
 
             $table->date('dob')->nullable();
-            $table->string('gender', 10)->nullable();
+            $table->tinyInteger('gender')->nullable();
             $table->string('country')->nullable();
             $table->string('city')->nullable();
             $table->string('school')->nullable();
@@ -41,7 +42,7 @@ return new class extends Migration {
             $table->string('password');
 
             $table->boolean('is_admin')->index()->default(false);
-            $table->string('status', 10)->index()->default('active')->comment('active, inactive');
+            $table->tinyInteger('status')->index()->default(User::STATUS_ACTIVE);
 
             $table->rememberToken();
             $table->timestamps();

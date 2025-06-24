@@ -3,7 +3,9 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -59,17 +61,18 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'otp_sent_at' => 'datetime',
-            'otp_exires_at' => 'datetime',
-            'premium_expires_at' => 'datetime',
-            'is_admin' => 'boolean',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'otp_sent_at' => 'datetime',
+        'otp_exires_at' => 'datetime',
+        'premium_expires_at' => 'datetime',
+        'is_admin' => 'boolean',
+        'is_premium' => 'boolean',
+        'status' => 'integer',
+        'gender' => 'integer',
+        'user_class_id' => 'integer',
+    ];
 
 
 
@@ -79,53 +82,168 @@ class User extends Authenticatable
 
         'created_at_human',
         'updated_at_human',
+        'status_label',
+        'status_list',
+
+        'gender_label',
+        // 'gender_list',
+
     ];
 
-    public function creater()
+    /////////////////////////
+    // Status Attributes
+    /////////////////////////
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_INACTIVE = 0;
+
+    public static function getStatusList(): array
+    {
+        return [
+            self::STATUS_ACTIVE => 'Active',
+            self::STATUS_INACTIVE => 'Inactive',
+        ];
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return self::getStatusList()[$this->status];
+    }
+
+    public function getStatusListAttribute(): array
+    {
+        return self::getStatusList();
+    }
+
+
+
+    /////////////////////////
+    // Gender Attributes
+    /////////////////////////
+    public const GENDER_MALE = 1;
+    public const GENDER_FEMALE = 2;
+    public const GENDER_OTHER = 3;
+
+    public static function getGenderList(): array
+    {
+        return [
+            self::GENDER_MALE => 'Male',
+            self::GENDER_FEMALE => 'Female',
+            self::GENDER_OTHER => 'Other',
+        ];
+    }
+
+    public function getGenderLabelAttribute(): string
+    {
+        return self::getGenderList()[$this->status];
+    }
+
+    public function getGenderListAttribute(): array
+    {
+        return self::getGenderList();
+    }
+
+
+
+
+
+
+    public function creater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by', 'id')->select(['name', 'id']);
     }
 
-    public function updater()
+    public function updater(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by', 'id')->select(['name', 'id']);
     }
 
     // Accessor for created time
-    public function getCreatedAtFormattedAttribute()
+    public function getCreatedAtFormattedAttribute(): string
     {
         return dateTimeFormat($this->created_at);
     }
 
     // Accessor for updated time
-    public function getUpdatedAtFormattedAttribute()
+    public function getUpdatedAtFormattedAttribute(): string
     {
         return $this->created_at != $this->updated_at ? dateTimeFormat($this->updated_at) : 'N/A';
     }
 
     // Accessor for created time human readable
-    public function getCreatedAtHumanAttribute()
+    public function getCreatedAtHumanAttribute(): string
     {
         return timeFormatHuman($this->created_at);
     }
 
     // Accessor for updated time human readable
-    public function getUpdatedAtHumanAttribute()
+    public function getUpdatedAtHumanAttribute(): string
     {
         return $this->created_at != $this->updated_at ? timeFormatHuman($this->updated_at) : 'N/A';
     }
 
-    public function userClass()
+    public function userClass(): BelongsTo
     {
         return $this->belongsTo(UserClass::class, 'user_class_id', 'id')->select(['name', 'id']);
     }
 
 
-    public function getImageAttribute()
+    public function getImageAttribute(): string|null
     {
         return $this->attributes['image'] ? asset("storage/{$this->attributes['image']}") : null;
     }
 
+
+    public function isAdmin(): bool
+    {
+        return $this->is_admin === true;
+    }
+
+    public function isPremium(): bool
+    {
+        return $this->is_premium === true;
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_ACTIVE);
+    }
+
+    public function scopeInactive(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_INACTIVE);
+    }
+
+    public function scopeMale(Builder $query): Builder
+    {
+        return $query->where('gender', self::GENDER_MALE);
+    }
+
+    public function scopeFemale(Builder $query): Builder
+    {
+        return $query->where('gender', self::GENDER_FEMALE);
+    }
+
+    public function scopeOther(Builder $query): Builder
+    {
+        return $query->where('gender', self::GENDER_OTHER);
+    }
+    public function scopePremium(Builder $query): Builder
+    {
+        return $query->where('is_premium', true);
+    }
+    public function scopeFree(Builder $query): Builder
+    {
+        return $query->where('is_premium', false);
+    }
+
+    public function scopeAdmin(Builder $query): Builder
+    {
+        return $query->where('is_admin', true);
+    }
+    public function scopeUser(Builder $query): Builder
+    {
+        return $query->where('is_admin', false);
+    }
 
 
 

@@ -34,7 +34,7 @@ class EnsureEmailIsVerifiedViaOtp
             // Send OTP automatically if needed (optional)
             $this->authService->generateOtp($user);
 
-            return sendResponse(false, 'Email not verified. OTP sent to your email.', ['otp_expires_at' => $user->otp_expires_at], Response::HTTP_UNAUTHORIZED);
+            return sendResponse(false, 'Email not verified. OTP sent to your email.', ['is_verified' => false], Response::HTTP_UNAUTHORIZED);
         }
 
         return $next($request);

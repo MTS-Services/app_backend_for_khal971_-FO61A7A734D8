@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Services\FileService;
 use App\Http\Services\SubjectService;
 use App\Models\Subject;
 use Illuminate\Http\Request;
@@ -12,17 +13,19 @@ use Symfony\Component\HttpFoundation\Response;
 class SubjectController extends Controller
 {
     protected SubjectService $subjectService;
+    protected FileService $fileService;
 
-    public function __construct(SubjectService $subjectService)
+    public function __construct(SubjectService $subjectService, FileService $fileService)
     {
         $this->subjectService = $subjectService;
+        $this->fileService = $fileService;
     }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $subjects = $this->subjectService->getSubjects()->get();
+        $subjects = $this->subjectService->getSubjects();
         if (!$subjects) {
             return sendResponse(false, 'Subject list not found', null, Response::HTTP_NOT_FOUND);
         }
