@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\API\AuthenticationController;
+use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\User\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\API\SubjectController;
+use App\Http\Controllers\API\TopicController;
 
 Route::controller(UserController::class)->group(function () {
     Route::get('user', 'user')->name('user');
@@ -12,3 +12,7 @@ Route::controller(UserController::class)->group(function () {
     Route::post('logout', 'logout')->name('logout');
 });
 
+
+Route::apiResources(['subjects' => SubjectController::class]);
+Route::apiResource('courses', CourseController::class);
+Route::apiResource('topics', TopicController::class);
