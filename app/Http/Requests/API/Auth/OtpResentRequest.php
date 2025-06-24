@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\API\User;
+namespace App\Http\Requests\API\Auth;
 
 use App\Http\Requests\API\BaseRequest;
 
-class RegistrationRequest extends BaseRequest
+class OtpResentRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,9 +22,7 @@ class RegistrationRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:4',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'email' => 'required|email|exists:users,email',
         ];
     }
 }
