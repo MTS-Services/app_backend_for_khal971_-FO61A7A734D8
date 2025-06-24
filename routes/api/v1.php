@@ -4,7 +4,7 @@ use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\SubjectController;
-
+use App\Http\Controllers\API\TopicController;
 
 Route::controller(UserController::class)->group(function () {
     Route::get('user', 'user')->name('user');
@@ -13,5 +13,6 @@ Route::controller(UserController::class)->group(function () {
 });
 
 
-Route::apiResources(['subject' => SubjectController::class]);
-Route::apiResource('course', CourseController::class);
+Route::apiResources(['subjects' => SubjectController::class]);
+Route::apiResource('courses', CourseController::class);
+Route::apiResource('topics', TopicController::class);
