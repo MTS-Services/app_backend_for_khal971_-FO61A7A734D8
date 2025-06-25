@@ -83,13 +83,13 @@ class Topic extends Model
     {
         return $query->where('status', self::STATUS_INACTIVE);
     }
-    public function scopeFree()
+    public function scopeFree(Builder $query): Builder
     {
-        return $this->where('is_premium', false);
+        return $query->where('is_premium', false);
     }
 
-    public function scopePremium()
+    public function scopePremium(Builder $query): Builder
     {
-        return $this->where('is_premium', true);
+        return $query->where('is_premium', true);
     }
 }
