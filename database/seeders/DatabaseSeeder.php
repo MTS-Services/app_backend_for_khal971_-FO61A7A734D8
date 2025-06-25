@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             QuestionOptionSeeder::class,
             PlanSeeder::class,
             PlanFeatureSeeder::class,
+            SubscriptionSeeder::class,
         ]);
     }
 }
