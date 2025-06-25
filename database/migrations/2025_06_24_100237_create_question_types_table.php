@@ -5,8 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     use AuditColumnsTrait;
     /**
      * Run the migrations.
@@ -19,6 +18,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->longText('description')->nullable();
             $table->string('status', 10)->index()->default('active')->comment('active, inactive');
+            $table->boolean('is_premium')->default(true);
             $table->timestamps();
 
             $this->addAuditColumns($table);

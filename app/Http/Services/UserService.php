@@ -3,6 +3,7 @@
 namespace App\Http\Services;
 
 use App\Models\User;
+use Auth;
 use Illuminate\Database\Eloquent\Collection;
 
 class UserService
@@ -17,4 +18,6 @@ class UserService
     {
         return User::orderBy($orderBy, $order)->latest();
     }
+
+
 }

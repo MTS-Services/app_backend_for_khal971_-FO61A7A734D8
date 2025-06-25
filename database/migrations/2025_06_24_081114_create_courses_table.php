@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Traits\AuditColumnsTrait;
+use App\Models\Course;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     use AuditColumnsTrait;
     /**
      * Run the migrations.
@@ -18,7 +18,8 @@ return new class extends Migration
             $table->bigInteger('order_index')->default(0)->unique();
             $table->unsignedBigInteger('subject_id')->nullable()->index();
             $table->string('name');
-            $table->string('status', 10)->index()->default('active');
+            $table->tinyInteger('status')->index()->default(Course::STATUS_ACTIVE);
+            $table->boolean('is_premium')->default(true);
             $table->timestamps();
 
             $this->addAuditColumns($table);
