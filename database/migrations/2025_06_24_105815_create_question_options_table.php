@@ -15,7 +15,7 @@ return new class extends Migration {
     {
         Schema::create('question_options', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('order_index')->default(0)->unique();
+            $table->bigInteger('order_index')->default(0);
             $table->unsignedBigInteger('question_id')->nullable()->index();
             $table->text('option_text');
             $table->boolean('is_correct')->default(false);

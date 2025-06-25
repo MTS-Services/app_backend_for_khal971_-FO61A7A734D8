@@ -78,12 +78,12 @@ class QuestionType extends Model
         return $this->hasMany(Question::class, 'question_type_id', 'id');
     }
 
-    public function free()
+    public function scopeFree()
     {
         return $this->where('is_premium', false);
     }
 
-    public function premium()
+    public function scopePremium()
     {
         return $this->where('is_premium', true);
     }

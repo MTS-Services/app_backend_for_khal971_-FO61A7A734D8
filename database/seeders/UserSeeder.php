@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
             'phone' => '1234567890',
             'is_admin' => true,
             'password' => 'admin@dev.com',
+            'email_verified_at' => now(),
         ]);
 
         User::create([
@@ -26,6 +27,7 @@ class UserSeeder extends Seeder
             'email' => 'user@dev.com',
             'phone' => '1234567891',
             'password' => 'user@dev.com',
+            'email_verified_at' => now(),
         ]);
     }
 }

@@ -25,11 +25,14 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        $subjects = $this->subjectService->getSubjects();
-        if (!$subjects) {
-            return sendResponse(false, 'Subject list not found', null, Response::HTTP_NOT_FOUND);
+        try {
+            $subjects = $this->subjectService->getSubjects()->get();
+            return sendResponse(true, 'Subject list fetched successfully', $subjects, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('Subject List Error: ' . $e->getMessage());
+            return sendResponse(false, 'Failed to fetch subject list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        return sendResponse(true, 'Subject list', $subjects, Response::HTTP_OK);
+
     }
 
     /**

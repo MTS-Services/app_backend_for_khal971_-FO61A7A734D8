@@ -18,7 +18,6 @@ class QuestionSeeder extends Seeder
 
         DB::table('questions')->insert([
             [
-                'order_index' => 101,
                 'topic_id' => 1,
                 'question_type_id' => 1,
                 'title' => 'What is 2 + 2?',
@@ -31,7 +30,6 @@ class QuestionSeeder extends Seeder
                 'tags' => json_encode(['math', 'easy', 'grade1']),
             ],
             [
-                'order_index' => 102,
                 'topic_id' => 1,
                 'question_type_id' => 2,
                 'title' => 'The Earth is flat. (True/False)',

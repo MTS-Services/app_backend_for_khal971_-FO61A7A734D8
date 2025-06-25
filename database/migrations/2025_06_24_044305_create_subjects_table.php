@@ -15,7 +15,7 @@ return new class extends Migration {
     {
         Schema::create('subjects', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('order_index')->default(0)->unique();
+            $table->bigInteger('order_index')->default(0);
             $table->string('name')->unique();
             $table->string('icon')->nullable();
             $table->tinyInteger('status')->index()->default(Subject::STATUS_ACTIVE);

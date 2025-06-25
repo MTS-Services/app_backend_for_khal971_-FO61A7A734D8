@@ -15,7 +15,7 @@ return new class extends Migration {
     {
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('order_index')->default(0)->unique();
+            $table->bigInteger('order_index')->default(0);
             $table->unsignedBigInteger('subject_id')->nullable()->index();
             $table->string('name');
             $table->tinyInteger('status')->index()->default(Course::STATUS_ACTIVE);
