@@ -48,7 +48,7 @@ class SubjectService
         if ($file) {
             $data['icon'] = $this->fileService->uploadFile($file, 'subjects', $data['name']);
         }
-        return Subject::create($data);
+        return Subject::create($data)->refresh();
     }
 
     public function updateSubject(Subject $subject, $data, $file = null): Subject
