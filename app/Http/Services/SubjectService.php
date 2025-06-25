@@ -31,14 +31,15 @@ class SubjectService
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->free()->take(12);
         }
-        return $query->orderBy($orderBy, $direction);
+        return $query->orderBy($orderBy, $direction)->latest();
     }
 
     public function getSubject($param, string $query_field = 'id'): Subject|null
     {
+
         $query = Subject::query();
         if (!($this->user->is_premium || $this->user->is_admin)) {
-            $query->free()->take(12);
+            $query->free();
         }
         return $query->where($query_field, $param)->first();
     }
@@ -68,7 +69,7 @@ class SubjectService
         return $subject->delete();
     }
 
-    public function toggleStatus(Subject $subject): Subject
+    public function toggleStatus(Subject $subject): Subject|null
     {
         $subject->update(['status' => !$subject->status, 'updated_by' => $this->user->id]);
         return $subject->refresh();
