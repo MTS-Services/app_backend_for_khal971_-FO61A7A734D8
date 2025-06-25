@@ -19,17 +19,17 @@ function sendResponse($status, $message, $data = null, $statusCode = 200, $addit
 
 function timeFormat($time)
 {
-    return $time ? date('h:i A', strtotime($time)) : 'N/A';
+    return $time ? date('h:i A', strtotime($time)) : null;
 }
 
 function dateFormat($time)
 {
-    return $time ? date('d M, Y', strtotime($time)) : 'N/A';
+    return $time ? date('d M, Y', strtotime($time)) : null;
 }
 
 function dateTimeFormat($time)
 {
-    return $time ? date('d M, Y h:i A', strtotime($time)) : 'N/A';
+    return $time ? date('d M, Y h:i A', strtotime($time)) : null;
 }
 function timeFormatHuman($time)
 {
