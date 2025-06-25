@@ -59,7 +59,7 @@ class Course extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return self::getStatusList()[$this->status];
+        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -70,7 +70,7 @@ class Course extends Model
 
     public function subject(): BelongsTo
     {
-        return $this->belongsTo(Subject::class, 'subject_id', 'id');
+        return $this->belongsTo(Subject::class, 'subject_id', 'id')->withDefault();
     }
 
     public function scopeActive(Builder $query): Builder

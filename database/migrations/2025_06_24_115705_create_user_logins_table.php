@@ -5,8 +5,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -28,12 +27,12 @@ return new class extends Migration
             $table->string('browser');
             $table->string('platform');
 
-            $table->tinyInteger('status')->index()->default(UserLogin::STATUS_ACTIVE)->comment(UserLogin::STATUS_ACTIVE . '= True' . UserLogin::STATUS_INACTIVE . '= False');
+            $table->tinyInteger('status')->index()->default(UserLogin::STATUS_ACTIVE);
             $table->dateTime('last_login_at')->nullable();
 
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 
