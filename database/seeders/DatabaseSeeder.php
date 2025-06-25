@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             QuestionSeeder::class,
             QuestionOptionSeeder::class,
             PlanSeeder::class,
+            PlanFeatureSeeder::class,
         ]);
     }
 }
