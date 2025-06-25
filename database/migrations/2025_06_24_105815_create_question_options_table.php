@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     use AuditColumnsTrait;
     /**
      * Run the migrations.
@@ -20,8 +19,8 @@ return new class extends Migration
             $table->unsignedBigInteger('question_id')->nullable()->index();
             $table->text('option_text');
             $table->boolean('is_correct')->default(false);
-            $table->text('explanation')->nullable();
-            $table->string('status', 10)->index()->default(QuestionOption::STATUS_ACTIVE)->comment(QuestionOption::STATUS_ACTIVE . '= Active' . QuestionOption::STATUS_INACTIVE . '= Inactive');
+            $table->longText('explanation')->nullable();
+            $table->tinyInteger('status')->index()->default(QuestionOption::STATUS_ACTIVE);
             $table->timestamps();
 
             $this->addAuditColumns($table);

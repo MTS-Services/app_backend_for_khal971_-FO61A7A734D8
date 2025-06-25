@@ -26,7 +26,7 @@ return new class extends Migration {
             $table->text('explanation')->nullable();
             $table->text('hints')->nullable();
             $table->text('tags')->nullable();
-            $table->boolean('status')->index()->default(Question::STATUS_ACTIVE)->comment(Question::STATUS_ACTIVE . '= Active' . Question::STATUS_INACTIVE . '= Inactive');
+            $table->tinyInteger('status')->index()->default(Question::STATUS_ACTIVE);
             $table->boolean('is_premium')->default(true);
             $table->timestamps();
 

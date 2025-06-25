@@ -29,6 +29,7 @@ class Topic extends Model
     protected $casts = [
         'status' => 'integer',
         'course_id' => 'integer',
+        'is_premium' => 'boolean',
     ];
 
     public function __construct(array $attributes = [])
@@ -81,5 +82,14 @@ class Topic extends Model
     public function scopeInactive(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_INACTIVE);
+    }
+    public function free()
+    {
+        return $this->where('is_premium', false);
+    }
+
+    public function premium()
+    {
+        return $this->where('is_premium', true);
     }
 }
