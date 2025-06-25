@@ -13,6 +13,7 @@ class Subject extends BaseModel
             'name',
             'icon',
             'status',
+            'is_premium',
 
             'created_by',
             'updated_by',

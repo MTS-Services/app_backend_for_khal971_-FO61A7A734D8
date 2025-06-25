@@ -6,16 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class QuestionType extends Model
 {
-    protected $fillable = 
-    [
-        'order_index',
-        'name',
-        'description',
-        'status',
+    protected $fillable =
+        [
+            'order_index',
+            'name',
+            'description',
+            'status',
+            'is_premium',
 
-        'created_by',
-        'updated_by',
-    ];
+            'created_by',
+            'updated_by',
+        ];
 
     public function __construct()
     {

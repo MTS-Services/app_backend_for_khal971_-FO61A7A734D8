@@ -14,6 +14,7 @@ class Topic extends Model
             'course_id',
             'name',
             'status',
+            'is_premium',
 
             'created_by',
             'updated_by'

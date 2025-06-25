@@ -20,6 +20,7 @@ class Question extends Model
         'hints',
         'tags',
         'status',
+        'is_premium',
 
         'created_by',
         'updated_by',

@@ -14,6 +14,7 @@ class Course extends Model
             'subject_id',
             'name',
             'status',
+            'is_premium',
 
             'created_by',
             'updated_by'
