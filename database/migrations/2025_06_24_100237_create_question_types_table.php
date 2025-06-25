@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Traits\AuditColumnsTrait;
+use App\Models\QuestionType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,7 +18,7 @@ return new class extends Migration {
             $table->bigInteger('order_index')->default(0)->unique();
             $table->string('name')->unique();
             $table->longText('description')->nullable();
-            $table->string('status', 10)->index()->default('active')->comment('active, inactive');
+            $table->tinyInteger('status')->index()->default(QuestionType::STATUS_ACTIVE);
             $table->boolean('is_premium')->default(true);
             $table->timestamps();
 

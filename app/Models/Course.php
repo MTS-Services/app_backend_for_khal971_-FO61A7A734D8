@@ -28,6 +28,7 @@ class Course extends Model
      */
     protected $casts = [
         'status' => 'integer',
+        'is_premium' => 'boolean',
     ];
 
 
@@ -80,5 +81,15 @@ class Course extends Model
     public function scopeInactive(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_INACTIVE);
+    }
+
+    public function free()
+    {
+        return $this->where('is_premium', false);
+    }
+
+    public function premium()
+    {
+        return $this->where('is_premium', true);
     }
 }

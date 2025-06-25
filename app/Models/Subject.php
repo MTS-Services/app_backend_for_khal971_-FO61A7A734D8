@@ -27,6 +27,7 @@ class Subject extends BaseModel
      */
     protected $casts = [
         'status' => 'integer',
+        'is_premium' => 'boolean',
     ];
 
     public function __construct(array $attributes = [])
@@ -83,6 +84,16 @@ class Subject extends BaseModel
     public function scopeInactive(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_INACTIVE);
+    }
+
+    public function free()
+    {
+        return $this->where('is_premium', false);
+    }
+
+    public function premium()
+    {
+        return $this->where('is_premium', true);
     }
 
 }
