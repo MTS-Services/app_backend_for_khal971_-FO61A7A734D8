@@ -36,7 +36,7 @@ return [
     |
     */
 
-    'service' => null,
+    'service' => "maxmind_api",
 
     /*
     |--------------------------------------------------------------------------
@@ -114,7 +114,8 @@ return [
     |
     */
 
-    'cache_tags' => ['torann-geoip-location'],
+    // 'cache_tags' => ['torann-geoip-location'],
+    'cache_tags' => null,
 
     /*
     |--------------------------------------------------------------------------
