@@ -5,17 +5,18 @@ namespace App\Http\Services;
 use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Services\FileService;
 
 class SubjectService
 {
-
+    protected FileService $fileService;
     private User $user;
 
-    public function __construct()
+    public function __construct(FileService $fileService)
     {
         $this->user = Auth::user();
+        $this->fileService = $fileService;
     }
     /**
      * Fetch subjects, optionally filtered and ordered.
@@ -41,21 +42,29 @@ class SubjectService
         }
         return $query->where($query_field, $param)->first();
     }
-    public function createSubject($data): Subject
+    public function createSubject($data, $file = null): Subject
     {
         $data['created_by'] = $this->user->id;
+        if ($file) {
+            $data['icon'] = $this->fileService->uploadFile($file, 'subjects', $data['name']);
+        }
         return Subject::create($data);
     }
 
-    public function updateSubject(Subject $subject, $data): Subject
+    public function updateSubject(Subject $subject, $data, $file = null): Subject
     {
         $data['updated_by'] = $this->user->id;
+        if ($file) {
+            $data['icon'] = $this->fileService->uploadFile($file, 'subjects', $data['name']);
+            $this->fileService->fileDelete($subject->icon);
+        }
         $subject->update($data);
         return $subject->refresh();
     }
 
     public function deleteSubject(Subject $subject): bool
     {
+        $this->fileService->fileDelete($subject->icon);
         return $subject->delete();
     }
 

@@ -28,26 +28,26 @@ class BaseModel extends Model
     }
 
     // Accessor for created time
-    public function getCreatedAtFormattedAttribute(): string
+    public function getCreatedAtFormattedAttribute(): string|null
     {
         return dateTimeFormat($this->created_at);
     }
 
     // Accessor for updated time
-    public function getUpdatedAtFormattedAttribute(): string
+    public function getUpdatedAtFormattedAttribute(): string|null
     {
-        return $this->created_at != $this->updated_at ? dateTimeFormat($this->updated_at) : 'N/A';
+        return $this->created_at != $this->updated_at ? dateTimeFormat($this->updated_at) : null;
     }
 
     // Accessor for created time human readable
-    public function getCreatedAtHumanAttribute(): string
+    public function getCreatedAtHumanAttribute(): string|null
     {
         return timeFormatHuman($this->created_at);
     }
 
     // Accessor for updated time human readable
-    public function getUpdatedAtHumanAttribute(): string
+    public function getUpdatedAtHumanAttribute(): string|null
     {
-        return $this->created_at != $this->updated_at ? timeFormatHuman($this->updated_at) : 'N/A';
+        return $this->created_at != $this->updated_at ? timeFormatHuman($this->updated_at) : null;
     }
 }

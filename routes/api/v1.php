@@ -14,5 +14,8 @@ Route::controller(UserController::class)->group(function () {
 
 
 Route::apiResources(['subjects' => SubjectController::class]);
+Route::get('subjects/status/{subject}', [SubjectController::class, 'toggleStatus'])->name('subjects.toggleStatus');
+
+
 Route::apiResource('courses', CourseController::class);
 Route::apiResource('topics', TopicController::class);
