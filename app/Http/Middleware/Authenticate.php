@@ -4,7 +4,9 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Jenssegers\Agent\Agent;
 use Symfony\Component\HttpFoundation\Response;
+use Torann\GeoIP\Facades\GeoIP;
 
 class Authenticate extends Middleware
 {

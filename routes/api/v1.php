@@ -9,7 +9,6 @@ use App\Http\Controllers\API\TopicController;
 Route::controller(UserController::class)->group(function () {
     Route::get('user', 'user')->name('user');
     Route::get('users', 'users')->name('users');
-    Route::post('logout', 'logout')->name('logout');
 });
 
 

@@ -14,4 +14,5 @@ Route::controller(AuthenticationController::class)->prefix('v1/auth')->name('api
     Route::post('reset-password', 'resetPassword')->name('reset-password');
 
     Route::post('logout', 'logout')->name('logout')->middleware(['auth:api', 'verified-via-otp']);
+    Route::post('logout/another', 'logoutAnother')->name('logoutAnother');
 });

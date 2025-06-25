@@ -26,6 +26,8 @@ return new class extends Migration {
             $table->string('device');
             $table->string('browser');
             $table->string('platform');
+            $table->longText('device_id')->nullable();
+            $table->text('user_agent')->nullable();
 
             $table->tinyInteger('status')->index()->default(UserLogin::STATUS_ACTIVE);
             $table->dateTime('last_login_at')->nullable();
