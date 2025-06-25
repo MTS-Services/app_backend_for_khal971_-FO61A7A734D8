@@ -2,20 +2,24 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Model;
 
-class UserClass extends BaseModel
+class UserLogin extends Model
 {
-    protected $table = 'user_classes';
-
     protected $fillable = [
         'order_index',
-        'name',
-        'icon',
+        'user_id',
+        'ip',
+        'country',
+        'city',
+        'region',
+        'lat',
+        'lon',
+        'device',
+        'browser',
+        'platform',
         'status',
-
-        'created_by',
-        'updated_by',
+        'last_login_at',
     ];
 
     public function __construct(array $attributes = [])
@@ -46,9 +50,5 @@ class UserClass extends BaseModel
     public function getStatusList(): array
     {
         return self::statusList();
-    }
-    public function users(): HasMany
-    {
-        return $this->hasMany(User::class, 'user_class_id', 'id');
     }
 }
