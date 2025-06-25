@@ -5,14 +5,13 @@ namespace App\Http\Services;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Services\FileService;
 use App\Models\Course;
 
 class CourseService
 {
     private User $user;
 
-    public function __construct(FileService $fileService)
+    public function __construct()
     {
         $this->user = Auth::user();
     }
