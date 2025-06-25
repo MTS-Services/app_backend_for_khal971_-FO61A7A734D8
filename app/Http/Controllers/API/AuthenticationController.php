@@ -60,7 +60,7 @@ class AuthenticationController extends Controller
 
                 return sendResponse(true, 'Login successful', $user->only('id', 'name', 'email'), Response::HTTP_OK, ['token' => $token]);
             }
-            return sendResponse(false, 'Login failed', null, Response::HTTP_UNAUTHORIZED);
+            return sendResponse(false, 'Invalid credentials', null, Response::HTTP_UNAUTHORIZED);
         } catch (\Exception $e) {
             Log::error('Login Error: ' . $e->getMessage());
             return sendResponse(false, 'Login failed', null, Response::HTTP_INTERNAL_SERVER_ERROR);

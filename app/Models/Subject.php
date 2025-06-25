@@ -86,12 +86,12 @@ class Subject extends BaseModel
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
-    public function free()
+    public function scopeFree()
     {
         return $this->where('is_premium', false);
     }
 
-    public function premium()
+    public function scopePremium()
     {
         return $this->where('is_premium', true);
     }

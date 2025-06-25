@@ -15,7 +15,7 @@ return new class extends Migration {
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('order_index')->default(0)->unique();
+            $table->bigInteger('order_index')->default(0);
             $table->unsignedBigInteger('topic_id')->nullable()->index();
             $table->unsignedBigInteger('question_type_id')->nullable()->index();
             $table->string('title', 500);
