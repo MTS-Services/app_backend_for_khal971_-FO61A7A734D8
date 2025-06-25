@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             PlanSeeder::class,
             PlanFeatureSeeder::class,
             SubscriptionSeeder::class,
+            PaymentSeeder::class,
         ]);
     }
 }
