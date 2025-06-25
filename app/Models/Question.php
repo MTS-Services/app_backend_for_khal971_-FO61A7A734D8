@@ -68,7 +68,7 @@ class Question extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return self::getStatusList()[$this->status];
+        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array

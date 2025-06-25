@@ -106,7 +106,7 @@ class User extends Authenticatable
 
     public function getStatusLabelAttribute(): string
     {
-        return self::getStatusList()[$this->status];
+        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -134,7 +134,7 @@ class User extends Authenticatable
 
     public function getGenderLabelAttribute(): string
     {
-        return self::getGenderList()[$this->status];
+        return $this->gender ? self::getGenderList()[$this->gender] : 'Unknown';
     }
 
     public function getGenderListAttribute(): array
@@ -149,12 +149,12 @@ class User extends Authenticatable
 
     public function creater(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by', 'id')->select(['name', 'id']);
+        return $this->belongsTo(User::class, 'created_by', 'id')->select(['name', 'id'])->withDefault();
     }
 
     public function updater(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by', 'id')->select(['name', 'id']);
+        return $this->belongsTo(User::class, 'updated_by', 'id')->select(['name', 'id'])->withDefault();
     }
 
     // Accessor for created time
@@ -183,7 +183,7 @@ class User extends Authenticatable
 
     public function userClass(): BelongsTo
     {
-        return $this->belongsTo(UserClass::class, 'user_class_id', 'id')->select(['name', 'id']);
+        return $this->belongsTo(UserClass::class, 'user_class_id', 'id')->select(['name', 'id'])->withDefault();
     }
 
 

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class QuestionType extends Model
 {
@@ -56,7 +57,7 @@ class QuestionType extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return self::getStatusList()[$this->status];
+        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -73,7 +74,7 @@ class QuestionType extends Model
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
-    public function questions()
+    public function questions(): HasMany
     {
         return $this->hasMany(Question::class, 'question_type_id', 'id');
     }

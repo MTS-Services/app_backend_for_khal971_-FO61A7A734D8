@@ -39,7 +39,7 @@ class SubjectRequest extends BaseRequest
     private function update(): array
     {
         return [
-            'name' => "required|string|unique:subjects,name,{$this->subjecs}",
+            'name' => "required|string|unique:subjects,name,{$this->route('subject')}",
         ];
     }
 }
