@@ -16,7 +16,7 @@ return new class extends Migration {
 
         Schema::create('topics', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('order_index')->default(0)->unique();
+            $table->bigInteger('order_index')->default(0);
             $table->unsignedBigInteger('course_id')->nullable()->index();
             $table->string('name')->unique();
             $table->tinyInteger('status')->index()->default(Topic::STATUS_ACTIVE);

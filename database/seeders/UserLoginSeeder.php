@@ -15,7 +15,6 @@ class UserLoginSeeder extends Seeder
     {
         DB::table('user_logins')->insert([
             [
-                'order_index' => 101,
                 'user_id' => 1,
                 'ip' => '192.168.1.10',
                 'country' => 'Bangladesh',
@@ -29,7 +28,6 @@ class UserLoginSeeder extends Seeder
                 'last_login_at' => Carbon::now(),
             ],
             [
-                'order_index' => 102,
                 'user_id' => 2,
                 'ip' => '203.0.113.5',
                 'country' => 'India',

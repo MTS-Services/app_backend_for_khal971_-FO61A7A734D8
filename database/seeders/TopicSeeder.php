@@ -17,17 +17,14 @@ class TopicSeeder extends Seeder
 
         DB::table('topics')->insert([
             [
-                'order_index' => 101,
                 'course_id' => 1,
                 'name' => 'Introduction to Variables',
             ],
             [
-                'order_index' => 102,
                 'course_id' => 1,
                 'name' => 'Linear Equations',
             ],
             [
-                'order_index' => 103,
                 'course_id' => 2,
                 'name' => 'Triangles & Angles',
             ],
