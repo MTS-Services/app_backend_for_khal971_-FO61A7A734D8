@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class UserClass extends BaseModel
 {
@@ -12,7 +13,9 @@ class UserClass extends BaseModel
     protected $fillable = [
         'order_index',
         'name',
+        'icon',
         'status',
+
         'created_by',
         'updated_by',
     ];
