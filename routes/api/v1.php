@@ -20,3 +20,4 @@ Route::apiResource('courses', CourseController::class);
 Route::get('courses/status/{course}', [CourseController::class, 'toggleStatus'])->name('courses.toggleStatus');
 
 Route::apiResource('topics', TopicController::class);
+Route::get('topics/status/{topic}', [TopicController::class, 'toggleStatus'])->name('topics.toggleStatus');
