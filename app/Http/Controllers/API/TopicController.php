@@ -24,7 +24,7 @@ class TopicController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $topics = $this->topicService->getTopics()->get();
+            $topics = $this->topicService->getTopics()->with('course.subject')->get();
             return sendResponse(true, 'Topic list fetched successfully', $topics, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('topic List Error: ' . $e->getMessage());
