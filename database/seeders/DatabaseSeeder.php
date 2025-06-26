@@ -20,6 +20,10 @@ class DatabaseSeeder extends Seeder
             QuestionTypeSeeder::class,
             QuestionSeeder::class,
             QuestionOptionSeeder::class,
+            PlanSeeder::class,
+            PlanFeatureSeeder::class,
+            SubscriptionSeeder::class,
+            PaymentSeeder::class,
         ]);
     }
 }

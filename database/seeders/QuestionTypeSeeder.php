@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
 
 class QuestionTypeSeeder extends Seeder
 {
@@ -13,8 +12,6 @@ class QuestionTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        $now = Carbon::now();
-
         DB::table('question_types')->insert([
             [
                 'name' => 'mcq',
