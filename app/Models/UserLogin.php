@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
 
 class UserLogin extends Model
 {
@@ -22,6 +23,9 @@ class UserLogin extends Model
         'platform',
         'status',
         'last_login_at',
+        'device_id',
+        'user_agent',
+
     ];
 
     public function __construct(array $attributes = [])
@@ -69,5 +73,10 @@ class UserLogin extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id')->withDefault();
+    }
+
+    public function scopeSelf(Builder $query): Builder
+    {
+        return $query->where('user_id', Auth::id());
     }
 }

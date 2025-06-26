@@ -29,5 +29,15 @@ class UserSeeder extends Seeder
             'password' => 'user@dev.com',
             'email_verified_at' => now(),
         ]);
+
+        User::create([
+            'name' => 'Premium User',
+            'email' => 'premium_user@dev.com',
+            'phone' => '1234567892',
+            'password' => 'premium_user@dev.com',
+            'email_verified_at' => now(),
+            'is_premium' => true,
+            'premium_expires_at' => now()->addDays(30)
+        ]);
     }
 }
