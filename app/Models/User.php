@@ -106,7 +106,7 @@ class User extends Authenticatable
 
     public function getStatusLabelAttribute(): string
     {
-        return self::getStatusList()[$this->status];
+        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -134,7 +134,7 @@ class User extends Authenticatable
 
     public function getGenderLabelAttribute(): string
     {
-        return self::getGenderList()[$this->status];
+        return $this->gender ? self::getGenderList()[$this->gender] : 'Unknown';
     }
 
     public function getGenderListAttribute(): array
@@ -149,41 +149,41 @@ class User extends Authenticatable
 
     public function creater(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by', 'id')->select(['name', 'id']);
+        return $this->belongsTo(User::class, 'created_by', 'id')->select(['name', 'id'])->withDefault();
     }
 
     public function updater(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by', 'id')->select(['name', 'id']);
+        return $this->belongsTo(User::class, 'updated_by', 'id')->select(['name', 'id'])->withDefault();
     }
 
     // Accessor for created time
-    public function getCreatedAtFormattedAttribute(): string
+    public function getCreatedAtFormattedAttribute(): string|null
     {
         return dateTimeFormat($this->created_at);
     }
 
     // Accessor for updated time
-    public function getUpdatedAtFormattedAttribute(): string
+    public function getUpdatedAtFormattedAttribute(): string|null
     {
-        return $this->created_at != $this->updated_at ? dateTimeFormat($this->updated_at) : 'N/A';
+        return $this->created_at != $this->updated_at ? dateTimeFormat($this->updated_at) : null;
     }
 
     // Accessor for created time human readable
-    public function getCreatedAtHumanAttribute(): string
+    public function getCreatedAtHumanAttribute(): string|null
     {
         return timeFormatHuman($this->created_at);
     }
 
     // Accessor for updated time human readable
-    public function getUpdatedAtHumanAttribute(): string
+    public function getUpdatedAtHumanAttribute(): string|null
     {
-        return $this->created_at != $this->updated_at ? timeFormatHuman($this->updated_at) : 'N/A';
+        return $this->created_at != $this->updated_at ? timeFormatHuman($this->updated_at) : null;
     }
 
     public function userClass(): BelongsTo
     {
-        return $this->belongsTo(UserClass::class, 'user_class_id', 'id')->select(['name', 'id']);
+        return $this->belongsTo(UserClass::class, 'user_class_id', 'id')->select(['name', 'id'])->withDefault();
     }
 
 

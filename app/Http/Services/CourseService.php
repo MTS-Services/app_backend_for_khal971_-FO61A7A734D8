@@ -2,12 +2,12 @@
 
 namespace App\Http\Services;
 
-use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Course;
 
-class TopicService
+class CourseService
 {
     private User $user;
 
@@ -16,49 +16,49 @@ class TopicService
         $this->user = Auth::user();
     }
     /**
-     * Fetch Topics, optionally filtered and ordered.
+     * Fetch Courses, optionally filtered and ordered.
      *
      * @param  string  $direction asc|desc default: asc
      * @return Builder
      */
-    public function getTopics(string $orderBy = 'order_index', string $direction = 'asc'): Builder
+    public function getCourses(string $orderBy = 'order_index', string $direction = 'asc'): Builder
     {
-        $query = Topic::query();
+        $query = Course::query();
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->free()->take(12);
         }
         return $query->orderBy($orderBy, $direction)->latest();
     }
 
-    public function getTopic($param, string $query_field = 'id'): Topic|null
+    public function getCourse($param, string $query_field = 'id'): Course|null
     {
-        $query = Topic::query();
+        $query = Course::query();
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->free()->take(12);
         }
         return $query->where($query_field, $param)->first();
     }
-    public function createTopic($data): Topic
+    public function createCourse($data): Course
     {
         $data['created_by'] = $this->user->id;
-        return Topic::create($data)->refresh();
+        return Course::create($data)->refresh();
     }
 
-    public function updateTopic(Topic $topic, $data): Topic
+    public function updateCourse(Course $Course, $data): Course
     {
         $data['updated_by'] = $this->user->id;
-        $topic->update($data);
-        return $topic->refresh();
+        $Course->update($data);
+        return $Course->refresh();
     }
 
-    public function deleteTopic(Topic $topic): bool
+    public function deleteCourse(Course $Course): bool
     {
-        return $topic->delete();
+        return $Course->delete();
     }
 
-    public function toggleStatus(Topic $topic): Topic|null
+    public function toggleStatus(Course $Course): Course|null
     {
-        $topic->update(['status' => !$topic->status, 'updated_by' => $this->user->id]);
-        return $topic->refresh();
+        $Course->update(['status' => !$Course->status, 'updated_by' => $this->user->id]);
+        return $Course->refresh();
     }
 }

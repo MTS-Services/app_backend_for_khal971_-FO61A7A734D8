@@ -5,17 +5,18 @@ namespace App\Http\Services;
 use App\Models\Subject;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Services\FileService;
 
 class SubjectService
 {
-
+    protected FileService $fileService;
     private User $user;
 
-    public function __construct()
+    public function __construct(FileService $fileService)
     {
         $this->user = Auth::user();
+        $this->fileService = $fileService;
     }
     /**
      * Fetch subjects, optionally filtered and ordered.
@@ -30,36 +31,45 @@ class SubjectService
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->free()->take(12);
         }
-        return $query->orderBy($orderBy, $direction);
+        return $query->orderBy($orderBy, $direction)->latest();
     }
 
     public function getSubject($param, string $query_field = 'id'): Subject|null
     {
+
         $query = Subject::query();
         if (!($this->user->is_premium || $this->user->is_admin)) {
-            $query->free()->take(12);
+            $query->free();
         }
         return $query->where($query_field, $param)->first();
     }
-    public function createSubject($data): Subject
+    public function createSubject($data, $file = null): Subject
     {
         $data['created_by'] = $this->user->id;
-        return Subject::create($data);
+        if ($file) {
+            $data['icon'] = $this->fileService->uploadFile($file, 'subjects', $data['name']);
+        }
+        return Subject::create($data)->refresh();
     }
 
-    public function updateSubject(Subject $subject, $data): Subject
+    public function updateSubject(Subject $subject, $data, $file = null): Subject
     {
         $data['updated_by'] = $this->user->id;
+        if ($file) {
+            $data['icon'] = $this->fileService->uploadFile($file, 'subjects', $data['name']);
+            $this->fileService->fileDelete($subject->icon);
+        }
         $subject->update($data);
         return $subject->refresh();
     }
 
     public function deleteSubject(Subject $subject): bool
     {
+        $this->fileService->fileDelete($subject->icon);
         return $subject->delete();
     }
 
-    public function toggleStatus(Subject $subject): Subject
+    public function toggleStatus(Subject $subject): Subject|null
     {
         $subject->update(['status' => !$subject->status, 'updated_by' => $this->user->id]);
         return $subject->refresh();

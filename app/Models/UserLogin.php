@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
 
 class UserLogin extends Model
 {
@@ -20,6 +23,9 @@ class UserLogin extends Model
         'platform',
         'status',
         'last_login_at',
+        'device_id',
+        'user_agent',
+
     ];
 
     public function __construct(array $attributes = [])
@@ -32,6 +38,8 @@ class UserLogin extends Model
     }
     protected $casts = [
         'status' => 'integer',
+        'user_id' => 'integer',
+        'order_index' => 'integer',
     ];
 
     public const STATUS_ACTIVE = 1;
@@ -45,10 +53,30 @@ class UserLogin extends Model
     }
     public function getStatusLabelAttribute()
     {
-        return self::statusList()[$this->status];
+        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
     public function getStatusList(): array
     {
         return self::statusList();
+    }
+
+    public function scopeActive(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_ACTIVE);
+    }
+
+    public function scopeInactive(Builder $query): Builder
+    {
+        return $query->where('status', self::STATUS_INACTIVE);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id')->withDefault();
+    }
+
+    public function scopeSelf(Builder $query): Builder
+    {
+        return $query->where('user_id', Auth::id());
     }
 }

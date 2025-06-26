@@ -59,7 +59,7 @@ class Course extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return self::getStatusList()[$this->status];
+        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -70,7 +70,7 @@ class Course extends Model
 
     public function subject(): BelongsTo
     {
-        return $this->belongsTo(Subject::class, 'subject_id', 'id');
+        return $this->belongsTo(Subject::class, 'subject_id', 'id')->withDefault();
     }
 
     public function scopeActive(Builder $query): Builder
@@ -83,13 +83,13 @@ class Course extends Model
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
-    public function scopeFree()
+    public function scopeFree(Builder $query): Builder
     {
-        return $this->where('is_premium', false);
+        return $query->where('is_premium', false);
     }
 
-    public function scopePremium()
+    public function scopePremium(Builder $query): Builder
     {
-        return $this->where('is_premium', true);
+        return $query->where('is_premium', true);
     }
 }

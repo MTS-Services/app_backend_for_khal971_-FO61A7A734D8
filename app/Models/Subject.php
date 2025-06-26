@@ -57,7 +57,7 @@ class Subject extends BaseModel
 
     public function getStatusLabelAttribute(): string
     {
-        return self::getStatusList()[$this->status];
+        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -86,14 +86,14 @@ class Subject extends BaseModel
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
-    public function scopeFree()
+    public function scopeFree(Builder $query): Builder
     {
-        return $this->where('is_premium', false);
+        return $query->where('is_premium', false);
     }
 
-    public function scopePremium()
+    public function scopePremium(Builder $query): Builder
     {
-        return $this->where('is_premium', true);
+        return $query->where('is_premium', true);
     }
 
 }

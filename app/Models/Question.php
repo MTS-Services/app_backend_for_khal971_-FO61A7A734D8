@@ -68,7 +68,7 @@ class Question extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return self::getStatusList()[$this->status];
+        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -96,13 +96,13 @@ class Question extends Model
         return $this->belongsTo(QuestionType::class, 'question_type_id', 'id')->withDefault();
     }
 
-    public function scopeFree()
+    public function scopeFree(Builder $query): Builder
     {
-        return $this->where('is_premium', false);
+        return $query->where('is_premium', false);
     }
 
-    public function scopePremium()
+    public function scopePremium(Builder $query): Builder
     {
-        return $this->where('is_premium', true);
+        return $query->where('is_premium', true);
     }
 }

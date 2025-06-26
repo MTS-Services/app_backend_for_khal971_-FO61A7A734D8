@@ -3,9 +3,13 @@
 namespace App\Http\Services;
 
 use App\Models\User;
+use App\Models\UserLogin;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
+use Jenssegers\Agent\Agent;
+use Torann\GeoIP\Facades\GeoIP;
 
 class AuthenticationService
 {
@@ -87,6 +91,50 @@ class AuthenticationService
     public function resetPassword(User $user, string $password): void
     {
         $user->update(['password' => bcrypt($password)]);
+    }
+
+
+    public function getDeviceInfo($ip)
+    {
+        $agent = new Agent();
+        $device = $agent->device();
+        $browser = $agent->browser();
+        $platform = $agent->platform();
+
+        // Get more detailed info
+        $isMobile = $agent->isMobile();
+        $isTablet = $agent->isTablet();
+        $isDesktop = $agent->isDesktop();
+
+        // Additional info
+        $version = $agent->version($browser);
+
+        $deviceId = "{$ip}_{$device}_{$browser}_{$platform}_{$version}_Mobile_{$isMobile}_Tablet_{$isTablet}_Desktop_{$isDesktop}";
+        return [
+            'device' => $device,
+            'browser' => $browser,
+            'platform' => $platform,
+            'device_id' => $deviceId,
+        ];
+    }
+
+
+    public function getUserInfo($ip)
+    {
+        $daviceInfo = $this->getDeviceInfo($ip);
+        $location = GeoIP::getLocation($ip);
+        $data = [
+            'order_index' => 0,
+            'ip' => $ip,
+            'country' => $location['country_name'] ?? 'Unknown',
+            'city' => $location['city'] ?? 'Unknown',
+            'region' => $location['region'] ?? 'Unknown',
+            'lat' => $location['lat'] ?? 0.0,
+            'lon' => $location['lon'] ?? 0.0,
+            'status' => UserLogin::STATUS_ACTIVE,
+            'last_login_at' => Carbon::now(),
+        ];
+        return array_merge($data, $daviceInfo);
     }
 
 
