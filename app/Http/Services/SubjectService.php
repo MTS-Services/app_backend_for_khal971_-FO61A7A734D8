@@ -66,7 +66,8 @@ class SubjectService
                 //     $transData[] = ['subject_id' => $subject->id, 'language' => $lang, 'name' => $name];
                 // }
                 // SubjectTranslation::insert($transData);
-                return $subject;
+                TranslateModelJob::dispatch(Subject::class, SubjectTranslation::class, 'subject_id', $subject->id, ['name']);
+                return $subject->refresh();
             });
         } catch (\Exception $e) {
             Log::error('Subject Create Error: ' . $e->getMessage());
@@ -89,7 +90,7 @@ class SubjectService
                     $name = $this->deepl->translate($data['name'], $lang);
                     SubjectTranslation::updateOrCreate(['subject_id' => $subject->id, 'language' => $lang], ['name' => $name]);
                 }
-                return $subject->refresh()->load('translations');
+                return $subject->refresh();
             });
         } catch (\Exception $e) {
             Log::error('Subject Update Error: ' . $e->getMessage());

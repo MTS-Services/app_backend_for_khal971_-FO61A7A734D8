@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class TranslateModelJob implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, InteractsWithQueue, SerializesModels, Dispatchable;
 
     public $tries = 3;
     public $timeout = 30;
@@ -26,7 +26,7 @@ class TranslateModelJob implements ShouldQueue
         private int $modelId,
         private array $fieldsToTranslate,
     ) {
-        $this->onQueue('translations');
+        // $this->onQueue('translations');
     }
 
     public function handle(DeeplTranslateService $deepl): void
@@ -35,7 +35,7 @@ class TranslateModelJob implements ShouldQueue
         Log::info("Translating model", [
             'model_class' => $this->modelClass,
             'translation_model_class' => $this->translationModelClass,
-            'model_id' => $this->modelId,
+            $this->foreignField => $this->modelId,
             'fields' => $this->fieldsToTranslate,
 
         ]);
@@ -54,7 +54,7 @@ class TranslateModelJob implements ShouldQueue
             if (!$sourceModel) {
                 Log::warning("Model not found for translation", [
                     'model_class' => $this->modelClass,
-                    'model_id' => $this->modelId
+                    $this->foreignField => $this->modelId
                 ]);
                 return;
             }
@@ -76,7 +76,7 @@ class TranslateModelJob implements ShouldQueue
                     if ($exists) {
                         Log::info("Translation already exists", [
                             'model_type' => $this->modelClass,
-                            'model_id' => $this->modelId,
+                            $this->foreignField => $this->modelId,
                             'language' => $targetLanguage
                         ]);
                         continue; // Skip to the next language
@@ -97,7 +97,7 @@ class TranslateModelJob implements ShouldQueue
                     if (empty($translatedData)) {
                         Log::warning("No fields to translate", [
                             'model_type' => $this->modelClass,
-                            'model_id' => $this->modelId,
+                            $this->foreignField => $this->modelId,
                             'fields' => $this->fieldsToTranslate
                         ]);
                         continue; // Skip if no data to translate
@@ -107,7 +107,7 @@ class TranslateModelJob implements ShouldQueue
                     $data = [];
                     foreach ($translatedData as $field => $value) {
                         $data[] = [
-                            'model_id' => $this->modelId,
+                            $this->foreignField => $this->modelId,
                             'language' => $targetLanguage,
                             $field => $value
                         ];
@@ -117,7 +117,7 @@ class TranslateModelJob implements ShouldQueue
 
                     Log::info("Translation completed successfully", [
                         'model_type' => $this->modelClass,
-                        'model_id' => $this->modelId,
+                        $this->foreignField => $this->modelId,
                         'language' => $targetLanguage,
                         'fields' => array_keys($translatedData)
                     ]);
@@ -125,7 +125,7 @@ class TranslateModelJob implements ShouldQueue
 
                     Log::error('Generic translation job failed', [
                         'model_type' => $this->modelClass,
-                        'model_id' => $this->modelId,
+                        $this->foreignField => $this->modelId,
                         'error' => $e->getMessage(),
                         'attempt' => $this->attempts()
                     ]);
@@ -138,7 +138,7 @@ class TranslateModelJob implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Generic translation job failed', [
                 'model_type' => $this->modelClass,
-                'model_id' => $this->modelId,
+                $this->foreignField => $this->modelId,
                 'error' => $e->getMessage(),
                 'attempt' => $this->attempts()
             ]);
@@ -150,7 +150,7 @@ class TranslateModelJob implements ShouldQueue
     {
         DB::table('failed_model_translations')->insert([
             'model_type' => $this->modelClass,
-            'model_id' => $this->modelId,
+            $this->foreignField => $this->modelId,
             'language' => $targetLanguage,
             'fields' => json_encode($this->fieldsToTranslate),
             'failed_at' => now(),
@@ -163,7 +163,7 @@ class TranslateModelJob implements ShouldQueue
     {
         Log::error('Translation job permanently failed', [
             'model_type' => $this->modelClass,
-            'model_id' => $this->modelId,
+            $this->foreignField => $this->modelId,
             'error' => $exception->getMessage()
         ]);
     }

@@ -51,6 +51,7 @@ class SubjectController extends Controller
      */
     public function store(SubjectRequest $request): JsonResponse
     {
+
         try {
             $validated = $request->validated();
             $file = $request->validated('icon') && $request->hasFile('icon') ? $request->file('icon') : null;
@@ -58,7 +59,7 @@ class SubjectController extends Controller
 
 
             if (!$subject) {
-                TranslateModelJob::dispatch(Subject::class, SubjectTranslation::class, 'subject_id', $subject->id, ['name']);
+
                 return sendResponse(false, 'Failed to create subject', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             return sendResponse(true, 'Subject created successfully', $subject, Response::HTTP_CREATED);
@@ -76,12 +77,11 @@ class SubjectController extends Controller
     public function show(Subject $subject): JsonResponse
     {
         try {
-
-            dd($subject->load('translations'));
             $subject = $this->subjectService->getSubject($subject->id);
             if (!$subject) {
                 return sendResponse(false, 'Subject not found', null, Response::HTTP_NOT_FOUND);
             }
+            $subject->load('translations');
             return sendResponse(true, 'Subject fetched successfully', $subject, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Subject Fetch Error: ' . $e->getMessage());
