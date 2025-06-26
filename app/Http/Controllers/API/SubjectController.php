@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\SubjectRequest;
 use App\Http\Services\FileService;
 use App\Http\Services\SubjectService;
+use App\Jobs\TestQueueJob;
+use App\Jobs\TranslateModelJob;
 use App\Models\Subject;
+use App\Models\SubjectTranslation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -50,13 +53,20 @@ class SubjectController extends Controller
     {
         try {
             $validated = $request->validated();
-
             $file = $request->validated('icon') && $request->hasFile('icon') ? $request->file('icon') : null;
             $subject = $this->subjectService->createSubject($validated, $file);
+
+
+            if (!$subject) {
+                TranslateModelJob::dispatch(Subject::class, SubjectTranslation::class, 'subject_id', $subject->id, ['name']);
+                return sendResponse(false, 'Failed to create subject', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
             return sendResponse(true, 'Subject created successfully', $subject, Response::HTTP_CREATED);
         } catch (\Exception $e) {
-            Log::error('Subject Create Error: ' . $e->getMessage());
-            return sendResponse(false, 'Failed to create subject', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            Log::error('Subject Create Error: ' . $e->getMessage(), [
+                'request' => $request->all(),
+            ]);
+            return sendResponse(false, 'An error occurred while creating the subject. Please try again later.', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -66,6 +76,8 @@ class SubjectController extends Controller
     public function show(Subject $subject): JsonResponse
     {
         try {
+
+            dd($subject->load('translations'));
             $subject = $this->subjectService->getSubject($subject->id);
             if (!$subject) {
                 return sendResponse(false, 'Subject not found', null, Response::HTTP_NOT_FOUND);
@@ -90,6 +102,7 @@ class SubjectController extends Controller
      */
     public function update(SubjectRequest $request, Subject $subject): JsonResponse
     {
+
         try {
             $subject = $this->subjectService->getSubject($subject->id);
             if (!$subject) {

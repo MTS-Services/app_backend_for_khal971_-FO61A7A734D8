@@ -96,4 +96,14 @@ class Subject extends BaseModel
         return $query->where('is_premium', true);
     }
 
+    public function translations(): HasMany
+    {
+        return $this->hasMany(SubjectTranslation::class, 'subject_id', 'id');
+    }
+
+    public function translate($language)
+    {
+        return $this->translations->where('language', $language)->first();
+    }
+
 }
