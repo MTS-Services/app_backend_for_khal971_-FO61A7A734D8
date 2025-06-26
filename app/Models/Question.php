@@ -3,10 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Question extends Model
+class Question extends BaseModel
 {
     protected $fillable = [
         'order_index',
@@ -38,6 +37,8 @@ class Question extends Model
         'is_premium' => 'boolean',
         'topic_id' => 'integer',
         'question_type_id' => 'integer',
+        // 'hints' => 'array',
+        // 'tags' => 'array',
     ];
 
 
@@ -46,11 +47,22 @@ class Question extends Model
         parent::__construct($attributes);
         $this->appends = array_merge(parent::getAppends(), [
             'status_label',
-            // 'status_list',
+            // 'hints',
+            // 'tags',
         ]);
     }
+    /////////////////////////
+    // JSON Attributes
+    /////////////////////////
+    // public function getHintsAttribute($value)
+    // {
+    //     return json_decode($value, true);
+    // }
 
-
+    // public function getTagsAttribute($value)
+    // {
+    //     return json_decode($value, true);
+    // }
 
     /////////////////////////
     // Status Attributes
@@ -68,7 +80,7 @@ class Question extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
+        return array_key_exists($this->status, self::getStatusList()) ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array

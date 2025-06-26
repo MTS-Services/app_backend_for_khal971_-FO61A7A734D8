@@ -24,8 +24,8 @@ return new class extends Migration {
             $table->integer('points')->default(1);
             $table->integer('time_limit')->nullable();
             $table->text('explanation')->nullable();
-            $table->text('hints')->nullable();
-            $table->text('tags')->nullable();
+            // $table->text('hints')->nullable();
+            // $table->text('tags')->nullable();
             $table->tinyInteger('status')->index()->default(Question::STATUS_ACTIVE);
             $table->boolean('is_premium')->default(true);
             $table->timestamps();
