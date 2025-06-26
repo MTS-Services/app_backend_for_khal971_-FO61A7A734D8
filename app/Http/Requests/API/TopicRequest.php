@@ -2,9 +2,8 @@
 
 namespace App\Http\Requests\API;
 
-use App\Http\Requests\API\BaseRequest;
 
-class SubjectRequest extends BaseRequest
+class TopicRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,22 +21,21 @@ class SubjectRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'icon' => 'nullable|file|mimes:jpeg,png,jpg,svg|max:1024',
-            'is_premium' => 'required|boolean',
-        ] + ($this->isMethod('POST') ? $this->stote() : $this->update());
+            'course_id' => 'required|exists:subjects,id',
+            'is_premium' => 'nullable|boolean',
+        ]+($this->isMethod('POST') ? $this->stote() : $this->update());
     }
 
-    private function stote(): array
+    public function stote(): array
     {
         return [
-            'name' => 'required|string|unique:subjects,name',
+            'name' => 'required|string|unique:topics,name',
         ];
     }
-
-    private function update(): array
+    public function update(): array
     {
         return [
-            'name' => "required|string|unique:subjects,name,{$this->route('subject')}",
+            'name' => 'required|string|unique:topics,name,' . $this->route('topic')->id,
         ];
     }
 }

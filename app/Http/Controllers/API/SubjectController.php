@@ -63,10 +63,13 @@ class SubjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(int $id): JsonResponse
+    public function show(Subject $subject): JsonResponse
     {
         try {
-            $subject = $this->subjectService->getSubject($id);
+            $subject = $this->subjectService->getSubject($subject->id);
+            if (!$subject) {
+                return sendResponse(false, 'Subject not found', null, Response::HTTP_NOT_FOUND);
+            }
             return sendResponse(true, 'Subject fetched successfully', $subject, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Subject Fetch Error: ' . $e->getMessage());
@@ -85,11 +88,14 @@ class SubjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(SubjectRequest $request, int $id)
+    public function update(SubjectRequest $request, Subject $subject): JsonResponse
     {
         try {
+            $subject = $this->subjectService->getSubject($subject->id);
+            if (!$subject) {
+                return sendResponse(false, 'Subject not found', null, Response::HTTP_NOT_FOUND);
+            }
             $validated = $request->validated();
-            $subject = $this->subjectService->getSubject($id);
             $file = $request->validated('icon') && $request->hasFile('icon') ? $request->file('icon') : null;
             $subject = $this->subjectService->updateSubject($subject, $validated, $file);
             return sendResponse(true, 'Subject updated successfully', $subject, Response::HTTP_OK);
@@ -102,10 +108,14 @@ class SubjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id): JsonResponse
+    public function destroy(Subject $subject): JsonResponse
     {
         try {
-            $this->subjectService->deleteSubject($this->subjectService->getSubject($id));
+            $subject = $this->subjectService->getSubject($subject->id);
+            if (!$subject) {
+                return sendResponse(false, 'Subject not found', null, Response::HTTP_NOT_FOUND);
+            }
+            $this->subjectService->deleteSubject($subject);
             return sendResponse(true, 'Subject deleted successfully', null, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Subject Delete Error: ' . $e->getMessage());
@@ -113,11 +123,15 @@ class SubjectController extends Controller
         }
     }
 
-    public function toggleStatus(int $id): JsonResponse
+    public function toggleStatus(Subject $subject): JsonResponse
     {
         try {
-            $subject = $this->subjectService->toggleStatus($this->subjectService->getSubject($id));
-            return sendResponse(true, "Subject {$subject->status_label}  successfully", $subject, Response::HTTP_OK);
+            $subject = $this->subjectService->getSubject($subject->id);
+            if (!$subject) {
+                return sendResponse(false, 'Subject not found', null, Response::HTTP_NOT_FOUND);
+            }
+            $subject = $this->subjectService->toggleStatus($subject);
+            return sendResponse(true, "Subject {$subject->status_label}  successfully", null, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Subject Status Toggle Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to toggle subject status', null, Response::HTTP_INTERNAL_SERVER_ERROR);
