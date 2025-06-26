@@ -3,10 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class QuestionType extends Model
+class QuestionType extends BaseModel
 {
     protected $fillable =
         [
@@ -57,7 +56,7 @@ class QuestionType extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
+         return array_key_exists($this->status, self::getStatusList()) ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array

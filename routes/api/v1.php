@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\CourseController;
+use App\Http\Controllers\API\QuestionTypeController;
 use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\SubjectController;
@@ -20,3 +21,6 @@ Route::apiResource('courses', CourseController::class);
 Route::get('courses/status/{course}', [CourseController::class, 'toggleStatus'])->name('courses.toggleStatus');
 
 Route::apiResource('topics', TopicController::class);
+
+Route::apiResource('question-types', QuestionTypeController::class);
+Route::get('question-types/status/{question_type}', [QuestionTypeController::class, 'toggleStatus'])->name('question-types.toggleStatus');
