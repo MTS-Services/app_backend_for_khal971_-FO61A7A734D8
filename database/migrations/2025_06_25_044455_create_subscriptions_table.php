@@ -6,8 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     use AuditColumnsTrait;
     /**
      * Run the migrations.
@@ -31,15 +30,15 @@ return new class extends Migration
 
             $table->integer('quantity')->default(1);
 
-            $table->timestamp('starts_at')->useCurrent();
-            $table->timestamp('ends_at');
-            $table->timestamp('canceled_at')->nullable();
+            $table->dateTime('starts_at')->useCurrent();
+            $table->dateTime('ends_at')->nullable();
+            $table->dateTime('canceled_at')->nullable();
 
             $table->enum('payment_method', ['stripe', 'apple', 'google']);
             $table->enum('payment_frequency', ['monthly', 'yearly']);
 
             $table->string('status')->index()->default(Subscription::STATUS_ACTIVE);
-            
+
             $table->timestamps();
             $this->addAuditColumns($table);
 
