@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\API;
 
+use Illuminate\Validation\Rule;
 
 class TopicRequest extends BaseRequest
 {
@@ -29,13 +30,27 @@ class TopicRequest extends BaseRequest
     public function stote(): array
     {
         return [
-            'name' => 'required|string|unique:topics,name',
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('topic_translations')->where(
+                    fn($query) => $query->where('language', defaultLang())
+                ),],
         ];
     }
     public function update(): array
     {
+        $topicId = $this->route('topic');
         return [
-            'name' => 'required|string|unique:topics,name,' . $this->route('topic')->id,
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('topic_translations')->where(
+                    fn($query) => $query
+                        ->where('language', defaultLang())
+                        ->where('topic_id', '!=', $topicId)
+                ),
+            ]
         ];
     }
 }

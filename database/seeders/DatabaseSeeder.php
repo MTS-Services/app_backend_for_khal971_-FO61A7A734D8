@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             CourseTranslationSeeder::class,
             UserSeeder::class,
             TopicSeeder::class,
+            TopicTranslationSeeder::class,
             QuestionTypeSeeder::class,
             QuestionSeeder::class,
             QuestionOptionSeeder::class,

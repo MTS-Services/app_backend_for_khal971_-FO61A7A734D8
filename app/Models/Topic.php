@@ -3,16 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Topic extends Model
+class Topic extends BaseModel
 {
     protected $fillable =
         [
             'order_index',
             'course_id',
-            'name',
             'status',
             'is_premium',
 
@@ -89,5 +88,27 @@ class Topic extends Model
     public function scopePremium(Builder $query): Builder
     {
         return $query->where('is_premium', true);
+    }
+    public function translations(): HasMany
+    {
+        return $this->hasMany(TopicTranslation::class, 'topic_id', 'id')->select('topic_id', 'language', 'name');
+    }
+    public function translate($language): SubjectTranslation|null
+    {
+        return $this->translations->where('language', $language)->first();
+    }
+
+    public function scopeTranslation(Builder $query, $lang): Builder
+    {
+        return $query->with([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+
+    public function loadTranslation($lang)
+    {
+        return $this->load([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
     }
 }
