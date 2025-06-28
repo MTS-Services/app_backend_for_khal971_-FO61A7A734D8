@@ -16,8 +16,6 @@ return new class extends Migration {
         Schema::create('question_types', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('order_index')->default(0);
-            $table->string('name')->unique();
-            $table->longText('description')->nullable();
             $table->tinyInteger('status')->index()->default(QuestionType::STATUS_ACTIVE);
             $table->boolean('is_premium')->default(true);
             $table->timestamps();

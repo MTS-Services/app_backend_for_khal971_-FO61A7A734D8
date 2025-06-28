@@ -3,16 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class QuestionType extends Model
+class QuestionType extends BaseModel
 {
     protected $fillable =
         [
             'order_index',
-            'name',
-            'description',
             'status',
             'is_premium',
 
@@ -57,7 +54,7 @@ class QuestionType extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
+         return array_key_exists($this->status, self::getStatusList()) ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -88,5 +85,24 @@ class QuestionType extends Model
     {
         return $query->where('is_premium', true);
     }
-
+    public function translations(): HasMany
+    {
+        return $this->hasMany(QuestionTypeTranslation::class, 'question_type_id', 'id')->select('question_type_id', 'language', 'name', 'description');
+    }
+    public function scopeTranslation(Builder $query, $lang): Builder
+    {
+        return $query->with([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+    public function loadTranslation($lang)
+    {
+        return $this->load([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+    public function translate($language): QuestionTypeTranslation|null
+    {
+        return $this->translations->where('language', $language)->first();
+    }
 }

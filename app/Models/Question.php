@@ -3,23 +3,18 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Question extends Model
+class Question extends BaseModel
 {
     protected $fillable = [
         'order_index',
         'topic_id',
         'question_type_id',
-        'title',
-        'description',
         'file',
-        'points',
-        'time_limit',
-        'explanation',
-        'hints',
-        'tags',
+        // 'hints',
+        // 'tags',
         'status',
         'is_premium',
 
@@ -38,6 +33,8 @@ class Question extends Model
         'is_premium' => 'boolean',
         'topic_id' => 'integer',
         'question_type_id' => 'integer',
+        // 'hints' => 'array',
+        // 'tags' => 'array',
     ];
 
 
@@ -46,11 +43,22 @@ class Question extends Model
         parent::__construct($attributes);
         $this->appends = array_merge(parent::getAppends(), [
             'status_label',
-            // 'status_list',
+            // 'hints',
+            // 'tags',
         ]);
     }
+    /////////////////////////
+    // JSON Attributes
+    /////////////////////////
+    // public function getHintsAttribute($value)
+    // {
+    //     return json_decode($value, true);
+    // }
 
-
+    // public function getTagsAttribute($value)
+    // {
+    //     return json_decode($value, true);
+    // }
 
     /////////////////////////
     // Status Attributes
@@ -68,7 +76,7 @@ class Question extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
+        return array_key_exists($this->status, self::getStatusList()) ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -105,4 +113,28 @@ class Question extends Model
     {
         return $query->where('is_premium', true);
     }
+    public function translations(): HasMany
+    {
+        return $this->hasMany(QuestionTranslation::class, 'question_id', 'id')->select('question_id', 'language', 'title', 'description', 'point', 'time_limit', 'explanation');
+    }
+
+    public function translate($language): QuestionTranslation|null
+    {
+        return $this->translations->where('language', $language)->first();
+    }
+
+    public function scopeTranslation(Builder $query, $lang): Builder
+    {
+        return $query->with([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+
+    public function loadTranslation($lang)
+    {
+        return $this->load([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+
 }
