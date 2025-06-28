@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\API;
 
+use Illuminate\Validation\Rule;
 
 class QuestionTypeRequest extends BaseRequest
 {
@@ -22,18 +23,33 @@ class QuestionTypeRequest extends BaseRequest
     {
         return [
             'description' => 'nullable',
-        ]+ ($this->isMethod('POST') ? $this->store(): $this->update());
+        ] + ($this->isMethod('POST') ? $this->store() : $this->update());
     }
     public function store()
     {
         return [
-            'name' => 'required|string|unique:question_types,name',
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('question_type_translations', 'name')->where(
+                    fn($query) => $query->where('language', defaultLang())
+                ),
+            ],
         ];
     }
     public function update()
     {
+        $questionTypeId = $this->route('question_type');
         return [
-            'name' => 'required|string|unique:question_types,name,' . $this->route('question_type')->id,
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('question_type_translations', 'name')->where(
+                    fn($query) => $query
+                        ->where('language', defaultLang())
+                        ->where('question_type_id', '!=', $questionTypeId)
+                ),
+            ]
         ];
     }
 }
