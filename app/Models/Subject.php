@@ -10,7 +10,7 @@ class Subject extends BaseModel
     protected $fillable =
         [
             'order_index',
-            'name',
+            // 'name',
             'icon',
             'status',
             'is_premium',
@@ -57,7 +57,7 @@ class Subject extends BaseModel
 
     public function getStatusLabelAttribute(): string
     {
-        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
+        return self::getStatusList()[$this->status] ?? 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -98,7 +98,7 @@ class Subject extends BaseModel
 
     public function translations(): HasMany
     {
-        return $this->hasMany(SubjectTranslation::class, 'subject_id', 'id');
+        return $this->hasMany(SubjectTranslation::class, 'subject_id', 'id')->select('subject_id', 'language', 'name');
     }
 
     public function translate($language)

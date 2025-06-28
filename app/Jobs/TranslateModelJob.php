@@ -25,6 +25,7 @@ class TranslateModelJob implements ShouldQueue
         private string $foreignField,
         private int $modelId,
         private array $fieldsToTranslate,
+        private string $sourceLanguage,
     ) {
         // $this->onQueue('translations');
     }
@@ -48,51 +49,55 @@ class TranslateModelJob implements ShouldQueue
             if (!class_exists($this->translationModelClass)) {
                 throw new \Exception("Translation model class not found: {$this->translationModelClass}");
             }
-
+            Log::info("Source Language", [
+                'source_language' => $this->sourceLanguage
+            ]);
             // Get the source model
-            $sourceModel = $this->modelClass::find($this->modelId);
+            $sourceModel = $this->translationModelClass::where($this->foreignField, $this->modelId)->where('language', $this->sourceLanguage)->first();
+            Log::info("Source model found", [
+                'model' => $sourceModel
+            ]);
             if (!$sourceModel) {
                 Log::warning("Model not found for translation", [
-                    'model_class' => $this->modelClass,
+                    'source_model' => $this->modelClass,
+                    'translation_model' => $this->translationModelClass,
                     $this->foreignField => $this->modelId
                 ]);
                 return;
             }
 
             // Get available languages from the helper (allowLangs should return an array of languages)
-            $allowedLanguages = allowLangs(); // e.g., ['en', 'fr', 'es']
+            $allowedLanguages = collect(allowLangs())
+                ->except($this->sourceLanguage)
+                ->values()
+                ->toArray();
 
             if (empty($allowedLanguages)) {
                 throw new \Exception("No allowed languages found");
             }
-
             // Loop through allowed languages or pick a specific language for translation
             foreach ($allowedLanguages as $targetLanguage) {
                 try {
-                    // Check if translation already exists for the current language
-                    $exists = $this->translationModelClass::where($this->foreignField, $this->modelId)
-                        ->where('language', $targetLanguage)
-                        ->exists();
-                    if ($exists) {
-                        Log::info("Translation already exists", [
-                            'model_type' => $this->modelClass,
-                            $this->foreignField => $this->modelId,
-                            'language' => $targetLanguage
-                        ]);
-                        continue; // Skip to the next language
-                    }
-
                     // Perform translations
                     $translatedData = [];
+
                     foreach ($this->fieldsToTranslate as $field) {
                         if (!isset($sourceModel->$field)) {
                             continue;
                         }
 
                         $originalText = $sourceModel->$field;
-                        $translatedText = $deepl->translate($originalText, $targetLanguage, defaultLang());
+                        $translatedText = $deepl->translate($originalText, $targetLanguage, $this->sourceLanguage);
                         $translatedData[$field] = $translatedText;
                     }
+
+                    Log::info("Translation started", [
+                        'model_type' => $this->modelClass,
+                        $this->foreignField => $this->modelId,
+                        'language' => $targetLanguage,
+                        'source_language' => $this->sourceLanguage,
+                        'fields' => $translatedData,
+                    ]);
 
                     if (empty($translatedData)) {
                         Log::warning("No fields to translate", [
@@ -104,16 +109,16 @@ class TranslateModelJob implements ShouldQueue
                     }
 
                     // Save translation
-                    $data = [];
-                    foreach ($translatedData as $field => $value) {
-                        $data[] = [
+                    $this->translationModelClass::updateOrCreate(
+                        [
                             $this->foreignField => $this->modelId,
                             'language' => $targetLanguage,
-                            $field => $value
-                        ];
-                    }
+                        ],
+                        $translatedData
+                    );
 
-                    $this->translationModelClass::insert($data);
+
+
 
                     Log::info("Translation completed successfully", [
                         'model_type' => $this->modelClass,

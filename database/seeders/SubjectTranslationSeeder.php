@@ -15,14 +15,31 @@ class SubjectTranslationSeeder extends Seeder
     {
         SubjectTranslation::create([
             'subject_id' => 1,
+            'language' => 'en',
+            'name' => 'English'
+        ]);
+        SubjectTranslation::create([
+            'subject_id' => 2,
+            'language' => 'en',
+            'name' => 'Mathematics'
+        ]);
+        SubjectTranslation::create([
+            'subject_id' => 3,
+            'language' => 'en',
+            'name' => 'Science'
+        ]);
+        SubjectTranslation::create([
+            'subject_id' => 1,
             'language' => 'es',
             'name' => 'Inglés'
         ]);
+
         SubjectTranslation::create([
             'subject_id' => 2,
             'language' => 'es',
             'name' => 'Matemáticas'
         ]);
+
         SubjectTranslation::create([
             'subject_id' => 3,
             'language' => 'es',

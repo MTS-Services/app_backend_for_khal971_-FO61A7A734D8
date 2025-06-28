@@ -3,6 +3,7 @@
 namespace App\Http\Requests\API;
 
 use App\Http\Requests\API\BaseRequest;
+use Illuminate\Validation\Rule;
 
 class SubjectRequest extends BaseRequest
 {
@@ -24,20 +25,36 @@ class SubjectRequest extends BaseRequest
         return [
             'icon' => 'nullable|file|mimes:jpeg,png,jpg,svg|max:1024',
             'is_premium' => 'required|boolean',
-        ] + ($this->isMethod('POST') ? $this->stote() : $this->update());
+        ] + ($this->isMethod('POST') ? $this->store() : $this->update());
     }
 
-    private function stote(): array
+    private function store(): array
     {
         return [
-            'name' => 'required|string|unique:subjects,name',
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('subject_translations')->where(
+                    fn($query) => $query->where('language', defaultLang())
+                ),
+            ],
         ];
     }
 
     private function update(): array
     {
+        $subjectId = $this->route('subject');
+
         return [
-            'name' => "required|string|unique:subjects,name,{$this->route('subject')}",
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('subject_translations')->where(
+                    fn($query) => $query
+                        ->where('language', defaultLang())
+                        ->where('subject_id', '!=', $subjectId)
+                ),
+            ],
         ];
     }
 }

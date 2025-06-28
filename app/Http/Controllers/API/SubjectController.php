@@ -81,7 +81,6 @@ class SubjectController extends Controller
             if (!$subject) {
                 return sendResponse(false, 'Subject not found', null, Response::HTTP_NOT_FOUND);
             }
-            $subject->load('translations');
             return sendResponse(true, 'Subject fetched successfully', $subject, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Subject Fetch Error: ' . $e->getMessage());

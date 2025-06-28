@@ -18,23 +18,37 @@ class SubjectService
     protected FileService $fileService;
     protected DeeplTranslateService $deepl;
     private User $user;
+    protected string $lang;
+
 
     public function __construct(FileService $fileService, DeeplTranslateService $deepl)
     {
         $this->user = Auth::user();
         $this->fileService = $fileService;
         $this->deepl = $deepl;
+        $this->lang = request()->header('Accept-Language') ?: self::getDefaultLang();
     }
+
+    public static function getDefaultLang(): string
+    {
+        return defaultLang() ?: 'en';
+    }
+
+
     /**
      * Fetch subjects, optionally filtered and ordered.
      *
      * @param  string  $direction asc|desc default: asc
      * @return Builder
      */
-    public function getSubjects(string $orderBy = 'order_index', string $direction = 'asc'): Builder
+    public function getSubjects(string $orderBy = 'order_index', string $direction = 'asc')
     {
 
-        $query = Subject::query();
+        $query = Subject::with([
+            'translations' => function ($q) {
+                $q->where('language', $this->lang);
+            }
+        ]);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->free()->take(12);
         }
@@ -44,11 +58,16 @@ class SubjectService
     public function getSubject($param, string $query_field = 'id'): Subject|null
     {
 
-        $query = Subject::query();
+        $query = Subject::with([
+            'translations' => function ($q) {
+                $q->where('language', $this->lang);
+            }
+        ]);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->free();
         }
-        return $query->where($query_field, $param)->first();
+        $subject = $query->where($query_field, $param)->first();
+        return $subject;
     }
     public function createSubject($data, $file = null): Subject|null
     {
@@ -60,14 +79,14 @@ class SubjectService
 
             return DB::transaction(function () use ($data) {
                 $subject = Subject::create($data);
-                // $transData = [];
-                // foreach (allowLangs() as $lang) {
-                //     $name = $this->deepl->translate($data['name'], $lang);
-                //     $transData[] = ['subject_id' => $subject->id, 'language' => $lang, 'name' => $name];
-                // }
-                // SubjectTranslation::insert($transData);
-                TranslateModelJob::dispatch(Subject::class, SubjectTranslation::class, 'subject_id', $subject->id, ['name']);
-                return $subject->refresh();
+                SubjectTranslation::create(['subject_id' => $subject->id, 'language' => $this->lang, 'name' => $data['name']]);
+                TranslateModelJob::dispatch(Subject::class, SubjectTranslation::class, 'subject_id', $subject->id, ['name'], $this->lang);
+                $subject = $subject->refresh()->load([
+                    'translations' => function ($query) {
+                        $query->where('language', $this->lang);
+                    }
+                ]);
+                return $subject;
             });
         } catch (\Exception $e) {
             Log::error('Subject Create Error: ' . $e->getMessage());
@@ -86,11 +105,14 @@ class SubjectService
             }
             return DB::transaction(function () use ($subject, $data) {
                 $subject->update($data);
-                foreach (allowLangs() as $lang) {
-                    $name = $this->deepl->translate($data['name'], $lang);
-                    SubjectTranslation::updateOrCreate(['subject_id' => $subject->id, 'language' => $lang], ['name' => $name]);
-                }
-                return $subject->refresh();
+                SubjectTranslation::updateOrCreate(['subject_id' => $subject->id, 'language' => $this->lang], ['name' => $data['name']]);
+                TranslateModelJob::dispatch(Subject::class, SubjectTranslation::class, 'subject_id', $subject->id, ['name'], $this->lang);
+                $subject = $subject->refresh()->load([
+                    'translations' => function ($query) {
+                        $query->where('language', $this->lang);
+                    }
+                ]);
+                return $subject;
             });
         } catch (\Exception $e) {
             Log::error('Subject Update Error: ' . $e->getMessage());

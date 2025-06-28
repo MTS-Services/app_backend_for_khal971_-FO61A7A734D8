@@ -15,15 +15,14 @@ class SubjectSeeder extends Seeder
     {
         DB::table('subjects')->insert([
             [
-                'name' => 'English',
                 'is_premium' => false,
             ],
             [
-                'name' => 'Mathematics',
+
                 'is_premium' => false,
             ],
             [
-                'name' => 'Science',
+
                 'is_premium' => false,
             ],
         ]);
