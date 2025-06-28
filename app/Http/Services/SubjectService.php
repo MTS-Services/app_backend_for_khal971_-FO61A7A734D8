@@ -16,16 +16,14 @@ use Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolve
 class SubjectService
 {
     protected FileService $fileService;
-    protected DeeplTranslateService $deepl;
     private User $user;
     protected string $lang;
 
 
-    public function __construct(FileService $fileService, DeeplTranslateService $deepl)
+    public function __construct(FileService $fileService)
     {
         $this->user = Auth::user();
         $this->fileService = $fileService;
-        $this->deepl = $deepl;
         $this->lang = request()->header('Accept-Language') ?: self::getDefaultLang();
     }
 
@@ -44,11 +42,7 @@ class SubjectService
     public function getSubjects(string $orderBy = 'order_index', string $direction = 'asc')
     {
 
-        $query = Subject::with([
-            'translations' => function ($q) {
-                $q->where('language', $this->lang);
-            }
-        ]);
+        $query = Subject::translation($this->lang);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->free()->take(12);
         }
@@ -58,11 +52,7 @@ class SubjectService
     public function getSubject($param, string $query_field = 'id'): Subject|null
     {
 
-        $query = Subject::with([
-            'translations' => function ($q) {
-                $q->where('language', $this->lang);
-            }
-        ]);
+        $query = Subject::translation($this->lang);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->free();
         }
@@ -81,11 +71,7 @@ class SubjectService
                 $subject = Subject::create($data);
                 SubjectTranslation::create(['subject_id' => $subject->id, 'language' => $this->lang, 'name' => $data['name']]);
                 TranslateModelJob::dispatch(Subject::class, SubjectTranslation::class, 'subject_id', $subject->id, ['name'], $this->lang);
-                $subject = $subject->refresh()->load([
-                    'translations' => function ($query) {
-                        $query->where('language', $this->lang);
-                    }
-                ]);
+                $subject = $subject->refresh()->loadTranslation($this->lang);
                 return $subject;
             });
         } catch (\Exception $e) {
@@ -107,11 +93,7 @@ class SubjectService
                 $subject->update($data);
                 SubjectTranslation::updateOrCreate(['subject_id' => $subject->id, 'language' => $this->lang], ['name' => $data['name']]);
                 TranslateModelJob::dispatch(Subject::class, SubjectTranslation::class, 'subject_id', $subject->id, ['name'], $this->lang);
-                $subject = $subject->refresh()->load([
-                    'translations' => function ($query) {
-                        $query->where('language', $this->lang);
-                    }
-                ]);
+                $subject = $subject->refresh()->loadTranslation($this->lang);
                 return $subject;
             });
         } catch (\Exception $e) {
