@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Question extends BaseModel
 {
@@ -11,14 +12,9 @@ class Question extends BaseModel
         'order_index',
         'topic_id',
         'question_type_id',
-        'title',
-        'description',
         'file',
-        'points',
-        'time_limit',
-        'explanation',
-        'hints',
-        'tags',
+        // 'hints',
+        // 'tags',
         'status',
         'is_premium',
 
@@ -117,4 +113,28 @@ class Question extends BaseModel
     {
         return $query->where('is_premium', true);
     }
+    public function translations(): HasMany
+    {
+        return $this->hasMany(QuestionTranslation::class, 'question_id', 'id')->select('question_id', 'language', 'title', 'description', 'point', 'time_limit', 'explanation');
+    }
+
+    public function translate($language): QuestionTranslation|null
+    {
+        return $this->translations->where('language', $language)->first();
+    }
+
+    public function scopeTranslation(Builder $query, $lang): Builder
+    {
+        return $query->with([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+
+    public function loadTranslation($lang)
+    {
+        return $this->load([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+
 }

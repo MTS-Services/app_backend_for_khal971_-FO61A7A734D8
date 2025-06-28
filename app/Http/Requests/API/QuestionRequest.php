@@ -26,7 +26,7 @@ class QuestionRequest extends BaseRequest
             'title' => 'required|string',
             'description' => 'nullable|string',
             'file' => 'nullable|file|mimes:jpeg,png,jpg,svg|max:1024',
-            'points' => 'nullable|integer',
+            'point' => 'nullable|integer',
             'time_limit' => 'nullable|integer',
             'explanation' => 'nullable|string',
             'hints' => 'nullable|string',

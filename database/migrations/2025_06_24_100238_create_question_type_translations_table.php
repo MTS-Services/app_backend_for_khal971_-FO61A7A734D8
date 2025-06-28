@@ -21,7 +21,6 @@ return new class extends Migration
             
             $table->foreign('question_type_id')->references('id')->on('question_types')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unique(['question_type_id', 'language']);
-            $table->index(['language', 'name']);
         });
     }
 

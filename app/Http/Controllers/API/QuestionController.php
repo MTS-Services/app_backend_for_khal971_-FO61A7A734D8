@@ -54,6 +54,9 @@ class QuestionController extends Controller
         try{
             $validated = $request->validated();
             $question = $this->questionService->createQuestion($validated);
+            if (!$question) {
+                return sendResponse(false, 'Failed to create question', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
             return sendResponse(true, 'Question created successfully', $question, Response::HTTP_CREATED);
         } catch (\Exception $e) {
             Log::error('Question Create Error: ' . $e->getMessage());

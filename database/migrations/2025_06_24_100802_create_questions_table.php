@@ -18,12 +18,7 @@ return new class extends Migration {
             $table->bigInteger('order_index')->default(0);
             $table->unsignedBigInteger('topic_id')->nullable()->index();
             $table->unsignedBigInteger('question_type_id')->nullable()->index();
-            $table->string('title', 500);
-            $table->text('description')->nullable();
             $table->string('file')->nullable();
-            $table->integer('points')->default(1);
-            $table->integer('time_limit')->nullable();
-            $table->text('explanation')->nullable();
             // $table->text('hints')->nullable();
             // $table->text('tags')->nullable();
             $table->tinyInteger('status')->index()->default(Question::STATUS_ACTIVE);
