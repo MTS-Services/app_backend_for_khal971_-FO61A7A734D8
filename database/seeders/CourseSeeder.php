@@ -13,20 +13,16 @@ class CourseSeeder extends Seeder
      */
     public function run(): void
     {
-        $now = Carbon::now();
 
         DB::table('courses')->insert([
             [
                 'subject_id' => 1,
-                'name' => 'Algebra Basics',
             ],
             [
                 'subject_id' => 1,
-                'name' => 'Geometry Fundamentals',
             ],
             [
                 'subject_id' => 2,
-                'name' => 'Introduction to Physics',
             ],
         ]);
     }

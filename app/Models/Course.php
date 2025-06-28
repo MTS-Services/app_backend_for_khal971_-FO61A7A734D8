@@ -5,21 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Course extends Model
+class Course extends BaseModel
 {
     protected $fillable =
-        [
-            'order_index',
-            'subject_id',
-            'name',
-            'status',
-            'is_premium',
+    [
+        'order_index',
+        'subject_id',
+        // 'name',
+        'status',
+        'is_premium',
 
-            'created_by',
-            'updated_by'
+        'created_by',
+        'updated_by'
 
-        ];
+    ];
 
     /**
      * Get the attributes that should be cast.
@@ -67,7 +68,7 @@ class Course extends Model
         return self::getStatusList();
     }
 
-
+    // Relations
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class, 'subject_id', 'id')->withDefault();
@@ -92,4 +93,28 @@ class Course extends Model
     {
         return $query->where('is_premium', true);
     }
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(CourseTranslation::class, 'course_id', 'id')->select('course_id', 'language', 'name');
+    }
+     public function translate($language): CourseTranslation|null
+    {
+        return $this->translations->where('language', $language)->first();
+    }
+
+    public function scopeTranslation(Builder $query, $lang): Builder
+    {
+        return $query->with([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+
+    public function loadTranslation($lang)
+    {
+        return $this->load([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+
 }

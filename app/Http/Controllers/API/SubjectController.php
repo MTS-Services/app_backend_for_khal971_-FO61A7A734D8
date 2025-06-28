@@ -4,14 +4,9 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\SubjectRequest;
-use App\Http\Services\FileService;
 use App\Http\Services\SubjectService;
-use App\Jobs\TestQueueJob;
-use App\Jobs\TranslateModelJob;
 use App\Models\Subject;
-use App\Models\SubjectTranslation;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
