@@ -62,6 +62,16 @@ function storage_url($urlOrArray)
     }
 }
 
+function allowLangs(): array
+{
+    return ['es', 'ar', 'it', 'en'];
+}
+
+function defaultLang(): string
+{
+    return 'en';
+}
+
 
 
 
