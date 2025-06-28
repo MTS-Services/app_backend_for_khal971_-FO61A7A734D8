@@ -35,4 +35,8 @@ return [
         ],
     ],
 
+    'deepl' => [
+        'api_key' => env('DEEPL_API_KEY'),
+        'endpoint' => 'https://api-free.deepl.com/v2/translate', // or api.deepl.com if using the paid version
+    ],
 ];
