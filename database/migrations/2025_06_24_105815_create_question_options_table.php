@@ -17,9 +17,7 @@ return new class extends Migration {
             $table->id();
             $table->bigInteger('order_index')->default(0);
             $table->unsignedBigInteger('question_id')->nullable()->index();
-            $table->text('option_text');
             $table->boolean('is_correct')->default(false);
-            $table->longText('explanation')->nullable();
             $table->tinyInteger('status')->index()->default(QuestionOption::STATUS_ACTIVE);
             $table->timestamps();
 

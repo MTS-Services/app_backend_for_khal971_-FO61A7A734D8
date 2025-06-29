@@ -50,6 +50,7 @@ class TopicController extends Controller
      */
     public function show(Topic $topic): JsonResponse
     {
+        dd($topic);
         try {
             $topic = $this->topicService->getTopic($topic->id);
             if (!$topic) {
