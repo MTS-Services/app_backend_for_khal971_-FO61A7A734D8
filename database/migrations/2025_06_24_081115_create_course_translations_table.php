@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('course_id');
             $table->string('language', 2)->index();  // Language code (e.g., 'en', 'fr', 'es')
-            $table->string('name');
+            $table->string('name')->index()->unique();
             $table->timestamps();
 
             $table->foreign('course_id')->references('id')->on('courses')->cascadeOnDelete()->cascadeOnUpdate();

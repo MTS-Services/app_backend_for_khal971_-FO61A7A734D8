@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -13,9 +12,7 @@ class Course extends BaseModel
     [
         'order_index',
         'subject_id',
-        // 'name',
         'status',
-        'is_premium',
 
         'created_by',
         'updated_by'
@@ -29,7 +26,6 @@ class Course extends BaseModel
      */
     protected $casts = [
         'status' => 'integer',
-        'is_premium' => 'boolean',
     ];
 
 
@@ -84,15 +80,15 @@ class Course extends BaseModel
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
-    public function scopeFree(Builder $query): Builder
-    {
-        return $query->where('is_premium', false);
-    }
+    // public function scopeFree(Builder $query): Builder
+    // {
+    //     return $query->where('is_premium', false);
+    // }
 
-    public function scopePremium(Builder $query): Builder
-    {
-        return $query->where('is_premium', true);
-    }
+    // public function scopePremium(Builder $query): Builder
+    // {
+    //     return $query->where('is_premium', true);
+    // }
 
     public function translations(): HasMany
     {

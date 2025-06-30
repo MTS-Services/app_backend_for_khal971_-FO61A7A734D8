@@ -18,7 +18,6 @@ return new class extends Migration {
             $table->bigInteger('order_index')->default(0);
             $table->unsignedBigInteger('subject_id')->nullable()->index();
             $table->tinyInteger('status')->index()->default(Course::STATUS_ACTIVE);
-            $table->boolean('is_premium')->default(true);
             $table->timestamps();
 
             $this->addAuditColumns($table);
