@@ -6,6 +6,7 @@ use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\SubjectController;
 use App\Http\Controllers\API\TopicController;
+use App\Http\Controllers\API\UserSubjectController;
 
 Route::controller(UserController::class)->group(function () {
     Route::get('user', 'user')->name('user');
@@ -15,6 +16,9 @@ Route::controller(UserController::class)->group(function () {
 
 Route::apiResources(['subjects' => SubjectController::class]);
 Route::get('subjects/status/{subject}', [SubjectController::class, 'toggleStatus'])->name('subjects.toggleStatus');
+
+Route::get('user-subjects', [UserSubjectController::class, 'userSubjects'])->name('user-subjects');
+Route::post('user-subjects', [UserSubjectController::class, 'store'])->name('user-subjects.store');
 
 
 Route::apiResource('courses', CourseController::class);
