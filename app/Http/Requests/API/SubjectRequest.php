@@ -24,7 +24,6 @@ class SubjectRequest extends BaseRequest
     {
         return [
             'icon' => 'nullable|file|mimes:jpeg,png,jpg,svg|max:1024',
-            'is_premium' => 'required|boolean',
         ] + ($this->isMethod('POST') ? $this->store() : $this->update());
     }
 

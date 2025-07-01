@@ -13,7 +13,6 @@ class Topic extends BaseModel
             'order_index',
             'course_id',
             'status',
-            'is_premium',
 
             'created_by',
             'updated_by'
@@ -28,7 +27,6 @@ class Topic extends BaseModel
     protected $casts = [
         'status' => 'integer',
         'course_id' => 'integer',
-        'is_premium' => 'boolean',
     ];
 
     public function __construct(array $attributes = [])
@@ -80,15 +78,15 @@ class Topic extends BaseModel
     {
         return $query->where('status', self::STATUS_INACTIVE);
     }
-    public function scopeFree(Builder $query): Builder
-    {
-        return $query->where('is_premium', false);
-    }
+    // public function scopeFree(Builder $query): Builder
+    // {
+    //     return $query->where('is_premium', false);
+    // }
 
-    public function scopePremium(Builder $query): Builder
-    {
-        return $query->where('is_premium', true);
-    }
+    // public function scopePremium(Builder $query): Builder
+    // {
+    //     return $query->where('is_premium', true);
+    // }
     public function translations(): HasMany
     {
         return $this->hasMany(TopicTranslation::class, 'topic_id', 'id')->select('topic_id', 'language', 'name');
