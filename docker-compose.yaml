@@ -5,6 +5,7 @@ services:
         container_name: laravel_app
         volumes:
             - .:/var/www
+            - ./php.ini:/usr/local/etc/php/conf.d/custom.ini
         environment:
             APP_ENV: local
             DB_HOST: db
