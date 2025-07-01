@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\QuestionDetails;
 use Illuminate\Http\Request;
 
 class QuestionDetailsController extends Controller
@@ -34,9 +35,9 @@ class QuestionDetailsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(QuestionDetails $questionDetails)
     {
-        //
+        dd($questionDetails);
     }
 
     /**

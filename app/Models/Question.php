@@ -10,10 +10,7 @@ class Question extends BaseModel
 {
     protected $fillable = [
         'order_index',
-        'topic_id',
-        'file',
-        // 'hints',
-        // 'tags',
+        'question_details_id',
         'status',
 
         'created_by',
@@ -89,11 +86,6 @@ class Question extends BaseModel
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
-    // Relationships
-    public function topic(): BelongsTo
-    {
-        return $this->belongsTo(Topic::class, 'topic_id', 'id')->withDefault();
-    }
 
     // public function scopeFree(Builder $query): Builder
     // {
@@ -106,7 +98,7 @@ class Question extends BaseModel
     // }
     public function translations(): HasMany
     {
-        return $this->hasMany(QuestionTranslation::class, 'question_id', 'id')->select('question_id', 'language', 'title', 'description', 'point', 'time_limit', 'explanation');
+        return $this->hasMany(QuestionTranslation::class, 'question_id', 'id')->select('question_id', 'language', 'title', 'answer');
     }
 
     public function translate($language): QuestionTranslation|null

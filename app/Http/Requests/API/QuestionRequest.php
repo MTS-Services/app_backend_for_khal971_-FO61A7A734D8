@@ -21,15 +21,9 @@ class QuestionRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'topic_id' => 'required|exists:topics,id',
+            'question_details_id' => 'required|exists:question_details,id',
             'title' => 'required|string',
-            'description' => 'nullable|string',
-            'file' => 'nullable|file|mimes:jpeg,png,jpg,svg|max:1024',
-            'point' => 'nullable|integer',
-            'time_limit' => 'nullable|integer',
-            'explanation' => 'nullable|string',
-            // 'hints' => 'nullable|string',
-            // 'tags' => 'nullable|string',
+            'answer' => 'required|string', 
         ]+($this->isMethod('POST') ? $this->stote() : $this->update());
     }
     public function stote(): array

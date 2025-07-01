@@ -52,12 +52,9 @@ class QuestionService
                     'question_id' => $question->id,
                     'language' => $this->lang,
                     'title' => $data['title'] ?? '',
-                    'description' => $data['description'] ?? '',
-                    'point' => $data['point'] ?? 1,
-                    'time_limit' => $data['time_limit'] ?? null,
-                    'explanation' => $data['explanation'] ?? ''
+                    'answer' => $data['answer'] ?? ''
                 ]);
-                TranslateModelJob::dispatch(Question::class, QuestionTranslation::class, 'question_id', $question->id, ['title', 'description', 'point', 'time_limit', 'explanation'], $this->lang);
+                TranslateModelJob::dispatch(Question::class, QuestionTranslation::class, 'question_id', $question->id, ['title', 'answer'], $this->lang);
                 $question = $question->refresh()->loadTranslation($this->lang);
                 return $question;
             });
@@ -75,14 +72,11 @@ class QuestionService
                 ['question_id' => $question->id, 'language' => $this->lang], // condition
                 [
                     'title' => $data['title'] ?? '',
-                    'description' => $data['description'] ?? '',
-                    'point' => $data['point'] ?? 1,
-                    'time_limit' => $data['time_limit'] ?? null,
-                    'explanation' => $data['explanation'] ?? ''
+                    'answer' => $data['answer'] ?? '',
                 ]
             );
 
-            TranslateModelJob::dispatch(Question::class, QuestionTranslation::class, 'question_id', $question->id, ['title', 'description', 'point', 'time_limit', 'explanation'], $this->lang);
+            TranslateModelJob::dispatch(Question::class, QuestionTranslation::class, 'question_id', $question->id, ['title', 'answer'], $this->lang);
             $question = $question->refresh()->loadTranslation($this->lang);
             return $question;
         } catch (\Exception $e) {

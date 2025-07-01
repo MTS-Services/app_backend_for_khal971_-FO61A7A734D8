@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class QuestionDetails extends BaseModel
@@ -18,9 +19,9 @@ class QuestionDetails extends BaseModel
         'updated_by',
     ];
 
-    public function topic()
+    public function topic(): BelongsTo
     {
-        return $this->belongsTo(Topic::class);
+        return $this->belongsTo(Topic::class, 'topic_id', 'id')->withDefault();
     }
 
     
