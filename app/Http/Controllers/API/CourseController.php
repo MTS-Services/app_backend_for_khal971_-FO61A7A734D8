@@ -25,7 +25,7 @@ class CourseController extends Controller
     public function index(): JsonResponse
     {
         try {
-            $courses = $this->courseService->getCourses()->get();
+            $courses = $this->courseService->getCourses()->with('subject')->get();
             return sendResponse(true, 'Course list fetched successfully', $courses, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Course List Error: ' . $e->getMessage());
@@ -63,7 +63,7 @@ class CourseController extends Controller
     public function show(Course $course): JsonResponse
     {
         try {
-            $Course = $this->courseService->getCourse($course->id);
+            $Course = $this->courseService->getCourse($course->id)->load('subject');
             if (!$Course) {
                 return sendResponse(false, 'Course not found', null, Response::HTTP_NOT_FOUND);
             }

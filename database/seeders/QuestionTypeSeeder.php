@@ -13,17 +13,12 @@ class QuestionTypeSeeder extends Seeder
     public function run(): void
     {
         DB::table('question_types')->insert([
-            [
-                'name' => 'mcq',
-                'description' => 'Multiple Choice Questions',
+            [  
             ],
             [
-                'name' => 'true_false',
-                'description' => 'True or False Questions',
+                
             ],
             [
-                'name' => 'short_answer',
-                'description' => 'Short Answer Questions',
             ],
         ]);
     }

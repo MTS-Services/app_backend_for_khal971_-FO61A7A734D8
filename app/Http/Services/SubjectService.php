@@ -40,7 +40,6 @@ class SubjectService
      */
     public function getSubjects(string $orderBy = 'order_index', string $direction = 'asc')
     {
-
         $query = Subject::translation($this->lang);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->free()->take(12);

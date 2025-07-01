@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\PlanController;
+use App\Http\Controllers\API\QuestionController;
+use App\Http\Controllers\API\QuestionOptionController;
+use App\Http\Controllers\API\QuestionTypeController;
 use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\SubjectController;
@@ -32,3 +35,13 @@ Route::prefix('plans')->group(function () {
     Route::get('/{id}', [PlanController::class, 'show']);
 });
 
+Route::get('topics/status/{topic}', [TopicController::class, 'toggleStatus'])->name('topics.toggleStatus');
+
+Route::apiResource('question-types', QuestionTypeController::class);
+Route::get('question-types/status/{question_type}', [QuestionTypeController::class, 'toggleStatus'])->name('question-types.toggleStatus');
+
+Route::apiResource('questions', QuestionController::class);
+Route::get('questions/status/{question}', [QuestionController::class, 'toggoleStatus'])->name('questions.toggleStatus');
+
+Route::apiResource('question-options', QuestionOptionController::class);
+Route::get('question-options/status/{question_option}', [QuestionOptionController::class, 'toggleStatus'])->name('question-options.toggleStatus');

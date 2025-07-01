@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,10 +19,16 @@ class DatabaseSeeder extends Seeder
             SubjectTranslationSeeder::class,
             UserSubjectSeeder::class,
             CourseSeeder::class,
+            CourseTranslationSeeder::class,
+            UserSeeder::class,
             TopicSeeder::class,
+            TopicTranslationSeeder::class,
             QuestionTypeSeeder::class,
+            QuestionTypeTranslationSeeder::class,
             QuestionSeeder::class,
+            QuestionTranslationSeeder::class,
             QuestionOptionSeeder::class,
+            QuestionOptionTranslationSeeder::class,
             PlanSeeder::class,
             PlanFeatureSeeder::class,
             SubscriptionSeeder::class,

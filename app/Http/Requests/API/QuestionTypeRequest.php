@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests\API;
 
-use App\Http\Requests\API\BaseRequest;
 use Illuminate\Validation\Rule;
 
-class SubjectRequest extends BaseRequest
+class QuestionTypeRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,37 +22,34 @@ class SubjectRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'icon' => 'nullable|file|mimes:jpeg,png,jpg,svg|max:1024',
+            'description' => 'nullable',
         ] + ($this->isMethod('POST') ? $this->store() : $this->update());
     }
-
-    private function store(): array
+    public function store()
     {
         return [
             'name' => [
                 'required',
                 'string',
-                Rule::unique('subject_translations')->where(
+                Rule::unique('question_type_translations', 'name')->where(
                     fn($query) => $query->where('language', defaultLang())
                 ),
             ],
         ];
     }
-
-    private function update(): array
+    public function update()
     {
-        $subjectId = $this->route('subject');
-
+        $questionTypeId = $this->route('question_type');
         return [
             'name' => [
                 'required',
                 'string',
-                Rule::unique('subject_translations')->where(
+                Rule::unique('question_type_translations', 'name')->where(
                     fn($query) => $query
                         ->where('language', defaultLang())
-                        ->where('subject_id', '!=', $subjectId)
+                        ->where('question_type_id', '!=', $questionTypeId)
                 ),
-            ],
+            ]
         ];
     }
 }

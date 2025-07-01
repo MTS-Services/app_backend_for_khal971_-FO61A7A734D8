@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\API;
 
+use Illuminate\Validation\Rule;
+
 class CourseRequest extends BaseRequest
 {
     /**
@@ -21,19 +23,35 @@ class CourseRequest extends BaseRequest
     {
         return [
             'subject_id' => 'required|exists:subjects,id',
-            'name' => 'required|string|max:255',
-            'is_premium' => 'nullable|boolean',
-        ]+($this->isMethod('POST') ? $this->stote() : $this->update());
+        ]+($this->isMethod('POST') ? $this->store() : $this->update());
     }
-    private function stote(): array
+    private function store(): array
     {
         return [
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('course_translations')->where(
+                    fn($query) => $query->where('language', defaultLang())
+                ),
+            ],
         ];
     }
 
     private function update(): array
     {
+        $courese = $this->route('course');
+
         return [
+            'name' => [
+                'required',
+                'string',
+                Rule::unique('course_translations')->where(
+                    fn($query) => $query
+                        ->where('language', defaultLang())
+                        ->where('course_id', '!=', $courese->id)
+                ),
+            ],
         ];
     }
 }

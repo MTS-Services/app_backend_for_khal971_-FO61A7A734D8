@@ -3,18 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Topic extends Model
+class Topic extends BaseModel
 {
     protected $fillable =
         [
             'order_index',
             'course_id',
-            'name',
             'status',
-            'is_premium',
 
             'created_by',
             'updated_by'
@@ -29,7 +27,6 @@ class Topic extends Model
     protected $casts = [
         'status' => 'integer',
         'course_id' => 'integer',
-        'is_premium' => 'boolean',
     ];
 
     public function __construct(array $attributes = [])
@@ -40,8 +37,6 @@ class Topic extends Model
             // 'status_list',
         ]);
     }
-
-
 
     /////////////////////////
     // Status Attributes
@@ -59,7 +54,7 @@ class Topic extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
+        return array_key_exists($this->status, self::getStatusList()) ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -83,13 +78,35 @@ class Topic extends Model
     {
         return $query->where('status', self::STATUS_INACTIVE);
     }
-    public function scopeFree(Builder $query): Builder
+    // public function scopeFree(Builder $query): Builder
+    // {
+    //     return $query->where('is_premium', false);
+    // }
+
+    // public function scopePremium(Builder $query): Builder
+    // {
+    //     return $query->where('is_premium', true);
+    // }
+    public function translations(): HasMany
     {
-        return $query->where('is_premium', false);
+        return $this->hasMany(TopicTranslation::class, 'topic_id', 'id')->select('topic_id', 'language', 'name');
+    }
+    public function translate($language): SubjectTranslation|null
+    {
+        return $this->translations->where('language', $language)->first();
     }
 
-    public function scopePremium(Builder $query): Builder
+    public function scopeTranslation(Builder $query, $lang): Builder
     {
-        return $query->where('is_premium', true);
+        return $query->with([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+
+    public function loadTranslation($lang)
+    {
+        return $this->load([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
     }
 }
