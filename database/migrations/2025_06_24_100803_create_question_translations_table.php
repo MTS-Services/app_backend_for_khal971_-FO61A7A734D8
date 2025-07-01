@@ -16,10 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('question_id')->index();
             $table->string('language', 2)->index();
             $table->string('title', 500);
-            $table->text('description')->nullable();
-            $table->integer('point')->default(1);
-            $table->integer('time_limit')->nullable();
-            $table->text('explanation')->nullable();
+            $table->longText('answer')->nullable();
             $table->timestamps();
 
             $table->foreign('question_id')->references('id')->on('questions')->cascadeOnDelete()->cascadeOnUpdate();

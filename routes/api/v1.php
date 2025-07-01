@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\PlanController;
 use App\Http\Controllers\API\QuestionController;
+use App\Http\Controllers\API\QuestionDetailsController;
 use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\SubjectController;
@@ -37,4 +38,7 @@ Route::get('topics/status/{topic}', [TopicController::class, 'toggleStatus'])->n
 
 Route::apiResource('questions', QuestionController::class);
 Route::get('questions/status/{question}', [QuestionController::class, 'toggoleStatus'])->name('questions.toggleStatus');
+
+Route::apiResource('question-details', QuestionDetailsController::class);
+Route::get('question-details/status/{question-detail}', [QuestionDetailsController::class, 'toggleStatus'])->name('question-details.toggleStatus');
 
