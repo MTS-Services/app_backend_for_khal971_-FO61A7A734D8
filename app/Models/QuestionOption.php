@@ -3,23 +3,21 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class QuestionOption extends Model
+class QuestionOption extends BaseModel
 {
     protected $fillable =
-        [
-            'order_index',
-            'question_id',
-            'option_text',
-            'is_correct',
-            'explanation',
-            'status',
+    [
+        'order_index',
+        'question_id',
+        'is_correct',
+        'status',
 
-            'created_by',
-            'updated_by',
-        ];
+        'created_by',
+        'updated_by',
+    ];
 
     /**
      * Get the attributes that should be cast.
@@ -60,7 +58,7 @@ class QuestionOption extends Model
 
     public function getStatusLabelAttribute(): string
     {
-        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
+        return array_key_exists($this->status, self::getStatusList()) ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
     public function getStatusListAttribute(): array
@@ -90,5 +88,29 @@ class QuestionOption extends Model
     public function scopeIncorrect(Builder $query): Builder
     {
         return $query->where('is_correct', false);
+    }
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(QuestionOptionTranslation::class, 'question_option_id', 'id')->select('question_option_id', 'language', 'option_text', 'explanation');
+    }
+
+    public function translate($language): QuestionOptionTranslation|null
+    {
+        return $this->translations->where('language', $language)->first();
+    }
+
+    public function scopeTranslation(Builder $query, $lang): Builder
+    {
+        return $query->with([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+
+    public function loadTranslation($lang)
+    {
+        return $this->load([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
     }
 }
