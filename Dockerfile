@@ -1,29 +1,33 @@
 FROM php:8.2-fpm
 
-# Install required system packages and PHP extensions
+# 1️⃣ Install PHP extensions
 RUN apt-get update && apt-get install -y \
     libzip-dev zip unzip \
     libpng-dev libjpeg-dev libfreetype6-dev \
     libonig-dev libxml2-dev libcurl4-openssl-dev \
-    libsodium-dev \
+    libsodium-dev git \
     && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd zip sodium
 
-# Install Composer
+# 2️⃣ Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set working directory
+# 3️⃣ Set working directory
 WORKDIR /var/www
 
-# Copy Laravel source code and php.ini
+# 4️⃣ Copy app source and php.ini
 COPY . .
 COPY php.ini /usr/local/etc/php/conf.d/custom.ini
 
-# Clear composer cache and install dependencies with full logging
-RUN composer clear-cache && composer install --no-dev --optimize-autoloader -vvv || cat storage/logs/laravel.log
-
-# Set file permissions
+# 5️⃣ Ensure permissions before composer install
 RUN chown -R www-data:www-data /var/www \
     && chmod -R 775 storage bootstrap/cache
 
-# Start PHP-FPM
+# 6️⃣ Install dependencies (and show logs on error)
+RUN composer install --no-dev --optimize-autoloader -vvv \
+    || (echo "COMPOSER INSTALL FAILED" && ls -la && cat /var/www/storage/logs/laravel.log || true)
+
+# 7️⃣ Final permissions (safety)
+RUN chown -R www-data:www-data /var/www
+
+# 8️⃣ Start PHP-FPM
 CMD ["php-fpm"]
