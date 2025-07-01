@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuestionRequest;
 use App\Http\Services\QuestionService;
-use App\Http\Services\QuestionTypeService;
 use App\Http\Services\TopicService;
 use App\Models\Question;
 use Illuminate\Http\JsonResponse;
@@ -15,13 +14,11 @@ use Symfony\Component\HttpFoundation\Response;
 class QuestionController extends Controller
 {
     protected QuestionService $questionService;
-    protected QuestionTypeService $questionTypeService;
     protected TopicService $topicService;
 
-    public function __construct(QuestionService $questionService, QuestionTypeService $questionTypeService, TopicService $topicService)
+    public function __construct(QuestionService $questionService, TopicService $topicService)
     {
         $this->questionService = $questionService;
-        $this->questionTypeService = $questionTypeService;
         $this->topicService = $topicService;
     }
     /**
@@ -30,7 +27,7 @@ class QuestionController extends Controller
     public function index(): JsonResponse
     {
         try{
-            $questions = $this->questionService->getQuestions()->with('topic.course.subject', 'questionType')->get();
+            $questions = $this->questionService->getQuestions()->with('topic.course.subject')->get();
             return sendResponse(true, 'Question list fetched successfully', $questions, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question List Error: ' . $e->getMessage());
@@ -70,7 +67,7 @@ class QuestionController extends Controller
     public function show(Question $question): JsonResponse
     {
         try{
-            $question = $this->questionService->getQuestion($question->id)->load('topic.course.subject', 'questionType');
+            $question = $this->questionService->getQuestion($question->id)->load('topic.course.subject');
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
             }

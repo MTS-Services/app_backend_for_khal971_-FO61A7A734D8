@@ -29,7 +29,7 @@ class QuestionService
     public function getQuestions(string $orderBy = 'order_index', string $direction = 'asc'): Builder
     {
         $query = Question::translation($this->lang);
-        if (!($this->user->is_premium || $this->user->is_admin)) {
+        if (!($this->user->is_admin)) {
             $query->free()->take(12);
         }
         return $query->orderBy($orderBy, $direction)->latest();
@@ -37,14 +37,13 @@ class QuestionService
     public function getQuestion($param, string $query_field = 'id'): Question|null
     {
         $query = Question::translation($this->lang);
-        if (!($this->user->is_premium || $this->user->is_admin)) {
+        if (!($this->user->is_admin)) {
             $query->free()->take(12);
         }
         return $query->where($query_field, $param)->first();
     }
     public function createQuestion($data): Question|null
     {
-        // protected $fillable = ['question_id', 'language', 'title', 'description', 'point', 'time_limit', 'explanation'];
         try {
             $data['created_by'] = $this->user->id;
             return DB::transaction(function () use ($data) {

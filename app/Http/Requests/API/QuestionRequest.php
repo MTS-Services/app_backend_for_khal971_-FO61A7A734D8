@@ -22,16 +22,14 @@ class QuestionRequest extends BaseRequest
     {
         return [
             'topic_id' => 'required|exists:topics,id',
-            'question_type_id' => 'required|exists:question_types,id',
             'title' => 'required|string',
             'description' => 'nullable|string',
             'file' => 'nullable|file|mimes:jpeg,png,jpg,svg|max:1024',
             'point' => 'nullable|integer',
             'time_limit' => 'nullable|integer',
             'explanation' => 'nullable|string',
-            'hints' => 'nullable|string',
-            'tags' => 'nullable|string',
-            'is_premium' => 'nullable|boolean',
+            // 'hints' => 'nullable|string',
+            // 'tags' => 'nullable|string',
         ]+($this->isMethod('POST') ? $this->stote() : $this->update());
     }
     public function stote(): array

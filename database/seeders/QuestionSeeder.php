@@ -16,11 +16,9 @@ class QuestionSeeder extends Seeder
         DB::table('questions')->insert([
             [
                 'topic_id' => 1,
-                'question_type_id' => 1,
             ],
             [
                 'topic_id' => 1,
-                'question_type_id' => 2,
             ]
         ]);
     }

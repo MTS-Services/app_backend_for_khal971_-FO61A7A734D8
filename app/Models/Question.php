@@ -11,12 +11,10 @@ class Question extends BaseModel
     protected $fillable = [
         'order_index',
         'topic_id',
-        'question_type_id',
         'file',
         // 'hints',
         // 'tags',
         'status',
-        'is_premium',
 
         'created_by',
         'updated_by',
@@ -30,9 +28,7 @@ class Question extends BaseModel
      */
     protected $casts = [
         'status' => 'integer',
-        'is_premium' => 'boolean',
         'topic_id' => 'integer',
-        'question_type_id' => 'integer',
         // 'hints' => 'array',
         // 'tags' => 'array',
     ];
@@ -99,20 +95,15 @@ class Question extends BaseModel
         return $this->belongsTo(Topic::class, 'topic_id', 'id')->withDefault();
     }
 
-    public function questionType(): BelongsTo
-    {
-        return $this->belongsTo(QuestionType::class, 'question_type_id', 'id')->withDefault();
-    }
+    // public function scopeFree(Builder $query): Builder
+    // {
+    //     return $query->where('is_premium', false);
+    // }
 
-    public function scopeFree(Builder $query): Builder
-    {
-        return $query->where('is_premium', false);
-    }
-
-    public function scopePremium(Builder $query): Builder
-    {
-        return $query->where('is_premium', true);
-    }
+    // public function scopePremium(Builder $query): Builder
+    // {
+    //     return $query->where('is_premium', true);
+    // }
     public function translations(): HasMany
     {
         return $this->hasMany(QuestionTranslation::class, 'question_id', 'id')->select('question_id', 'language', 'title', 'description', 'point', 'time_limit', 'explanation');
