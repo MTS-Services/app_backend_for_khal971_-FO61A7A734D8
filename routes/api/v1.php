@@ -40,5 +40,5 @@ Route::apiResource('questions', QuestionController::class);
 Route::get('questions/status/{question}', [QuestionController::class, 'toggoleStatus'])->name('questions.toggleStatus');
 
 Route::apiResource('question-details', QuestionDetailsController::class);
-Route::get('question-details/status/{question-detail}', [QuestionDetailsController::class, 'toggleStatus'])->name('question-details.toggleStatus');
+Route::get('question-details/status/{question_detail}', [QuestionDetailsController::class, 'toggleStatus'])->name('question-details.toggleStatus');
 

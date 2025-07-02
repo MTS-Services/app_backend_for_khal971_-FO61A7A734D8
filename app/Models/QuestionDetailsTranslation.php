@@ -9,7 +9,7 @@ class QuestionDetailsTranslation extends Model
 {
     protected $table = 'question_details_translations';
     protected $fillable = [
-        'question_details_id',
+        'question_detail_id',
         'language',
         'title',
         'description'
@@ -17,6 +17,6 @@ class QuestionDetailsTranslation extends Model
 
     public function question_details(): BelongsTo
     {
-        return $this->belongsTo(QuestionDetails::class, 'question_details_id', 'id');
+        return $this->belongsTo(QuestionDetails::class, 'question_detail_id', 'id');
     }
 }

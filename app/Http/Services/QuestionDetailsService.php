@@ -42,19 +42,19 @@ class QuestionDetailsService
         }
         return $query->where($query_field, $param)->first();
     }
-    public function createQuestion($data): QuestionDetails|null
+    public function createQuestionDetail($data): QuestionDetails|null
     {
         try {
             $data['created_by'] = $this->user->id;
             return DB::transaction(function () use ($data) {
                 $question_details = QuestionDetails::create($data);
                 QuestionDetailsTranslation::create([
-                    'question_id' => $question_details->id,
+                    'question_detail_id' => $question_details->id,
                     'language' => $this->lang,
                     'title' => $data['title'] ?? '',
-                    'answer' => $data['answer'] ?? ''
+                    'description' => $data['description'] ?? ''
                 ]);
-                TranslateModelJob::dispatch(QuestionDetails::class, QuestionDetailsTranslation::class, 'question_id', $question_details->id, ['title', 'answer'], $this->lang);
+                TranslateModelJob::dispatch(QuestionDetails::class, QuestionDetailsTranslation::class, 'question_detail_id', $question_details->id, ['title', 'description'], $this->lang);
                 $question_details = $question_details->refresh()->loadTranslation($this->lang);
                 return $question_details;
             });
@@ -63,20 +63,20 @@ class QuestionDetailsService
             return null;
         }
     }
-    public function updateQuestion(QuestionDetails $question_details, $data): QuestionDetails|null
+    public function updateQuestionDetail(QuestionDetails $question_details, $data): QuestionDetails|null
     {
         try {
             $data['updated_by'] = $this->user->id;
             $question_details->update($data);
             QuestionDetailsTranslation::updateOrCreate(
-                ['question_id' => $question_details->id, 'language' => $this->lang], // condition
+                ['question_detail_id' => $question_details->id, 'language' => $this->lang], // condition
                 [
                     'title' => $data['title'] ?? '',
-                    'answer' => $data['answer'] ?? '',
+                    'description' => $data['description'] ?? '',
                 ]
             );
 
-            TranslateModelJob::dispatch(QuestionDetails::class, QuestionDetailsTranslation::class, 'question_id', $question_details->id, ['title', 'answer'], $this->lang);
+            TranslateModelJob::dispatch(QuestionDetails::class, QuestionDetailsTranslation::class, 'question_detail_id', $question_details->id, ['title', 'description'], $this->lang);
             $question_details = $question_details->refresh()->loadTranslation($this->lang);
             return $question_details;
         } catch (\Exception $e) {
@@ -84,7 +84,7 @@ class QuestionDetailsService
             return null;
         }
     }
-    public function deleteQuestion(QuestionDetails $question_details): void
+    public function deleteQuestionDetail(QuestionDetails $question_details): void
     {
         $question_details->delete();
     }
