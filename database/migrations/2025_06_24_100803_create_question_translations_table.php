@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('question_translations', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('question_id')->index();
-            $table->string('language', 2)->index();
+            $table->string('language', 5)->index();
             $table->string('title', 500);
             $table->longText('answer')->nullable();
             $table->timestamps();

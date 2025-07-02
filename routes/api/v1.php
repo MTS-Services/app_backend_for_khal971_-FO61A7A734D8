@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\PlanController;
+use App\Http\Controllers\API\QuestionAnswerController;
 use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\QuestionDetailsController;
 use App\Http\Controllers\API\User\UserController;
@@ -41,4 +42,6 @@ Route::get('questions/status/{question}', [QuestionController::class, 'toggoleSt
 
 Route::apiResource('question-details', QuestionDetailsController::class);
 Route::get('question-details/status/{question_detail}', [QuestionDetailsController::class, 'toggleStatus'])->name('question-details.toggleStatus');
+
+Route::apiResource('question-answers', QuestionAnswerController::class);
 

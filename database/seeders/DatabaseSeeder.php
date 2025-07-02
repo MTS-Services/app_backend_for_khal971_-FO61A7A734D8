@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
             QuestionDetailsTranslationSeeder::class,
             QuestionSeeder::class,
             QuestionTranslationSeeder::class,
+            QuestionAnswerSeeder::class,
+            QuestionAnswerTranslationSeeder::class,
             PlanSeeder::class,
             PlanFeatureSeeder::class,
             SubscriptionSeeder::class,
