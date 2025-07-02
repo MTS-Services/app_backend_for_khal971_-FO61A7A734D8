@@ -56,6 +56,9 @@ class QuestionAnswerService
                 $correctAnswer = QuestionTranslation::where('question_id', $data['question_id'])->where('language', $this->lang)->first()->answer;
                 $userAnswer = $data['answer'];
                 similar_text(strtolower($correctAnswer), strtolower($userAnswer), $percent);
+                if(empty($correctAnswer) || empty($userAnswer)){
+                    $percent = 0;
+                }
                 QuestionAnswerTranslation::create([
                     'question_answer_id' => $question_answer->id,
                     'language' => $this->lang,
