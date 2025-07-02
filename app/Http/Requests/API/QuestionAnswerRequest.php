@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\API;
 
-use Illuminate\Foundation\Http\FormRequest;
 
 class QuestionAnswerRequest extends BaseRequest
 {
@@ -25,7 +24,7 @@ class QuestionAnswerRequest extends BaseRequest
             'question_id' => 'required|exists:questions,id',
             'user_id' => 'required|exists:users,id',
             'answer' => 'required|string',
-            'match_percentage' => 'required|numeric',
+            // 'match_percentage' => 'required|numeric',
         ];
     }
 }

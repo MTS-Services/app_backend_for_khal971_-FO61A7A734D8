@@ -3,8 +3,10 @@
 namespace App\Http\Services;
 
 use App\Jobs\TranslateModelJob;
+use App\Models\Question;
 use App\Models\QuestionAnswer;
 use App\Models\QuestionAnswerTranslation;
+use App\Models\QuestionTranslation;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -49,14 +51,16 @@ class QuestionAnswerService
     {
         try {
             $data['created_by'] = $this->user->id;
-
             return DB::transaction(function () use ($data) {
                 $question_answer = QuestionAnswer::create($data);
+                $correctAnswer = QuestionTranslation::where('question_id', $data['question_id'])->where('language', $this->lang)->first()->answer;
+                $userAnswer = $data['answer'];
+                similar_text(strtolower($correctAnswer), strtolower($userAnswer), $percent);
                 QuestionAnswerTranslation::create([
                     'question_answer_id' => $question_answer->id,
                     'language' => $this->lang,
                     'answer' => $data['answer'] ?? '',
-                    'match_percentage' => $data['match_percentage'] ?? 0
+                    'match_percentage' => round($percent),
                 ]);
                 TranslateModelJob::dispatch(QuestionAnswer::class, QuestionAnswerTranslation::class, 'question_answer_id', $question_answer->id, ['answer', 'match_percentage'], $this->lang);
                 $question_answer = $question_answer->refresh()->loadTranslation($this->lang);
