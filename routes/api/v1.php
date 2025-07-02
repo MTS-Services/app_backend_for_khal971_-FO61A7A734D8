@@ -9,6 +9,7 @@ use App\Http\Controllers\API\TopicController;
 Route::controller(UserController::class)->group(function () {
     Route::get('user', 'user')->name('user');
     Route::get('users', 'users')->name('users');
+    Route::put('users', 'updateUser')->name('users.update');
 });
 
 
