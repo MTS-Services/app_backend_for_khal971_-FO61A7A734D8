@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->bigInteger('order_index')->default(0);
 
             $table->string('username')->unique()->nullable();
-            $table->string('name');
+            $table->string('name')->nullable();
             $table->string('phone', 20)->unique();
             $table->string('email')->unique();
             $table->string('image')->nullable();
