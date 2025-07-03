@@ -12,7 +12,9 @@ services:
     environment:
       APP_ENV: local
       DB_HOST: db
+      DB_PORT: 3306
       REDIS_HOST: redis
+      REDIS_PORT: 6379
       DB_DATABASE: api_backends
       DB_USERNAME: root
       DB_PASSWORD: root
@@ -35,8 +37,6 @@ services:
     image: mysql:8.0
     container_name: mysql_db
     restart: unless-stopped
-    ports:
-      - "3340:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: api_backends
@@ -48,8 +48,6 @@ services:
   redis:
     image: redis:alpine
     container_name: redis_cache
-    ports:
-      - "6379:6379"
     restart: unless-stopped
 
 volumes:
