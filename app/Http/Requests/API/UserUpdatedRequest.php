@@ -45,7 +45,7 @@ class UserUpdatedRequest extends BaseRequest
             'country' => 'nullable|string',
             'city' => 'nullable|string',
             'school' => 'nullable|string',
-            'class_id' => 'nullable|exists:user_classes,id',
+            'user_class_id' => 'nullable|exists:user_classes,id',
 
             'image' => 'nullable|string',
 

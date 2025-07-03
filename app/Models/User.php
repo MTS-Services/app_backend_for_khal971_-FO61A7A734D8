@@ -183,7 +183,7 @@ class User extends Authenticatable
 
     public function userClass(): BelongsTo
     {
-        return $this->belongsTo(UserClass::class, 'user_class_id', 'id')->select(['name', 'id'])->withDefault();
+        return $this->belongsTo(UserClass::class, 'user_class_id', 'id')->select(['id', 'name'])->withDefault();
     }
 
 
