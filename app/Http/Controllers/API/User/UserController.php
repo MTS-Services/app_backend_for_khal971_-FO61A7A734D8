@@ -5,7 +5,6 @@ namespace App\Http\Controllers\API\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\UserUpdatedRequest;
 use App\Http\Services\UserService;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;

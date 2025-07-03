@@ -6,7 +6,7 @@ use App\Models\User;
 
 class UserService
 {
-    protected FileService $fileService;
+    // protected FileService $fileService;
 
     public function __construct(FileService $fileService)
     {
@@ -22,10 +22,10 @@ class UserService
     {
         return User::orderBy($orderBy, $order)->latest();
     }
-    public function updateUser(User $user, array $data , $file): User
+    public function updateUser(User $user, array $data, $file): User
     {
         $user->update($data);
-        if($file){
+        if ($file) {
             $data['image'] = $this->fileService->uploadFile($file, 'users', $data['name']);
             $this->fileService->fileDelete($user->image);
         }
