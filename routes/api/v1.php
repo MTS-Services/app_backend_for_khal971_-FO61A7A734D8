@@ -5,6 +5,7 @@ use App\Http\Controllers\API\PlanController;
 use App\Http\Controllers\API\QuestionAnswerController;
 use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\QuestionDetailsController;
+use App\Http\Controllers\ApI\QuizAnswerController;
 use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\QuizOptionController;
 use App\Http\Controllers\API\User\UserController;
@@ -55,3 +56,5 @@ Route::apiResource('quizzes', QuizController::class);
 Route::get('quizzes/status/{quiz}', [QuizController::class, 'toggleStatus'])->name('quizzes.toggleStatus');
 
 Route::apiResource('quiz-options', QuizOptionController::class);
+
+Route::apiResource('quiz-answers', QuizAnswerController::class);
