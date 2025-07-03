@@ -21,7 +21,7 @@ class UserController extends Controller
     {
 
         try {
-            $user = $this->userService->getUser($request->user()->id);
+            $user = $this->userService->getUser($request->user()->id)->load("userClass");
             if (!$user) {
                 return sendResponse(false, 'User not authenticated', null, Response::HTTP_UNAUTHORIZED);
             }
@@ -38,7 +38,7 @@ class UserController extends Controller
     public function users($perPage = 10)
     {
         try {
-            $users = $this->userService->getUsers()->paginate($perPage);
+            $users = $this->userService->getUsers()->with('userClass')->paginate($perPage);
             return sendResponse(true, 'User list fetched successfully', $users, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('User List Error: ' . $e->getMessage());
