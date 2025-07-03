@@ -5,6 +5,7 @@ use App\Http\Controllers\API\PlanController;
 use App\Http\Controllers\API\QuestionAnswerController;
 use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\QuestionDetailsController;
+use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\SubjectController;
@@ -49,3 +50,5 @@ Route::get('question-details/status/{question_detail}', [QuestionDetailsControll
 
 Route::apiResource('question-answers', QuestionAnswerController::class);
 
+Route::apiResource('quizzes', QuizController::class);
+Route::get('quizzes/status/{quiz}', [QuizController::class, 'toggleStatus'])->name('quizzes.toggleStatus');
