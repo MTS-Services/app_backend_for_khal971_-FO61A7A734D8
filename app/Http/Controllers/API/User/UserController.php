@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\API\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\API\UserUpdatedRequest;
 use App\Http\Services\UserService;
-use Illuminate\Http\Request;
-use Log;
-use Symfony\Component\HttpFoundation\Response;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -21,7 +22,7 @@ class UserController extends Controller
     {
 
         try {
-            $user = $this->userService->getUser($request->user()->id);
+            $user = $this->userService->getUser($request->user()->id)->load("userClass");
             if (!$user) {
                 return sendResponse(false, 'User not authenticated', null, Response::HTTP_UNAUTHORIZED);
             }
@@ -38,11 +39,24 @@ class UserController extends Controller
     public function users($perPage = 10)
     {
         try {
-            $users = $this->userService->getUsers()->paginate($perPage);
+            $users = $this->userService->getUsers()->with('userClass')->paginate($perPage);
             return sendResponse(true, 'User list fetched successfully', $users, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('User List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch user list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+    public function updateUser(UserUpdatedRequest $request)
+    {
+        try{
+            $user = $this->userService->getUser($request->user()->id);
+            $file = $request->validated('image') && $request->hasFile('image') ? $request->file('image') : null;
+            $validated = $request->validated();
+            $user = $this->userService->updateUser($user, $validated, $file);
+            return sendResponse(true, 'User updated successfully', $user, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('User Update Error: ' . $e->getMessage());
+            return sendResponse(false, 'Failed to update user', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
