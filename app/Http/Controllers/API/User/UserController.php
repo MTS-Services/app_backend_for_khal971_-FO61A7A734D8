@@ -22,7 +22,7 @@ class UserController extends Controller
     {
 
         try {
-            $user = $this->userService->getUser($request->user()->id);
+            $user = $this->userService->getUser($request->user()->id)->load("userClass");
             if (!$user) {
                 return sendResponse(false, 'User not authenticated', null, Response::HTTP_UNAUTHORIZED);
             }
