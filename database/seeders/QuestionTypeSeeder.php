@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\QuestionType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -12,14 +13,18 @@ class QuestionTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('question_types')->insert([
-            [  
-            ],
+        QuestionType::create(
             [
-                
+                'name' => 'Multiple Choice',
+                'description' => 'A question with multiple options, where only one option is correct.',
             ],
+        );
+
+        QuestionType::create(
             [
-            ],
-        ]);
+                'name' => 'True/False',
+                'description' => 'A question that can be answered with either true or false.',
+            ]
+        );
     }
 }
