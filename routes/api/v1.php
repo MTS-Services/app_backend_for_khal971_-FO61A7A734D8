@@ -14,6 +14,7 @@ use App\Http\Controllers\API\SubjectController;
 use App\Http\Controllers\API\TopicController;
 use App\Http\Controllers\API\UserSubjectController;
 use App\Http\Controllers\API\UserClassController;
+use App\Http\Controllers\API\UserProgressController;
 
 Route::controller(UserController::class)->group(function () {
     Route::get('user', 'user')->name('user');
@@ -58,3 +59,6 @@ Route::get('quizzes/status/{quiz}', [QuizController::class, 'toggleStatus'])->na
 Route::apiResource('quiz-options', QuizOptionController::class);
 
 Route::apiResource('quiz-answers', QuizAnswerController::class);
+
+Route::get('user-progress', [UserProgressController::class, 'userProgress'])->name('user-progress');
+Route::post('user-progress', [UserProgressController::class, 'storeOrUpdateUserProgress'])->name('user-progress.store');

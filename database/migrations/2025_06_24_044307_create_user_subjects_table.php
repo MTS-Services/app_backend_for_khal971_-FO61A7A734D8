@@ -18,7 +18,7 @@ return new class extends Migration
             $table->bigInteger('order_index')->default(0);
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('subject_id');
-
+ 
             $table->timestamps();
             $this->addAuditColumns($table);
 
