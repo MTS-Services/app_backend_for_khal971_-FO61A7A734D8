@@ -60,5 +60,7 @@ Route::apiResource('quiz-options', QuizOptionController::class);
 
 Route::apiResource('quiz-answers', QuizAnswerController::class);
 
-Route::get('user-progress', [UserProgressController::class, 'userProgress'])->name('user-progress');
+// Route::get('user-progress', [UserProgressController::class, 'userProgress'])->name('user-progress');
 Route::post('user-progress', [UserProgressController::class, 'storeOrUpdateUserProgress'])->name('user-progress.store');
+
+Route::get('/user-progress-list', [UserProgressController::class, 'index']);

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\UserProgressRequest;
 use App\Http\Services\UserProgressService;
 use App\Models\UserProgress;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,21 +20,63 @@ class UserProgressController extends Controller
         $this->userProgressService = $userProgressService;
     }
 
-    public function userProgress(): JsonResponse
+     public function index(Request $request)
     {
-      try {
-        $progress = $this->userProgressService->getUserProgress()->get();
+        try {
+            $query = $this->userProgressService->getUserProgress();
 
-        if (!$progress) {
-            return sendResponse(false, 'Failed to retrieve user progress', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        // Optional Filters
+        if ($request->has('user_id')) {
+            $query->where('user_id', $request->user_id);
         }
 
-        return sendResponse(true, 'User progress retrieved successfully', $progress, Response::HTTP_OK);
-      } catch (\Exception $e) {
-        Log::error('UserProgress Fetch Error: ' . $e->getMessage());
-        return sendResponse(false, 'Failed to retrieve user progress', null, Response::HTTP_INTERNAL_SERVER_ERROR);
-      }  
+        if ($request->has('content_type')) {
+            $query->where('content_type', $request->content_type);
+        }
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('content_type', 'like', "%$search%")
+                  ->orWhere('status', 'like', "%$search%");
+            });
+        }
+
+        // Sorting
+        $sortField = $request->get('sort_field', 'updated_at');
+        $sortDirection = $request->get('sort_direction', 'desc');
+        $query->orderBy($sortField, $sortDirection);
+
+        // Pagination
+        $perPage = $request->get('per_page', 15);
+        $progressList = $query->paginate($perPage);
+
+        return sendResponse(true, 'User progress retrieved successfully', $progressList, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('UserProgress Fetch Error: ' . $e->getMessage());
+            return sendResponse(false, 'Failed to retrieve user progress', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
+
+    // public function userProgress(): JsonResponse
+    // {
+    //   try {
+    //     $progress = $this->userProgressService->getUserProgress()->get();
+
+    //     if (!$progress) {
+    //         return sendResponse(false, 'Failed to retrieve user progress', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+
+    //     return sendResponse(true, 'User progress retrieved successfully', $progress, Response::HTTP_OK);
+    //   } catch (\Exception $e) {
+    //     Log::error('UserProgress Fetch Error: ' . $e->getMessage());
+    //     return sendResponse(false, 'Failed to retrieve user progress', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+    //   }  
+    // }
     public function storeOrUpdateUserProgress(UserProgressRequest $request): JsonResponse
     {
         try{
