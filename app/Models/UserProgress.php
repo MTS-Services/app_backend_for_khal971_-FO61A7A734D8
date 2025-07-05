@@ -40,8 +40,9 @@ class UserProgress extends Model
         return $this->belongsTo(User::class);
     }
 
-    public const STATUS_NOT_STARTED = 'not_started';
-    public const STATUS_IN_PROGRESS = 'in_progress';
-    public const STATUS_COMPLETED = 'completed';
-    public const STATUS_MASTERED = 'mastered';
+    public const STATUS_NOT_STARTED = '0';
+    public const STATUS_IN_PROGRESS = '1';
+    public const STATUS_COMPLETED = '2';
+    public const STATUS_MASTERED = '3';
+    
 }

@@ -14,6 +14,7 @@ use App\Http\Controllers\API\SubjectController;
 use App\Http\Controllers\API\TopicController;
 use App\Http\Controllers\API\UserSubjectController;
 use App\Http\Controllers\API\UserClassController;
+use App\Http\Controllers\API\UserItemProgressController;
 use App\Http\Controllers\API\UserProgressController;
 
 Route::controller(UserController::class)->group(function () {
@@ -64,3 +65,5 @@ Route::apiResource('quiz-answers', QuizAnswerController::class);
 Route::post('user-progress', [UserProgressController::class, 'storeOrUpdateUserProgress'])->name('user-progress.store');
 
 Route::get('/user-progress-list', [UserProgressController::class, 'index']);
+
+Route::apiResource('user-item-progress', UserItemProgressController::class);
