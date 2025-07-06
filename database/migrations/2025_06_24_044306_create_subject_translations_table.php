@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('name');
             $table->timestamps();
 
-            $table->foreign('subject_id')->references('id')->on('subjects')->nullOnDelete()->cascadeOnUpdate();
+            $table->foreign('subject_id')->references('id')->on('subjects')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unique(['subject_id', 'language']);
             $table->index(['language', 'name']);
         });

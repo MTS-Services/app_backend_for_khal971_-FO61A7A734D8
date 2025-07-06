@@ -13,11 +13,14 @@ return new class extends Migration
     {
         Schema::create('question_option_translations', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('question_option_id')->default(0);
+            $table->unsignedBigInteger('question_option_id')->index();
             $table->string('language', 5)->nullable()->index();
             $table->text('option_text');
             $table->longText('explanation')->nullable();
             $table->timestamps();
+
+            $table->foreign('question_option_id')->references('id')->on('question_options')->cascadeOnDelete()->cascadeOnUpdate();
+            // $table->unique(['question_option_id', 'language']);
         });
     }
 
