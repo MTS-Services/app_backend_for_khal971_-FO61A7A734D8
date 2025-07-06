@@ -13,4 +13,4 @@ Route::get('get/users', function () {
 })->name('get.users');
 Route::get('get/courses', function () {
     return Course::all();
-})->name('get.users');
+})->name('get.courses');
