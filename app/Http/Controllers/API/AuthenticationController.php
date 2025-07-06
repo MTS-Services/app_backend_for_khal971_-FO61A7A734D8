@@ -66,31 +66,34 @@ class AuthenticationController extends Controller
             return DB::transaction(function () use ($request) {
                 if (Auth::attempt($request->validated())) {
                     $user = Auth::user();
-                    $user_info = $this->authenticationService->getUserInfo($request->ip());
+                    // $user_info = $this->authenticationService->getUserInfo($request->ip());
 
-                    $user_info['user_id'] = $user->id;
-                    $user_info['user_agent'] = $request->userAgent();
-                    $check = UserLogin::active()->self()->where('device_id', '!=', $user_info['device_id'])->first();
-                    if ($check) {
-                        $user_info['device_id'] = encrypt($check->device_id);
-                        return sendResponse(true, 'You have already logged in from another device', $user_info, Response::HTTP_OK);
-                    } else {
-                        $check = UserLogin::self()->where('device_id', $user_info['device_id'])->first();
-                        if ($check) {
-                            $check->update(['status' => UserLogin::STATUS_ACTIVE, 'last_login_at' => Carbon::now(), 'user_agent' => $user_info['user_agent']]);
-                        } else {
-                            UserLogin::create($user_info);
-                        }
-                    }
+                    // $user_info['user_id'] = $user->id;
+                    // $user_info['user_agent'] = $request->userAgent();
+                    // $check = UserLogin::active()->self()->where('device_id', '!=', $user_info['device_id'])->first();
+                    // if ($check) {
+                    //     $user_info['device_id'] = encrypt($check->device_id);
+                    //     return sendResponse(true, 'You have already logged in from another device', $user_info, Response::HTTP_OK);
+                    // } else {
+                    //     $check = UserLogin::self()->where('device_id', $user_info['device_id'])->first();
+                    //     if ($check) {
+                    //         $check->update(['status' => UserLogin::STATUS_ACTIVE, 'last_login_at' => Carbon::now(), 'user_agent' => $user_info['user_agent']]);
+                    //     } else {
+                    //         UserLogin::create($user_info);
+                    //     }
+                    // }
                     $token = $user->createToken('authToken')->accessToken;
                     return sendResponse(true, 'Login successful', $user->only('id', 'name', 'email'), Response::HTTP_OK, ['token' => $token]);
                 }
                 return sendResponse(false, 'Invalid credentials', null, Response::HTTP_UNAUTHORIZED);
             });
-
         } catch (\Exception $e) {
-            Log::error('Login Error: ' . $e->getMessage());
-            return sendResponse(false, 'Login failed', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            Log::error('Login Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'request' => $request->all(),
+            ]);
+            return sendResponse(false, 'Login failed', null, Response::HTTP_INTERNAL_SERVER_ERROR, ['trace' => $e->getTraceAsString()], ['request' => $request->all()], ['message' => $e->getMessage()]);
         }
     }
 
@@ -106,7 +109,6 @@ class AuthenticationController extends Controller
                 return sendResponse(true, 'Email verified successfully.', null);
             }
             return sendResponse(false, 'OTP expired.', null, Response::HTTP_UNPROCESSABLE_ENTITY);
-
         } catch (\Exception $e) {
             Log::error('OTP Verification Error: ' . $e->getMessage(), [
                 'email' => $request->email,

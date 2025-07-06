@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\QuestionType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,11 +14,11 @@ class QuestionDetailsSeeder extends Seeder
     public function run(): void
     {
         DB::table('question_details')->insert([
-             [
+            [
                 'topic_id'     => 1,
             ],
             [
-                'topic_id'     => 1,
+                'topic_id'     => 2,
             ],
         ]);
     }

@@ -18,6 +18,9 @@ return new class extends Migration
             $table->string('title', 200);
             $table->text('description')->nullable();
             $table->timestamps();
+
+            $table->foreign('quiz_id')->references('id')->on('quizzes')->cascadeOnDelete()->cascadeOnUpdate();
+            // $table->unique(['question_option_id', 'language']);
         });
     }
 

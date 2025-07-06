@@ -9,6 +9,7 @@ use App\Http\Controllers\ApI\QuizAnswerController;
 use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\QuizOptionController;
 use App\Http\Controllers\API\User\UserController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\SubjectController;
 use App\Http\Controllers\API\TopicController;
@@ -22,6 +23,8 @@ Route::controller(UserController::class)->group(function () {
     Route::get('users', 'users')->name('users');
     Route::put('users', 'updateUser')->name('users.update');
 });
+
+
 
 Route::apiResource('user-classes', UserClassController::class);
 Route::get('user-classes/status/{user_class}', [UserClassController::class, 'toggleStatus'])->name('user-classes.toggleStatus');

@@ -59,4 +59,10 @@ class UserController extends Controller
             return sendResponse(false, 'Failed to update user', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function getUsers(Request $request)
+    {
+       $users = User::all();
+       return sendResponse(true, 'Users fetched successfully', $users, Response::HTTP_OK);  
+    }
 }
