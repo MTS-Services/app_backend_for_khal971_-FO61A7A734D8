@@ -93,7 +93,7 @@ class AuthenticationController extends Controller
                 'trace' => $e->getTraceAsString(),
                 'request' => $request->all(),
             ]);
-            return sendResponse(false, 'Login failed', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            return sendResponse(false, 'Login failed', null, Response::HTTP_INTERNAL_SERVER_ERROR, ['trace' => $e->getTraceAsString()], ['request' => $request->all()], ['message' => $e->getMessage()]);
         }
     }
 
