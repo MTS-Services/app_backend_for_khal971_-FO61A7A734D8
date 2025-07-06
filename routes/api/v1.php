@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\PlanController;
+use App\Http\Controllers\API\ProgressMilestoneController;
 use App\Http\Controllers\API\QuestionAnswerController;
 use App\Http\Controllers\API\QuestionController;
 use App\Http\Controllers\API\QuestionDetailsController;
@@ -72,3 +73,5 @@ Route::get('/user-progress-list', [UserProgressController::class, 'index']);
 Route::apiResource('user-item-progress', UserItemProgressController::class);
 Route::get('user-item-progress/toggle-bookmark/{bookmark}', [UserItemProgressController::class, 'toggleBookmark'])->name('toggle-bookmark');
 Route::get('user-item-progress/toggle-flag/{flag}', [UserItemProgressController::class, 'toggleFlag'])->name('toggle-flag');
+
+Route::apiResource('progress-milestones', ProgressMilestoneController::class);

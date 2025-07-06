@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
-use App\Models\UserItemProgresss;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -36,6 +35,8 @@ class DatabaseSeeder extends Seeder
             QuizAnswerSeeder::class,
             UserProgressSeeder::class,
             UserItemProgressSeeder::class,
+            ProgressMilestoneSeeder::class,
+            ProgressMilestoneTranslationSeeder::class,
             PlanSeeder::class,
             PlanFeatureSeeder::class,
             SubscriptionSeeder::class,
