@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('question_translations', function (Blueprint $table) {
+        Schema::create('question_details_translations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('question_id')->index();
+            $table->unsignedBigInteger('question_detail_id');
             $table->string('language', 5)->index();
             $table->string('title', 500);
-            $table->longText('answer')->nullable();
+            $table->text('description')->nullable();
             $table->timestamps();
 
-            $table->foreign('question_id')->references('id')->on('questions')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->unique(['question_id', 'language']);
+            $table->foreign('question_detail_id')->references('id')->on('question_details')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->unique(['question_detail_id', 'language']);
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('question_translations');
+        Schema::dropIfExists('question_details_translations');
     }
 };

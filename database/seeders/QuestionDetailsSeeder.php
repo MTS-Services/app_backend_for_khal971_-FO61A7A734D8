@@ -2,24 +2,24 @@
 
 namespace Database\Seeders;
 
+use App\Models\QuestionType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class QuestionSeeder extends Seeder
+class QuestionDetailsSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-
-        DB::table('questions')->insert([
+        DB::table('question_details')->insert([
             [
-                'question_details_id' => 1,
+                'topic_id'     => 1,
             ],
             [
-                'question_details_id' => 2,
-            ]
+                'topic_id'     => 2,
+            ],
         ]);
     }
 }

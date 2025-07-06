@@ -3,7 +3,7 @@
 namespace App\Http\Requests\API;
 
 
-class QuestionRequest extends BaseRequest
+class QuestionDetailsRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,17 +21,11 @@ class QuestionRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'question_details_id' => 'required|exists:question_details,id',
-            'title' => 'required|string',
-            'answer' => 'required|string', 
-        ]+($this->isMethod('POST') ? $this->stote() : $this->update());
-    }
-    public function stote(): array
-    {
-        return [];
-    }
-    public function update(): array
-    {
-        return [];
+            'topic_id' => 'required|exists:topics,id',
+            'question_detail_id' => 'required|exists:question_details,id',
+            'title' => 'required|string|max:500',
+            'description' => 'nullable|string',
+            'file' => 'nullable|string',
+        ];
     }
 }

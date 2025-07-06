@@ -9,10 +9,10 @@ class QuestionTranslation extends Model
 {
     protected $table = 'question_translations';
 
-    protected $fillable = ['question_option_id', 'language', 'title', 'description', 'point', 'time_limit', 'explanation'];
+    protected $fillable = ['question_id', 'language', 'title', 'answer'];
 
-    public function questionOption(): BelongsTo
+    public function question(): BelongsTo
     {
-        return $this->belongsTo(QuestionOption::class, 'question_option_id', 'id');
+        return $this->belongsTo(Question::class, 'question_id', 'id');
     }
 }

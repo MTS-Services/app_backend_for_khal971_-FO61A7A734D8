@@ -1,28 +1,29 @@
 <?php
 
 use App\Http\Traits\AuditColumnsTrait;
-use App\Models\Question;
+use App\Models\QuizOption;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     use AuditColumnsTrait;
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('quiz_options', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('order_index')->default(0);
-            $table->unsignedBigInteger('question_details_id')->nullable()->index();
-            $table->tinyInteger('status')->index()->default(Question::STATUS_ACTIVE);
-            $table->timestamps();
+            $table->unsignedBigInteger('quiz_id')->nullable()->index();
+            $table->boolean('is_correct')->default(QuizOption::IS_CORRECT_FALSE);
 
+            $table->timestamps();
             $this->addAuditColumns($table);
 
-            $table->foreign('question_details_id')->references('id')->on('question_details')->nullOnDelete()->cascadeOnUpdate();
+            $table->foreign('quiz_id')->references('id')->on('quizzes')->nullOnDelete()->cascadeOnUpdate();
         });
     }
 
@@ -31,6 +32,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('questions');
+        Schema::dropIfExists('quiz_options');
     }
 };

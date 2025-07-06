@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\UserItemProgresss;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -14,23 +15,31 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            UserSeeder::class,
             SubjectSeeder::class,
             SubjectTranslationSeeder::class,
+            UserSubjectSeeder::class,
             CourseSeeder::class,
             CourseTranslationSeeder::class,
-            UserSeeder::class,
             TopicSeeder::class,
             TopicTranslationSeeder::class,
-            // QuestionTypeSeeder::class,
-            // QuestionTypeTranslationSeeder::class,
-            // QuestionSeeder::class,
-            // QuestionTranslationSeeder::class,
-            // QuestionOptionSeeder::class,
-            // QuestionOptionTranslationSeeder::class,
-            // PlanSeeder::class,
-            // PlanFeatureSeeder::class,
-            // SubscriptionSeeder::class,
-            // PaymentSeeder::class,
+            QuestionDetailsSeeder::class,
+            QuestionDetailsTranslationSeeder::class,
+            QuestionSeeder::class,
+            QuestionTranslationSeeder::class,
+            QuestionAnswerSeeder::class,
+            QuestionAnswerTranslationSeeder::class,
+            QuizSeeder::class,
+            QuizTranslationSeeder::class,
+            QuizOptionSeeder::class,
+            QuizOptionTranslationSeeder::class,
+            QuizAnswerSeeder::class,
+            UserProgressSeeder::class,
+            UserItemProgressSeeder::class,
+            PlanSeeder::class,
+            PlanFeatureSeeder::class,
+            SubscriptionSeeder::class,
+            PaymentSeeder::class,
 
         ]);
     }

@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Question extends BaseModel
+class Quiz extends Model
 {
-    protected $fillable = [
+     protected $fillable = [
         'order_index',
-        'question_details_id',
+        'topic_id',
         'status',
 
         'created_by',
@@ -26,8 +26,6 @@ class Question extends BaseModel
     protected $casts = [
         'status' => 'integer',
         'topic_id' => 'integer',
-        // 'hints' => 'array',
-        // 'tags' => 'array',
     ];
 
 
@@ -40,23 +38,6 @@ class Question extends BaseModel
             // 'tags',
         ]);
     }
-    public function question_details(): BelongsTo
-    {
-        return $this->belongsTo(QuestionDetails::class, 'question_details_id', 'id');
-    }
-
-    /////////////////////////
-    // JSON Attributes
-    /////////////////////////
-    // public function getHintsAttribute($value)
-    // {
-    //     return json_decode($value, true);
-    // }
-
-    // public function getTagsAttribute($value)
-    // {
-    //     return json_decode($value, true);
-    // }
 
     /////////////////////////
     // Status Attributes
@@ -91,22 +72,18 @@ class Question extends BaseModel
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
-
-    // public function scopeFree(Builder $query): Builder
-    // {
-    //     return $query->where('is_premium', false);
-    // }
-
-    // public function scopePremium(Builder $query): Builder
-    // {
-    //     return $query->where('is_premium', true);
-    // }
-    public function translations(): HasMany
+    // Relationships
+    public function topics()
     {
-        return $this->hasMany(QuestionTranslation::class, 'question_id', 'id')->select('question_id', 'language', 'title', 'answer');
+        return $this->belongsTo(Topic::class, 'topic_id', 'id')->withDefault();
     }
 
-    public function translate($language): QuestionTranslation|null
+     public function translations(): HasMany
+    {
+        return $this->hasMany( QuizTranslation::class, 'quiz_id', 'id')->select('quiz_id', 'language', 'title', 'description');
+    }
+
+    public function translate($language): QuizTranslation|null
     {
         return $this->translations->where('language', $language)->first();
     }
@@ -124,5 +101,4 @@ class Question extends BaseModel
             'translations' => fn($q) => $q->where('language', $lang)
         ]);
     }
-
 }

@@ -24,7 +24,7 @@ class UserClassController extends Controller
      */
     public function index()
     {
-        try{
+        try {
             $user_classes = $this->userClassService->getUserClasses()->get()->toArray();
             return sendResponse(true, 'UserClass list', $user_classes, Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -46,7 +46,7 @@ class UserClassController extends Controller
      */
     public function store(UserClassRequest $request)
     {
-        try{
+        try {
             $validated = $request->validated();
             $user_class = $this->userClassService->createUserClass($validated);
             if (!$user_class) {
@@ -64,13 +64,13 @@ class UserClassController extends Controller
      */
     public function show(UserClass $user_class)
     {
-        try{
+        try {
             $user_class = $this->userClassService->getUserClass($user_class->id);
             if (!$user_class) {
                 return sendResponse(false, 'Failed to fetch UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             return sendResponse(true, 'UserClass fetched successfully', $user_class, Response::HTTP_OK);
-        }catch (\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('UserClass Fetch Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -89,7 +89,7 @@ class UserClassController extends Controller
      */
     public function update(UserClassRequest $request, UserClass $user_class)
     {
-        try{
+        try {
             $validated = $request->validated();
             $user_class = $this->userClassService->updateUserClass($user_class, $validated);
             if (!$user_class) {
@@ -100,7 +100,6 @@ class UserClassController extends Controller
             Log::error('UserClass Update Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to update UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-        
     }
 
     /**
@@ -108,7 +107,7 @@ class UserClassController extends Controller
      */
     public function destroy(UserClass $user_class)
     {
-        try{
+        try {
             $user_class = $this->userClassService->deleteUserClass($user_class);
             if (!$user_class) {
                 return sendResponse(false, 'Failed to delete UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -119,7 +118,7 @@ class UserClassController extends Controller
             return sendResponse(false, 'Failed to delete UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
+    //  Repository name change test
     public function toggleStatus(UserClass $user_class): JsonResponse
     {
         try {

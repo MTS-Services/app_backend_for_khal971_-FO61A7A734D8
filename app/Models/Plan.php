@@ -32,6 +32,7 @@ class Plan extends Model
     protected $casts = [
         'status' => 'integer',
         'is_popular' => 'boolean',
+        'features' => 'array',
     ];
 
     public function __construct(array $attributes = [])

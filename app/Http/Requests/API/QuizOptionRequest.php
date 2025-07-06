@@ -2,8 +2,7 @@
 
 namespace App\Http\Requests\API;
 
-
-class QuestionRequest extends BaseRequest
+class QuizOptionRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,17 +20,8 @@ class QuestionRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'question_details_id' => 'required|exists:question_details,id',
+            'quiz_id' => 'required|exists:quizzes,id',
             'title' => 'required|string',
-            'answer' => 'required|string', 
-        ]+($this->isMethod('POST') ? $this->stote() : $this->update());
-    }
-    public function stote(): array
-    {
-        return [];
-    }
-    public function update(): array
-    {
-        return [];
+        ];
     }
 }

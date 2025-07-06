@@ -5,22 +5,28 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class TopicSeeder extends Seeder
+class QuizSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        DB::table('topics')->insert([
+        DB::table('quizzes')->insert([
             [
-                'course_id' => 1,
+                'topic_id' => 2,
             ],
             [
-                'course_id' => 1,
+                'topic_id' => 3,
             ],
             [
-                'course_id' => 2,
+                'topic_id' => 1,
+            ],
+            [
+                'topic_id' => 2,
+            ],
+            [
+                'topic_id' => 3,
             ],
         ]);
     }
