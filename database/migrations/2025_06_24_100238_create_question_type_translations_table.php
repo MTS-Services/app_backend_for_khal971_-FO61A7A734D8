@@ -19,7 +19,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->timestamps();
             
-            $table->foreign('question_type_id')->references('id')->on('question_types')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('question_type_id')->references('id')->on('question_types')->nullOnDelete()->cascadeOnUpdate();
             $table->unique(['question_type_id', 'language']);
         });
     }

@@ -22,7 +22,7 @@ return new class extends Migration {
 
             $this->addAuditColumns($table);
 
-            $table->foreign('subject_id')->references('id')->on('subjects')->ullDelete()->cascadeOnUpdate();
+            $table->foreign('subject_id')->references('id')->on('subjects')->nullOnDelete()->cascadeOnUpdate();
         });
     }
 

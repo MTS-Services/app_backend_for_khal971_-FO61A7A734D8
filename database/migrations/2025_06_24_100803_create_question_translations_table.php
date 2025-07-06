@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('explanation')->nullable();
             $table->timestamps();
 
-            $table->foreign('question_id')->references('id')->on('questions')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('question_id')->references('id')->on('questions')->nullOnDelete()->cascadeOnUpdate();
             $table->unique(['question_id', 'language']);
         });
     }
