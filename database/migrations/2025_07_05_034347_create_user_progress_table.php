@@ -17,8 +17,8 @@ return new class extends Migration
         Schema::create('user_progress', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->index()->nullable();
-            $table->string('content_type', 50);
-            $table->bigInteger('content_id');
+            $table->string('content_type', 50)->index();
+            $table->bigInteger('content_id')->index();
 
             $table->integer('total_items')->default(0);
             $table->integer('completed_items')->default(0);
@@ -44,8 +44,7 @@ return new class extends Migration
             $this->addAuditColumns($table);
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete()->cascadeOnDelete();
 
-            $table->index(['content_type', 'content_id']);
-            // $table->unique(['user_id', 'content_type', 'content_id']);
+            $table->unique(['user_id', 'content_type', 'content_id']);
         });
     }
 

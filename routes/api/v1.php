@@ -70,3 +70,5 @@ Route::post('user-progress', [UserProgressController::class, 'storeOrUpdateUserP
 Route::get('/user-progress-list', [UserProgressController::class, 'index']);
 
 Route::apiResource('user-item-progress', UserItemProgressController::class);
+Route::get('user-item-progress/toggle-bookmark/{bookmark}', [UserItemProgressController::class, 'toggleBookmark'])->name('toggle-bookmark');
+Route::get('user-item-progress/toggle-flag/{flag}', [UserItemProgressController::class, 'toggleFlag'])->name('toggle-flag');

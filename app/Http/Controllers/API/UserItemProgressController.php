@@ -165,12 +165,12 @@ class UserItemProgressController extends Controller
     /**
      * Update existing progress.
      */
-    public function update(UserItemProgressRequest $request, int $id): JsonResponse
+    public function update(UserItemProgressRequest $request, UserItemProgresss $user_item_progress): JsonResponse
     {
         $data = $request->validated();
 
         try {
-            $progress = $this->progressService->updateStatus($id, $data['status'], $data);
+            $progress = $this->progressService->updateStatus($user_item_progress->id, $data['status'], $data);
 
             return response()->json([
                 'success' => true,
@@ -189,42 +189,38 @@ class UserItemProgressController extends Controller
     /**
      * Add time spent to progress.
      */
-    public function addTimeSpent(Request $request, int $id): JsonResponse
-    {
-        $request->validate([
-            'seconds' => 'required|integer|min:1|max:86400', // Max 24 hours
-        ]);
+    // public function addTimeSpent(Request $request, int $id): JsonResponse
+    // {
+    //     $request->validate([
+    //         'seconds' => 'required|integer|min:1|max:86400', // Max 24 hours
+    //     ]);
 
-        try {
-            $progress = $this->progressService->addTimeSpent($id, $request->input('seconds'));
+    //     try {
+    //         $progress = $this->progressService->addTimeSpent($id, $request->input('seconds'));
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Time spent updated successfully.',
-                'data' => new UserItemProgressResource($progress),
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update time spent.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Time spent updated successfully.',
+    //             'data' => new UserItemProgressResource($progress),
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Failed to update time spent.',
+    //             'error' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
 
     /**
      * Toggle bookmark status.
      */
-    public function toggleBookmark(int $id): JsonResponse
+    public function toggleBookmark(UserItemProgresss $bookmark): JsonResponse
     {
         try {
-            $progress = $this->progressService->toggleBookmark($id);
+            $progress = $this->progressService->toggleBookmark($bookmark->id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Bookmark toggled successfully.',
-                'data' => new UserItemProgressResource($progress),
-            ]);
+            return sendResponse(true, 'Bookmark toggled successfully', ['is_bookmarked' => $progress->is_bookmarked], Response::HTTP_OK);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -237,118 +233,111 @@ class UserItemProgressController extends Controller
     /**
      * Toggle flag status.
      */
-    public function toggleFlag(int $id): JsonResponse
+    public function toggleFlag(UserItemProgresss $flag): JsonResponse
     {
         try {
-            $progress = $this->progressService->toggleFlag($id);
+            $progress = $this->progressService->toggleFlag($flag->id);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Flag toggled successfully.',
-                'data' => new UserItemProgressResource($progress),
-            ]);
+            return sendResponse(true, 'Flag toggled successfully', ['is_flagged' => $progress->is_flagged], Response::HTTP_OK);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to toggle flag.',
-                'error' => $e->getMessage(),
-            ], 500);
+            Log::error($e->getMessage());
+            return sendResponse(false, 'Failed to toggle flag', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
     /**
      * Update notes for progress.
      */
-    public function updateNotes(Request $request, int $id): JsonResponse
-    {
-        $request->validate([
-            'notes' => 'required|string|max:1000',
-        ]);
+    // public function updateNotes(Request $request, int $id): JsonResponse
+    // {
+    //     $request->validate([
+    //         'notes' => 'required|string|max:1000',
+    //     ]);
 
-        try {
-            $progress = $this->progressService->updateNotes($id, $request->input('notes'));
+    //     try {
+    //         $progress = $this->progressService->updateNotes($id, $request->input('notes'));
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Notes updated successfully.',
-                'data' => new UserItemProgressResource($progress),
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to update notes.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Notes updated successfully.',
+    //             'data' => new UserItemProgressResource($progress),
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Failed to update notes.',
+    //             'error' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
 
     /**
      * Get progress statistics.
      */
-    public function statistics(Request $request): JsonResponse
-    {
-        $request->validate([
-            'item_type' => 'nullable|string|in:question,lesson,video,quiz',
-            'parent_progress_id' => 'nullable|integer|exists:user_progress,id',
-        ]);
+    // public function statistics(Request $request): JsonResponse
+    // {
+    //     $request->validate([
+    //         'item_type' => 'nullable|string|in:question,lesson,video,quiz',
+    //         'parent_progress_id' => 'nullable|integer|exists:user_progress,id',
+    //     ]);
 
-        $userId = Auth::id();
-        $filters = $request->only(['item_type', 'parent_progress_id']);
+    //     $userId = Auth::id();
+    //     $filters = $request->only(['item_type', 'parent_progress_id']);
 
-        $statistics = $this->progressService->getProgressStatistics($userId, $filters);
+    //     $statistics = $this->progressService->getProgressStatistics($userId, $filters);
 
-        return response()->json([
-            'success' => true,
-            'data' => $statistics,
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => $statistics,
+    //     ]);
+    // }
 
     /**
      * Bulk update progress for multiple items.
      */
-    public function bulkUpdate(UserItemProgressRequest $request): JsonResponse
-    {
-        $userId = Auth::id();
-        $items = $request->validated()['items'];
+    // public function bulkUpdate(UserItemProgressRequest $request): JsonResponse
+    // {
+    //     $userId = Auth::id();
+    //     $items = $request->validated()['items'];
 
-        try {
-            $updatedItems = $this->progressService->bulkUpdateProgress($userId, $items);
+    //     try {
+    //         $updatedItems = $this->progressService->bulkUpdateProgress($userId, $items);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Progress updated successfully for ' . $updatedItems->count() . ' items.',
-                'data' => UserItemProgressResource::collection($updatedItems),
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to bulk update progress.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Progress updated successfully for ' . $updatedItems->count() . ' items.',
+    //             'data' => UserItemProgressResource::collection($updatedItems),
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Failed to bulk update progress.',
+    //             'error' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
 
     /**
      * Get progress for multiple items.
      */
-    public function getMultipleItems(Request $request): JsonResponse
-    {
-        $request->validate([
-            'items' => 'required|array|min:1|max:50',
-            'items.*.type' => 'required|string|in:question,lesson,video,quiz',
-            'items.*.id' => 'required|integer|min:1',
-        ]);
+    // public function getMultipleItems(Request $request): JsonResponse
+    // {
+    //     $request->validate([
+    //         'items' => 'required|array|min:1|max:50',
+    //         'items.*.type' => 'required|string|in:question,lesson,video,quiz',
+    //         'items.*.id' => 'required|integer|min:1',
+    //     ]);
 
-        $userId = Auth::id();
-        $items = $request->input('items');
+    //     $userId = Auth::id();
+    //     $items = $request->input('items');
 
-        $progress = $this->progressService->getUserProgressForItems($userId, $items);
+    //     $progress = $this->progressService->getUserProgressForItems($userId, $items);
 
-        return response()->json([
-            'success' => true,
-            'data' => UserItemProgressResource::collection($progress),
-        ]);
-    }
+    //     return response()->json([
+    //         'success' => true,
+    //         'data' => UserItemProgressResource::collection($progress),
+    //     ]);
+    // }
 
     /**
      * Get progress by parent progress ID.
@@ -357,10 +346,7 @@ class UserItemProgressController extends Controller
     {
         $progress = $this->progressService->getProgressByParent($parentProgressId);
 
-        return response()->json([
-            'success' => true,
-            'data' => UserItemProgressResource::collection($progress),
-        ]);
+        return sendResponse(true, 'Progress fetched successfully', UserItemProgressResource::collection($progress), Response::HTTP_OK);
     }
 
     /**
@@ -372,22 +358,13 @@ class UserItemProgressController extends Controller
             $deleted = $this->progressService->deleteProgress($id);
 
             if (!$deleted) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Progress record not found.',
-                ], 404);
+                return sendResponse(false, 'Failed to delete progress', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Progress deleted successfully.',
-            ]);
+            return sendResponse(true, 'Progress deleted successfully', null, Response::HTTP_OK);
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to delete progress.',
-                'error' => $e->getMessage(),
-            ], 500);
+            Log::error($e->getMessage());
+            return sendResponse(false, 'Failed to delete progress', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

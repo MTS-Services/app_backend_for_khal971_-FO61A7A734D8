@@ -79,10 +79,8 @@ public function rules(): array
     {
         return [
             'parent_progress_id' => 'nullable|integer|exists:user_progress,id',
-            'item_type' => 'required|string|in:' . implode(',', UserItemProgresss::getItemTypes()),
             'item_id' => 'required|integer|min:1',
             'item_order' => 'nullable|integer|min:0',
-            'status' => 'required|integer|in:' . implode(',', UserItemProgresss::getStatuses()),
             'attempts' => 'nullable|integer|min:0',
             'correct_attempts' => 'nullable|integer|min:0',
             'time_spent' => 'nullable|integer|min:0',
@@ -90,56 +88,24 @@ public function rules(): array
             'is_bookmarked' => 'nullable|boolean',
             'is_flagged' => 'nullable|boolean',
             'notes' => 'nullable|string|max:1000',
-        ]+($this->isMethod('PUT') ? $this->update() : $this->store());
+        ]+($this->isMethod('POST') ? $this->store()  : $this->update());
     }
-}
+    public function store(): array
+    {
+        return [
+            'item_type' => 'required|string|in:' . implode(',', UserItemProgresss::getItemTypes()),
+            'status' => 'required|integer|in:' . implode(',', UserItemProgresss::getStatuses()),
+        ];
+    }
 
 
-// class UpdateUserItemProgressRequest extends FormRequest
-// {
-//     public function rules(): array
-//     {
-//         return [
-//             'status' => 'required|integer|in:' . implode(',', UserItemProgress::getStatuses()),
-//             'attempts' => 'nullable|integer|min:0',
-//             'correct_attempts' => 'nullable|integer|min:0',
-//             'time_spent' => 'nullable|integer|min:0',
-//             'score' => 'nullable|numeric|min:0|max:100',
-//             'is_bookmarked' => 'nullable|boolean',
-//             'is_flagged' => 'nullable|boolean',
-//             'notes' => 'nullable|string|max:1000',
-//         ];
-//     }
+ public function update(): array
+    {
+        return [
+            'status' => 'required|integer|in:' . implode(',', UserItemProgresss::getStatuses()),
+        ];
+    }
 
-//     /**
-//      * Get custom messages for validator errors.
-//      */
-//     public function messages(): array
-//     {
-//         $statusLabels = UserItemProgress::getStatusLabels();
-//         return [
-//             'status.in' => 'The status must be one of: ' . implode(', ', array_values($statusLabels)),
-//             'score.min' => 'The score must be at least 0.',
-//             'score.max' => 'The score must not exceed 100.',
-//             'notes.max' => 'The notes field must not exceed 1000 characters.',
-//         ];
-//     }
-
-//     /**
-//      * Configure the validator instance.
-//      */
-//     public function withValidator($validator): void
-//     {
-//         $validator->after(function ($validator) {
-//             // Validate correct_attempts is not greater than attempts
-//             if ($this->has('attempts') && $this->has('correct_attempts')) {
-//                 if ($this->input('correct_attempts') > $this->input('attempts')) {
-//                     $validator->errors()->add('correct_attempts', 'Correct attempts cannot be greater than total attempts.');
-//                 }
-//             }
-//         });
-//     }
-// }
 
 // class BulkUpdateProgressRequest extends FormRequest
 // {
@@ -199,3 +165,4 @@ public function rules(): array
    
     
 // }
+}

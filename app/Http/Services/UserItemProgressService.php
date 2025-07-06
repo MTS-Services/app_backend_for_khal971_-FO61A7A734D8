@@ -95,6 +95,7 @@ class UserItemProgressService
                     'item_type' => $data['item_type'],
                     'item_id' => $data['item_id'],
                 ],
+                $data['created_by'] = Auth::id(),
                 $data
             );
 

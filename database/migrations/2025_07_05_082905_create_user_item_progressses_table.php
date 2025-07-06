@@ -44,8 +44,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete()->cascadeOnUpdate();
             $table->foreign('parent_progress_id')->references('id')->on('user_item_progress')->nullOnDelete()->cascadeOnUpdate();;
 
-            // Indexes
-            // $table->unique(['user_id', 'item_type', 'item_id']);
+            $table->unique(['user_id', 'item_type', 'item_id']);
         });
     }
 
