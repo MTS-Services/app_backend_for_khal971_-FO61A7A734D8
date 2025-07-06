@@ -48,7 +48,7 @@ class UserItemProgressRequest extends BaseRequest
     //         'item_id' => [
     //             'required',
     //             'integer',
-    //             Rule::unique('user_item_progresses')
+    //             Rule::unique('user_item_progress')
     //                 ->where(function ($query) {
     //                     return $query
     //                         ->where('user_id', Auth::id()) // or $this->user_id
@@ -64,7 +64,7 @@ class UserItemProgressRequest extends BaseRequest
     //     'item_id' => [
     //         'required',
     //         'integer',
-    //         Rule::unique('user_item_progresses')
+    //         Rule::unique('user_item_progress')
     //             ->where(function ($query) {
     //                 return $query
     //                     ->where('user_id', Auth::id()) // or $this->user_id if coming from request

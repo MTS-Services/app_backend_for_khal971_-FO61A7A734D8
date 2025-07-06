@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use Carbon\Carbon;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -38,6 +37,6 @@ class UserItemProgressSeeder extends Seeder
             ];
         }
 
-        DB::table('user_item_progresses')->insert($progressData);
+        DB::table('user_item_progress')->insert($progressData);
     }
 }

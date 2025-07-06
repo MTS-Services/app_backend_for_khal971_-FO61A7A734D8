@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserItemProgresss extends BaseModel
 // {
-//     protected $table = 'user_item_progresses';
+//     protected $table = 'user_item_progress';
 
 //     protected $fillable = [
 //         'user_id',
@@ -220,7 +220,7 @@ class UserItemProgresss extends BaseModel
 
 {
 
-    protected $table = 'user_item_progresses';
+    protected $table = 'user_item_progress';
 
     protected $fillable = [
         'user_id',
