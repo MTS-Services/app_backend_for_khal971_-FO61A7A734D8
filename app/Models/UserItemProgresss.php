@@ -2,9 +2,224 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserItemProgresss extends BaseModel
+// {
+//     protected $table = 'user_item_progresses';
+
+//     protected $fillable = [
+//         'user_id',
+//         'parent_progress_id',
+//         'item_type',
+//         'item_id',
+//         'item_order',
+//         'status',
+//         'attempts',
+//         'correct_attempts',
+//         'time_spent',
+//         'first_accessed_at',
+//         'last_accessed_at',
+//         'completed_at',
+//         'score',
+//         'is_bookmarked',
+//         'is_flagged',
+//         'notes',
+//     ];
+
+//     protected $casts = [
+//         'is_bookmarked' => 'boolean',
+//         'is_flagged' => 'boolean',
+//         'first_accessed_at' => 'datetime',
+//         'last_accessed_at' => 'datetime',
+//         'completed_at' => 'datetime',
+//     ];
+
+//     public const STATUS_NOT_STARTED = 1;
+//     public const STATUS_IN_PROGRESS = 2;
+//     public const STATUS_COMPLETED = 3;
+//     public const STATUS_MASTERED = 4;
+
+//     public static function getStatusList(): array
+//     {
+//         return [
+//             self::STATUS_NOT_STARTED => 'Not Started',
+//             self::STATUS_IN_PROGRESS => 'In Progress',
+//             self::STATUS_COMPLETED => 'Completed',
+//             self::STATUS_MASTERED => 'Mastered',
+//         ];
+//     }
+
+//     public function getStatusListAttribute(): array
+//     {
+//         return self::getStatusList();
+//     }
+
+//       public static function getItemTypes(): array
+//     {
+//         return [
+//             self::TYPE_QUIZ => 'Quiz',
+//             self::TYPE_COURSE => 'Course',
+//         ];
+//     }
+// }
+
+// {
+
+//     protected $table = 'user_item_progress';
+
+//     protected $fillable = [
+//         'user_id',
+//         'parent_progress_id',
+//         'item_type',
+//         'item_id',
+//         'item_order',
+//         'status',
+//         'attempts',
+//         'correct_attempts',
+//         'time_spent',
+//         'first_accessed_at',
+//         'last_accessed_at',
+//         'completed_at',
+//         'score',
+//         'is_bookmarked',
+//         'is_flagged',
+//         'notes',
+//     ];
+
+//     protected $casts = [
+//         'user_id' => 'integer',
+//         'parent_progress_id' => 'integer',
+//         'item_id' => 'integer',
+//         'item_order' => 'integer',
+//         'attempts' => 'integer',
+//         'correct_attempts' => 'integer',
+//         'time_spent' => 'integer',
+//         'first_accessed_at' => 'datetime',
+//         'last_accessed_at' => 'datetime',
+//         'completed_at' => 'datetime',
+//         'score' => 'decimal:2',
+//         'is_bookmarked' => 'boolean',
+//         'is_flagged' => 'boolean',
+//     ];
+
+//     // Status constants
+//     const STATUS_NOT_STARTED = 'not_started';
+//     const STATUS_VIEWED = 'viewed';
+//     const STATUS_ATTEMPTED = 'attempted';
+//     const STATUS_COMPLETED = 'completed';
+//     const STATUS_CORRECT = 'correct';
+//     const STATUS_INCORRECT = 'incorrect';
+//     const STATUS_SKIPPED = 'skipped';
+
+//     // Item type constants
+//     const ITEM_TYPE_QUESTION = 'question';
+//     const ITEM_TYPE_LESSON = 'lesson';
+//     const ITEM_TYPE_VIDEO = 'video';
+//     const ITEM_TYPE_QUIZ = 'quiz';
+
+//     public static function getStatuses(): array
+//     {
+//         return [
+//             self::STATUS_NOT_STARTED,
+//             self::STATUS_VIEWED,
+//             self::STATUS_ATTEMPTED,
+//             self::STATUS_COMPLETED,
+//             self::STATUS_CORRECT,
+//             self::STATUS_INCORRECT,
+//             self::STATUS_SKIPPED,
+//         ];
+//     }
+
+//     public static function getItemTypes(): array
+//     {
+//         return [
+//             self::ITEM_TYPE_QUESTION,
+//             self::ITEM_TYPE_LESSON,
+//             self::ITEM_TYPE_VIDEO,
+//             self::ITEM_TYPE_QUIZ,
+//         ];
+//     }
+
+//     /**
+//      * Get the user that owns the progress.
+//      */
+//     public function user(): BelongsTo
+//     {
+//         return $this->belongsTo(User::class);
+//     }
+
+//     /**
+//      * Get the parent progress record.
+//      */
+//     public function parentProgress(): BelongsTo
+//     {
+//         return $this->belongsTo(UserProgress::class, 'parent_progress_id');
+//     }
+
+//     /**
+//      * Scope a query to only include records for a specific user.
+//      */
+//     public function scopeForUser($query, int $userId)
+//     {
+//         return $query->where('user_id', $userId);
+//     }
+
+//     /**
+//      * Scope a query to only include records for a specific item type.
+//      */
+//     public function scopeForItemType($query, string $itemType)
+//     {
+//         return $query->where('item_type', $itemType);
+//     }
+
+//     /**
+//      * Scope a query to only include records with a specific status.
+//      */
+//     public function scopeWithStatus($query, string $status)
+//     {
+//         return $query->where('status', $status);
+//     }
+
+//     /**
+//      * Scope a query to only include completed items.
+//      */
+//     public function scopeCompleted($query)
+//     {
+//         return $query->whereIn('status', [self::STATUS_COMPLETED, self::STATUS_CORRECT]);
+//     }
+
+//     /**
+//      * Scope a query to only include bookmarked items.
+//      */
+//     public function scopeBookmarked($query)
+//     {
+//         return $query->where('is_bookmarked', true);
+//     }
+
+//     /**
+//      * Check if the item is completed.
+//      */
+//     public function isCompleted(): bool
+//     {
+//         return in_array($this->status, [self::STATUS_COMPLETED, self::STATUS_CORRECT]);
+//     }
+
+//     /**
+//      * Calculate completion percentage.
+//      */
+//     public function getCompletionPercentage(): float
+//     {
+//         if ($this->attempts === 0) {
+//             return 0;
+//         }
+
+//         return ($this->correct_attempts / $this->attempts) * 100;
+//     }
+// }
+
 {
+
     protected $table = 'user_item_progresses';
 
     protected $fillable = [
@@ -27,30 +242,150 @@ class UserItemProgresss extends BaseModel
     ];
 
     protected $casts = [
-        'is_bookmarked' => 'boolean',
-        'is_flagged' => 'boolean',
+        'user_id' => 'integer',
+        'parent_progress_id' => 'integer',
+        'item_id' => 'integer',
+        'item_order' => 'integer',
+        'attempts' => 'integer',
+        'correct_attempts' => 'integer',
+        'time_spent' => 'integer',
         'first_accessed_at' => 'datetime',
         'last_accessed_at' => 'datetime',
         'completed_at' => 'datetime',
+        'score' => 'decimal:2',
+        'is_bookmarked' => 'boolean',
+        'is_flagged' => 'boolean',
     ];
 
-    public const STATUS_NOT_STARTED = 1;
-    public const STATUS_IN_PROGRESS = 2;
-    public const STATUS_COMPLETED = 3;
-    public const STATUS_MASTERED = 4;
+    // Status constants
+    const STATUS_NOT_STARTED = 0;
+    const STATUS_VIEWED = 1;
+    const STATUS_ATTEMPTED = 2;
+    const STATUS_COMPLETED = 3;
+    const STATUS_CORRECT = 4;
+    const STATUS_INCORRECT = 5;
+    const STATUS_SKIPPED = 6;
 
-    public static function getStatusList(): array
+    // Item type constants
+    const ITEM_TYPE_QUESTION = 'question';
+    const ITEM_TYPE_LESSON = 'lesson';
+    const ITEM_TYPE_VIDEO = 'video';
+    const ITEM_TYPE_QUIZ = 'quiz';
+
+    public static function getStatuses(): array
     {
         return [
-            self::STATUS_NOT_STARTED => 'Not Started',
-            self::STATUS_IN_PROGRESS => 'In Progress',
-            self::STATUS_COMPLETED => 'Completed',
-            self::STATUS_MASTERED => 'Mastered',
+            self::STATUS_NOT_STARTED,
+            self::STATUS_VIEWED,
+            self::STATUS_ATTEMPTED,
+            self::STATUS_COMPLETED,
+            self::STATUS_CORRECT,
+            self::STATUS_INCORRECT,
+            self::STATUS_SKIPPED,
         ];
     }
 
-    public function getStatusListAttribute(): array
+    public static function getStatusLabels(): array
     {
-        return self::getStatusList();
+        return [
+            self::STATUS_NOT_STARTED => 'not_started',
+            self::STATUS_VIEWED => 'viewed',
+            self::STATUS_ATTEMPTED => 'attempted',
+            self::STATUS_COMPLETED => 'completed',
+            self::STATUS_CORRECT => 'correct',
+            self::STATUS_INCORRECT => 'incorrect',
+            self::STATUS_SKIPPED => 'skipped',
+        ];
+    }
+
+    public function getStatusLabelAttribute(): string
+    {
+        return self::getStatusLabels()[$this->status] ?? 'unknown';
+    }
+
+    public static function getItemTypes(): array
+    {
+        return [
+            self::ITEM_TYPE_QUESTION,
+            self::ITEM_TYPE_LESSON,
+            self::ITEM_TYPE_VIDEO,
+            self::ITEM_TYPE_QUIZ,
+        ];
+    }
+
+    /**
+     * Get the user that owns the progress.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the parent progress record.
+     */
+    public function parentProgress(): BelongsTo
+    {
+        return $this->belongsTo(UserProgress::class, 'parent_progress_id');
+    }
+
+    /**
+     * Scope a query to only include records for a specific user.
+     */
+    public function scopeForUser($query, int $userId)
+    {
+        return $query->where('user_id', $userId);
+    }
+
+    /**
+     * Scope a query to only include records for a specific item type.
+     */
+    public function scopeForItemType($query, string $itemType)
+    {
+        return $query->where('item_type', $itemType);
+    }
+
+    /**
+     * Scope a query to only include records with a specific status.
+     */
+    public function scopeWithStatus($query, string $status)
+    {
+        return $query->where('status', $status);
+    }
+
+    /**
+     * Scope a query to only include completed items.
+     */
+    public function scopeCompleted($query)
+    {
+        return $query->whereIn('status', [self::STATUS_COMPLETED, self::STATUS_CORRECT]);
+    }
+
+    /**
+     * Scope a query to only include bookmarked items.
+     */
+    public function scopeBookmarked($query)
+    {
+        return $query->where('is_bookmarked', true);
+    }
+
+    /**
+     * Check if the item is completed.
+     */
+    public function isCompleted(): bool
+    {
+        return in_array($this->status, [self::STATUS_COMPLETED, self::STATUS_CORRECT]);
+    }
+
+    /**
+     * Calculate completion percentage.
+     */
+    public function getCompletionPercentage(): float
+    {
+        if ($this->attempts === 0) {
+            return 0;
+        }
+
+        return ($this->correct_attempts / $this->attempts) * 100;
     }
 }

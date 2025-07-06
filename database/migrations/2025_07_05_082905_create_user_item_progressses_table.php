@@ -14,7 +14,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_item_progresses', function (Blueprint $table) {
+        Schema::create('user_item_progress', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->index()->nullable();
             $table->unsignedBigInteger('parent_progress_id')->index()->nullable();
@@ -42,7 +42,7 @@ return new class extends Migration
 
             // Foreign Keys
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->foreign('parent_progress_id')->references('id')->on('user_item_progresses')->nullOnDelete()->cascadeOnUpdate();;
+            $table->foreign('parent_progress_id')->references('id')->on('user_item_progress')->nullOnDelete()->cascadeOnUpdate();;
 
             // Indexes
             // $table->unique(['user_id', 'item_type', 'item_id']);
@@ -54,6 +54,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_item_progresses');
+        Schema::dropIfExists('user_item_progress');
     }
 };

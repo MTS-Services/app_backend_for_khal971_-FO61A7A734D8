@@ -45,7 +45,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete()->cascadeOnDelete();
 
             $table->index(['content_type', 'content_id']);
-            $table->unique(['user_id', 'content_type', 'content_id']);
+            // $table->unique(['user_id', 'content_type', 'content_id']);
         });
     }
 
