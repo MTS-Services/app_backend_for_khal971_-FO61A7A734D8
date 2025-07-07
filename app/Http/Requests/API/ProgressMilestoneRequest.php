@@ -26,7 +26,7 @@ class ProgressMilestoneRequest extends BaseRequest
             'threshold_value' => 'required|numeric|min:0',
             'requirement_description' => 'required|string|max:65535',
             'badge_name' => 'nullable|string|max:100',
-            'badge_icon' => 'nullable|string|',
+            'badge_icon' => 'nullable|file',
             'points_reward' => 'nullable|integer|min:0',
             'title' => 'required|string|max:200',
             'description' => 'nullable|string|max:65535',

@@ -50,12 +50,12 @@ class ProgressMilestoneService
         try {
             $data['created_by'] = $this->user->id;
             if ($file) {
-                $data['badge_icon'] = $this->fileService->uploadFile($file, 'milestones', $data['name']);
+                $data['badge_icon'] = $this->fileService->uploadFile($file, 'milestones', $data['content_type']);
             }
             return DB::transaction(function () use ($data) {
                 $milestone = ProgressMilestone::create($data);
                 ProgressMilestoneTranslation::create([
-                    'milestone_id' => $milestone->id,
+                    'progress_milestone_id' => $milestone->id,
                     'language' => $this->lang,
                     'content_type' => $data['content_type'] ?? '',
                     'milestone_type' => $data['milestone_type'] ?? '',
@@ -66,7 +66,7 @@ class ProgressMilestoneService
                     'badge_name' => $data['badge_name'] ?? null,
 
                 ]);
-                TranslateModelJob::dispatch(ProgressMilestone::class, ProgressMilestoneTranslation::class, 'milestone_id', $milestone->id, ['name'], $this->lang);
+                TranslateModelJob::dispatch(ProgressMilestone::class, ProgressMilestoneTranslation::class, 'progress_milestone_id', $milestone->id, ['content_type', 'milestone_type', 'requirement_description', 'title', 'description', 'celebration_message', 'badge_name'], $this->lang);
                 $milestone = $milestone->refresh()->loadTranslation($this->lang);
                 return $milestone;
             });
@@ -76,17 +76,17 @@ class ProgressMilestoneService
         }
     }
 
-    public function update(ProgressMilestone $milestone, $data , $file = null): ProgressMilestone|null
+    public function updateMilestone(ProgressMilestone $milestone, $data , $file = null): ProgressMilestone|null
     {
         try{
             $data['updated_by'] = $this->user->id;
             if ($file) {
-                $data['badge_icon'] = $this->fileService->uploadFile($file, 'milestones', $data['name']);
+                $data['badge_icon'] = $this->fileService->uploadFile($file, 'milestones', $data['content_type']);
                 $this->fileService->fileDelete($milestone->badge_icon);
             }
             return DB::transaction(function () use ($milestone, $data) {
                 $milestone->update($data);
-                ProgressMilestoneTranslation::where('milestone_id', $milestone->id)->where('language', $this->lang)->update([
+                ProgressMilestoneTranslation::where('progress_milestone_id', $milestone->id)->where('language', $this->lang)->update([
                     'content_type' => $data['content_type'] ?? '',
                     'milestone_type' => $data['milestone_type'] ?? '',
                     'requirement_description' => $data['requirement_description']?? '',
@@ -95,7 +95,7 @@ class ProgressMilestoneService
                     'celebration_message' => $data['celebration_message'] ?? null,
                     'badge_name' => $data['badge_name'] ?? null,
                 ]);
-                TranslateModelJob::dispatch(ProgressMilestone::class, ProgressMilestoneTranslation::class, 'milestone_id', $milestone->id, ['name'], $this->lang);
+                TranslateModelJob::dispatch(ProgressMilestone::class, ProgressMilestoneTranslation::class, 'progress_milestone_id', $milestone->id, ['content_type', 'milestone_type', 'requirement_description', 'title', 'description', 'celebration_message', 'badge_name'], $this->lang);
                 $milestone = $milestone->refresh()->loadTranslation($this->lang);
                 return $milestone;
             });
@@ -151,14 +151,6 @@ class ProgressMilestoneService
             ->get();
     }
 
-    /**
-     * Update an existing milestone
-     */
-    public function updateMilestone(ProgressMilestone $milestone, array $data): ProgressMilestone
-    {
-        $milestone->update($data);
-        return $milestone->fresh();
-    }
 
     /**
      * Delete a milestone (soft delete by setting is_active to false)

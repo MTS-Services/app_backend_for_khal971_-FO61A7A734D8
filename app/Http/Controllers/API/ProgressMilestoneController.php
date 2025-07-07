@@ -45,7 +45,8 @@ class ProgressMilestoneController extends Controller
     {
         try {
             $validated = $request->validated();
-            $milestone = $this->milestoneService->createMilestone($validated);
+            $file = $request->file('badge_icon') ? $request->file('badge_icon') : null;
+            $milestone = $this->milestoneService->createMilestone($validated, $file);
             if (!$milestone) {
                 return sendResponse(false, 'Failed to create milestone', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
@@ -76,12 +77,13 @@ class ProgressMilestoneController extends Controller
     /**
      * Update the specified milestone
      */
-    public function update(ProgressMilestoneRequest $request, ProgressMilestone $milestone): JsonResponse
+    public function update(ProgressMilestoneRequest $request, ProgressMilestone $progress_milestone): JsonResponse
     {
-
         try {
             $validated = $request->validated();
-            $updatedMilestone = $this->milestoneService->updateMilestone($milestone, $validated);
+            $file = $request->file('badge_icon') ? $request->file('badge_icon') : null;
+            $updatedMilestone = $this->milestoneService->updateMilestone($progress_milestone, $validated , $file);
+        
 
             return response()->json([
                 'success' => true,
@@ -113,121 +115,6 @@ class ProgressMilestoneController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to delete milestone',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Hard delete the specified milestone
-     */
-    public function forceDelete(ProgressMilestone $milestone): JsonResponse
-    {
-        try {
-            $this->milestoneService->hardDeleteMilestone($milestone);
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Milestone permanently deleted',
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to permanently delete milestone',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Reorder milestones
-     */
-    public function reorder(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'milestone_ids' => 'required|array',
-            'milestone_ids.*' => 'required|integer|exists:progress_milestones,id',
-        ]);
-
-        try {
-            $result = $this->milestoneService->reorderMilestones($validated['milestone_ids']);
-
-            if ($result) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Milestones reordered successfully',
-                ]);
-            }
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to reorder milestones',
-            ], 500);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to reorder milestones',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Get milestone statistics
-     */
-    public function stats(): JsonResponse
-    {
-        try {
-            $stats = $this->milestoneService->getMilestoneStats();
-
-            return response()->json([
-                'success' => true,
-                'data' => $stats,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to retrieve milestone statistics',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Get available content types and milestone types
-     */
-    public function options(): JsonResponse
-    {
-        return response()->json([
-            'success' => true,
-            'data' => [
-                'content_types' => ProgressMilestoneTranslation::getContentTypes(),
-                'milestone_types' => ProgressMilestoneTranslation::getMilestoneTypes(),
-            ],
-        ]);
-    }
-
-    /**
-     * Check user milestone achievements
-     */
-    public function checkAchievements(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'user_progress' => 'required|array',
-            'user_progress.*' => 'required|array',
-        ]);
-
-        try {
-            $achievedMilestones = $this->milestoneService->getAchievedMilestones($validated['user_progress']);
-
-            return response()->json([
-                'success' => true,
-                'data' => $achievedMilestones,
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to check milestone achievements',
                 'error' => $e->getMessage(),
             ], 500);
         }
