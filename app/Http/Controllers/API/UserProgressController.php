@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\UserProgressRequest;
 use App\Http\Services\UserProgressService;
+use App\Models\UserProgress;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,7 +23,7 @@ class UserProgressController extends Controller
      public function index(Request $request)
     {
         try {
-            $query = $this->userProgressService->getUserProgress();
+            $query = $this->userProgressService->getUserProgress()->get();
 
         // Optional Filters
         if ($request->has('user_id')) {

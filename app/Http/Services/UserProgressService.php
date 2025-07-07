@@ -22,17 +22,17 @@ class UserProgressService
         return $query->orderBy( $direction)->latest();
     }
 
-    // public function getProgress($contentType, $contentId): ?UserProgress
-    // {
-    //     $user_progress = UserProgress::query();
-    //     if (!($this->user->is_admin)) {
-    //         $user_progress->free()->take(12);
-    //     }
-    //     return $user_progress->where('user_id', $this->user->id)
-    //         ->where('content_type', $contentType)
-    //         ->where('content_id', $contentId)
-    //         ->first();
-    // }
+    public function getProgress($contentType, $contentId): ?UserProgress
+    {
+        $user_progress = UserProgress::query();
+        if (!($this->user->is_admin)) {
+            $user_progress->free()->take(12);
+        }
+        return $user_progress->where('user_id', $this->user->id)
+            ->where('content_type', $contentType)
+            ->where('content_id', $contentId)
+            ->first();
+    }
 
      public function createOrUpdateUserProgress(array $data): UserProgress
     {

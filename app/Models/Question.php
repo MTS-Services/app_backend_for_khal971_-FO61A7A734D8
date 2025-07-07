@@ -40,7 +40,7 @@ class Question extends BaseModel
             // 'tags',
         ]);
     }
-    public function question_details(): BelongsTo
+    public function questionDetails(): BelongsTo
     {
         return $this->belongsTo(QuestionDetails::class, 'question_details_id', 'id');
     }

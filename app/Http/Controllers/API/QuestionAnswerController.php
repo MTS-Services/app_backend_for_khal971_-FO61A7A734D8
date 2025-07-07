@@ -24,7 +24,7 @@ class QuestionAnswerController extends Controller
     public function index(): JsonResponse
     {
         try{
-            $questionAnswers = $this->questionAnswerService->getQuestionAnswers()->with('user', 'question.question_details.topic.course.subject')->get();
+            $questionAnswers = $this->questionAnswerService->getQuestionAnswers()->with('user', 'question.questionDetails.topic.course.subject')->get();
             // dd($questionAnswers);
             if (empty($questionAnswers)) {
                 return sendResponse(false, 'No question answers found', null, Response::HTTP_NOT_FOUND);
@@ -67,7 +67,7 @@ class QuestionAnswerController extends Controller
     public function show(QuestionAnswer $question_answer)
     {
         try{
-            $question_answer = $this->questionAnswerService->getQuestionAnswer($question_answer->id)->load('user', 'question.question_details.topic.course.subject');
+            $question_answer = $this->questionAnswerService->getQuestionAnswer($question_answer->id)->load('user', 'question.questionDetails.topic.course.subject');
             if (!$question_answer) {
                 return sendResponse(false, 'Question answer not found', null, Response::HTTP_NOT_FOUND);
             }

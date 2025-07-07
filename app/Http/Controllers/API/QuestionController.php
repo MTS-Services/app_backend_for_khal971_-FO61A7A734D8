@@ -27,7 +27,7 @@ class QuestionController extends Controller
     public function index(): JsonResponse
     {
         try{
-            $questions = $this->questionService->getQuestions()->with('question_details.topic.course.subject')->get();
+            $questions = $this->questionService->getQuestions()->with('questionDetails.topic.course.subject')->get();
             return sendResponse(true, 'Question list fetched successfully', $questions, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question List Error: ' . $e->getMessage());
@@ -67,7 +67,7 @@ class QuestionController extends Controller
     public function show(Question $question): JsonResponse
     {
         try{
-            $question = $this->questionService->getQuestion($question->id)->load('question_details.topic.course.subject');
+            $question = $this->questionService->getQuestion($question->id)->load('questionDetails.topic.course.subject');
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
             }
