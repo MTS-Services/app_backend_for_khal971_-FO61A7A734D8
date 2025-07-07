@@ -51,7 +51,7 @@ class SubjectRequest extends BaseRequest
                 Rule::unique('subject_translations')->where(
                     fn($query) => $query
                         ->where('language', defaultLang())
-                        ->where('subject_id', '!=', $subjectId)
+                        ->where('subject_id', '!=', $subjectId->id)
                 ),
             ],
         ];
