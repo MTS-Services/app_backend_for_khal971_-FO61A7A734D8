@@ -22,7 +22,6 @@ class QuestionDetailsRequest extends BaseRequest
     {
         return [
             'topic_id' => 'required|exists:topics,id',
-            'question_detail_id' => 'required|exists:question_details,id',
             'title' => 'required|string|max:500',
             'description' => 'nullable|string',
             'file' => 'nullable|string',

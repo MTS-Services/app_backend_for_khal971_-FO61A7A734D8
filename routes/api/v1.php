@@ -17,6 +17,7 @@ use App\Http\Controllers\API\TopicController;
 use App\Http\Controllers\API\UserSubjectController;
 use App\Http\Controllers\API\UserClassController;
 use App\Http\Controllers\API\UserItemProgressController;
+use App\Http\Controllers\API\UserMilestoneAchievementController;
 use App\Http\Controllers\API\UserProgressController;
 
 Route::controller(UserController::class)->group(function () {
@@ -75,3 +76,5 @@ Route::get('user-item-progress/toggle-bookmark/{bookmark}', [UserItemProgressCon
 Route::get('user-item-progress/toggle-flag/{flag}', [UserItemProgressController::class, 'toggleFlag'])->name('toggle-flag');
 
 Route::apiResource('progress-milestones', ProgressMilestoneController::class);
+
+Route::apiResource('user-milestone-achievements', UserMilestoneAchievementController::class);

@@ -2,16 +2,15 @@
 
 namespace App\Http\Requests\API;
 
-use Illuminate\Foundation\Http\FormRequest;
 
-class UserMilestoneAchievementRequest extends FormRequest
+class UserMilestoneAchievementRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +20,14 @@ class UserMilestoneAchievementRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
+         return [
+            'user_id' => ['required', 'exists:users,id'],
+            'milestone_id' => ['required', 'exists:progress_milestones,id'],
+            'progress_id' => ['required', 'exists:user_progress,id'],
+            'achieved_value' => ['required', 'numeric'],
+            'achieved_at' => ['nullable', 'date'],
+            'is_notified' => ['nullable', 'boolean'],
+            'notification_sent_at' => ['nullable', 'date'],
         ];
     }
 }

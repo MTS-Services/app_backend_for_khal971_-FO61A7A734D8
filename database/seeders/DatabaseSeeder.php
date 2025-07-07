@@ -37,6 +37,7 @@ class DatabaseSeeder extends Seeder
             UserItemProgressSeeder::class,
             ProgressMilestoneSeeder::class,
             ProgressMilestoneTranslationSeeder::class,
+            UserMilestoneAchievementSeeder::class,
             PlanSeeder::class,
             PlanFeatureSeeder::class,
             SubscriptionSeeder::class,
