@@ -17,12 +17,12 @@ return new class extends Migration
         Schema::create('user_progress', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id')->index()->nullable();
-            $table->string('content_type', 50)->index();
+            $table->string('content_type', 50)->index(); // subject, course, topic, quiz, question_set
             $table->bigInteger('content_id')->index();
 
             $table->integer('total_items')->default(0);
             $table->integer('completed_items')->default(0);
-            $table->integer('correct_items')->default(0);
+            $table->integer('correct_items')->default(0); //
 
             $table->decimal('completion_percentage', 5, 2)->index()->default(0.00);
             $table->decimal('accuracy_percentage', 5, 2)->default(0.00);

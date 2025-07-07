@@ -67,14 +67,14 @@ Route::apiResource('quiz-options', QuizOptionController::class);
 Route::apiResource('quiz-answers', QuizAnswerController::class);
 
 // Route::get('user-progress', [UserProgressController::class, 'userProgress'])->name('user-progress');
-Route::post('user-progress', [UserProgressController::class, 'storeOrUpdateUserProgress'])->name('user-progress.store');
+// Route::post('user-progress', [UserProgressController::class, 'storeOrUpdateUserProgress'])->name('user-progress.store');
 
-Route::get('/user-progress-list', [UserProgressController::class, 'index']);
+// Route::get('/user-progress-list', [UserProgressController::class, 'index']);
 
-Route::apiResource('user-item-progress', UserItemProgressController::class);
-Route::get('user-item-progress/toggle-bookmark/{bookmark}', [UserItemProgressController::class, 'toggleBookmark'])->name('toggle-bookmark');
-Route::get('user-item-progress/toggle-flag/{flag}', [UserItemProgressController::class, 'toggleFlag'])->name('toggle-flag');
+// Route::apiResource('user-item-progress', UserItemProgressController::class);
+// Route::get('user-item-progress/toggle-bookmark/{bookmark}', [UserItemProgressController::class, 'toggleBookmark'])->name('toggle-bookmark');
+// Route::get('user-item-progress/toggle-flag/{flag}', [UserItemProgressController::class, 'toggleFlag'])->name('toggle-flag');
 
-Route::apiResource('progress-milestones', ProgressMilestoneController::class);
+// Route::apiResource('progress-milestones', ProgressMilestoneController::class);
 
-Route::apiResource('user-milestone-achievements', UserMilestoneAchievementController::class);
+// Route::apiResource('user-milestone-achievements', UserMilestoneAchievementController::class);

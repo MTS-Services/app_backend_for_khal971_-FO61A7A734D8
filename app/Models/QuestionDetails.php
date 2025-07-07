@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class QuestionDetails extends BaseModel
 {
     protected $table = 'question_details';
-        protected $fillable = [
+    protected $fillable = [
         'order_index',
         'topic_id',
         'file',
@@ -19,13 +19,30 @@ class QuestionDetails extends BaseModel
         'updated_by',
     ];
 
+    /* ==================================================================
+                        Relations Start Here
+      ================================================================== */
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(QuestionDetailsTranslation::class, 'question_detail_id', 'id')->select('question_detail_id', 'language', 'title', 'description');
+    }
+
     public function topic(): BelongsTo
     {
         return $this->belongsTo(Topic::class, 'topic_id', 'id')->withDefault();
     }
 
-    
-      /////////////////////////
+    public function questions(): HasMany
+    {
+        return $this->hasMany(Question::class);
+    }
+
+    /* ==================================================================
+                        Relations End Here
+      ================================================================== */
+
+    /////////////////////////
     // Status Attributes
     /////////////////////////
     public const STATUS_ACTIVE = 1;
@@ -59,11 +76,6 @@ class QuestionDetails extends BaseModel
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
-    public function translations(): HasMany
-    {
-        return $this->hasMany(QuestionDetailsTranslation::class, 'question_detail_id', 'id')->select('question_detail_id', 'language', 'title', 'description');
-    }
-
     public function translate($language): SubjectTranslation|null
     {
         return $this->translations->where('language', $language)->first();
@@ -82,5 +94,4 @@ class QuestionDetails extends BaseModel
             'translations' => fn($q) => $q->where('language', $lang)
         ]);
     }
-
 }

@@ -8,16 +8,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Subject extends BaseModel
 {
     protected $fillable =
-        [
-            'order_index',
-            // 'name',
-            'icon',
-            'status',
-            'is_premium',
+    [
+        'order_index',
+        // 'name',
+        'icon',
+        'status',
+        'is_premium',
 
-            'created_by',
-            'updated_by',
-        ];
+        'created_by',
+        'updated_by',
+    ];
 
 
     /**
@@ -29,6 +29,25 @@ class Subject extends BaseModel
         'status' => 'integer',
         'is_premium' => 'boolean',
     ];
+
+
+    /* ==================================================================
+                        Relations Start Here
+      ================================================================== */
+
+    public function courses(): HasMany
+    {
+        return $this->hasMany(Course::class, 'subject_id', 'id');
+    }
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(SubjectTranslation::class, 'subject_id', 'id')->select('subject_id', 'language', 'name');
+    }
+    /* ==================================================================
+                        Relations End Here
+      ================================================================== */
+
 
     public function __construct(array $attributes = [])
     {
@@ -71,11 +90,6 @@ class Subject extends BaseModel
         return $this->attributes['icon'] ? asset("storage/{$this->attributes['icon']}") : null;
     }
 
-
-    public function courses(): HasMany
-    {
-        return $this->hasMany(Course::class, 'subject_id', 'id');
-    }
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_ACTIVE);
@@ -96,11 +110,6 @@ class Subject extends BaseModel
         return $query->where('is_premium', true);
     }
 
-    public function translations(): HasMany
-    {
-        return $this->hasMany(SubjectTranslation::class, 'subject_id', 'id')->select('subject_id', 'language', 'name');
-    }
-
     public function translate($language): SubjectTranslation|null
     {
         return $this->translations->where('language', $language)->first();
@@ -119,5 +128,4 @@ class Subject extends BaseModel
             'translations' => fn($q) => $q->where('language', $lang)
         ]);
     }
-
 }

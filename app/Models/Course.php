@@ -28,6 +28,29 @@ class Course extends BaseModel
         'status' => 'integer',
     ];
 
+    /* ==================================================================
+                        Relations Start Here
+      ================================================================== */
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(CourseTranslation::class, 'course_id', 'id')->select('course_id', 'language', 'name');
+    }
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class, 'subject_id', 'id')->withDefault();
+    }
+
+    public function topics(): HasMany
+    {
+        return $this->hasMany(Topic::class);
+    }
+
+    /* ==================================================================
+                        Relations End Here
+      ================================================================== */
+
 
     public function __construct(array $attributes = [])
     {
@@ -64,12 +87,6 @@ class Course extends BaseModel
         return self::getStatusList();
     }
 
-    // Relations
-    public function subject(): BelongsTo
-    {
-        return $this->belongsTo(Subject::class, 'subject_id', 'id')->withDefault();
-    }
-
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_ACTIVE);
@@ -90,11 +107,7 @@ class Course extends BaseModel
     //     return $query->where('is_premium', true);
     // }
 
-    public function translations(): HasMany
-    {
-        return $this->hasMany(CourseTranslation::class, 'course_id', 'id')->select('course_id', 'language', 'name');
-    }
-     public function translate($language): CourseTranslation|null
+    public function translate($language): CourseTranslation|null
     {
         return $this->translations->where('language', $language)->first();
     }
@@ -112,5 +125,4 @@ class Course extends BaseModel
             'translations' => fn($q) => $q->where('language', $lang)
         ]);
     }
-
 }
