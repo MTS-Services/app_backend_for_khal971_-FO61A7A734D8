@@ -45,6 +45,8 @@ Route::get('subject-courses/{subject_id}', [CourseController::class, 'subjectCou
 Route::get('courses/status/{course}', [CourseController::class, 'toggleStatus'])->name('courses.toggleStatus');
 
 Route::apiResource('topics', TopicController::class);
+Route::get('course-topics/{course_id}', [TopicController::class, 'courseTopics'])->name('course-topics');
+Route::get('topics/status/{topic}', [TopicController::class, 'toggleStatus'])->name('topics.toggleStatus');
 
 Route::prefix('plans')->group(function () {
     Route::get('/', [PlanController::class, 'index']);
@@ -52,7 +54,6 @@ Route::prefix('plans')->group(function () {
     Route::get('/{id}', [PlanController::class, 'show']);
 });
 
-Route::get('topics/status/{topic}', [TopicController::class, 'toggleStatus'])->name('topics.toggleStatus');
 
 Route::apiResource('questions', QuestionController::class);
 Route::get('questions/status/{question}', [QuestionController::class, 'toggoleStatus'])->name('questions.toggleStatus');

@@ -31,9 +31,9 @@ class TopicService
      * @param  string  $direction asc|desc default: asc
      * @return Builder
      */
-    public function getTopics(string $orderBy = 'order_index', string $direction = 'asc'): Builder
+    public function getTopics(int $course_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
     {
-        $query = Topic::translation($this->lang);
+        $query = Topic::translation($this->lang)->where('course_id', $course_id);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }

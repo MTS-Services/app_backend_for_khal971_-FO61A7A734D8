@@ -26,7 +26,7 @@ class CourseController extends Controller
     {
         try {
             if (!$subject_id) {
-                return sendResponse(false, 'Subject ID is required', null, Response::HTTP_BAD_REQUEST);
+                return sendResponse(false, 'Subject ID param is required', null, Response::HTTP_BAD_REQUEST);
             }
             $courses = $this->courseService->getCourses($subject_id)->with('subject')->get();
             return sendResponse(true, 'Course list fetched successfully', $courses, Response::HTTP_OK);
