@@ -39,6 +39,9 @@ class UserController extends Controller
     public function users($perPage = 10)
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $users = $this->userService->getUsers()->with('userClass')->paginate($perPage);
             return sendResponse(true, 'User list fetched successfully', $users, Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -48,7 +51,7 @@ class UserController extends Controller
     }
     public function updateUser(UserUpdatedRequest $request)
     {
-        try{
+        try {
             $user = $this->userService->getUser($request->user()->id);
             $file = $request->validated('image') && $request->hasFile('image') ? $request->file('image') : null;
             $validated = $request->validated();
@@ -62,7 +65,7 @@ class UserController extends Controller
 
     public function getUsers(Request $request)
     {
-       $users = User::all();
-       return sendResponse(true, 'Users fetched successfully', $users, Response::HTTP_OK);  
+        $users = User::all();
+        return sendResponse(true, 'Users fetched successfully', $users, Response::HTTP_OK);
     }
 }
