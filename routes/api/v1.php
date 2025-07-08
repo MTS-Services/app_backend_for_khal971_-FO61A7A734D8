@@ -41,6 +41,7 @@ Route::post('user-subjects', [UserSubjectController::class, 'store'])->name('use
 
 
 Route::apiResource('courses', CourseController::class);
+Route::get('subject-courses/{subject_id}', [CourseController::class, 'subjectCourses'])->name('subject-courses');
 Route::get('courses/status/{course}', [CourseController::class, 'toggleStatus'])->name('courses.toggleStatus');
 
 Route::apiResource('topics', TopicController::class);
@@ -86,7 +87,7 @@ Route::apiResource('quiz-answers', QuizAnswerController::class);
 Route::get('/progress/question/{userId}/{questionId}', [ProgressControllerTest::class, 'getQuestionProgress']);
 Route::get('/progress/topic/{userId}/{topicId}', [ProgressControllerTest::class, 'getTopicProgress']);
 
-// New 
+// New
 Route::get('/progress/topic/{userId}/{topicId}/questions', [ProgressControllerTest::class, 'getTopicQuestionsProgress']);
 Route::post('/progress/item/update', [ProgressControllerTest::class, 'updateItemProgress']);
 Route::get('/progress/next/{userId}', [ProgressControllerTest::class, 'getNextItemToStudy']);

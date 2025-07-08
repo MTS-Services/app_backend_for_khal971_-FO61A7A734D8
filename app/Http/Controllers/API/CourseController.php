@@ -22,10 +22,13 @@ class CourseController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function subjectCourses($subject_id): JsonResponse
     {
         try {
-            $courses = $this->courseService->getCourses()->with('subject')->get();
+            if (!$subject_id) {
+                return sendResponse(false, 'Subject ID is required', null, Response::HTTP_BAD_REQUEST);
+            }
+            $courses = $this->courseService->getCourses($subject_id)->with('subject')->get();
             return sendResponse(true, 'Course list fetched successfully', $courses, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Course List Error: ' . $e->getMessage());
