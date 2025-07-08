@@ -19,7 +19,6 @@ return new class extends Migration {
             // $table->string('name')->unique();
             $table->string('icon')->nullable();
             $table->tinyInteger('status')->index()->default(Subject::STATUS_ACTIVE);
-            $table->boolean('is_premium')->default(true);
 
             $table->timestamps();
             $this->addAuditColumns($table);

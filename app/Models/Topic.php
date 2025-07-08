@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Topic extends BaseModel
 {
     protected $fillable =
-    [
-        'order_index',
-        'course_id',
-        'status',
+        [
+            'order_index',
+            'course_id',
+            'status',
 
-        'created_by',
-        'updated_by'
+            'created_by',
+            'updated_by'
 
-    ];
+        ];
 
     /**
      * Get the attributes that should be cast.
@@ -40,7 +40,9 @@ class Topic extends BaseModel
 
     public function course(): BelongsTo
     {
-        return $this->belongsTo(Course::class, 'course_id', 'id');
+        return $this->belongsTo(Course::class, 'course_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ])->withDefault();
     }
 
     public function questionDetails(): HasMany

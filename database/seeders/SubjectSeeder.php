@@ -15,15 +15,16 @@ class SubjectSeeder extends Seeder
     {
         DB::table('subjects')->insert([
             [
-                'is_premium' => false,
+                'id' => 1,
+                'order_index' => 1,
             ],
             [
-
-                'is_premium' => false,
+                'id' => 2,
+                'order_index' => 2,
             ],
             [
-
-                'is_premium' => false,
+                'id' => 3,
+                'order_index' => 3,
             ],
         ]);
     }

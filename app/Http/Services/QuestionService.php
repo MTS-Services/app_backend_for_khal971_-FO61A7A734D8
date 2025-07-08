@@ -29,16 +29,16 @@ class QuestionService
     public function getQuestions(string $orderBy = 'order_index', string $direction = 'asc'): Builder
     {
         $query = Question::translation($this->lang);
-        if (!($this->user->is_admin)) {
-            $query->free()->take(12);
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
         }
         return $query->orderBy($orderBy, $direction)->latest();
     }
     public function getQuestion($param, string $query_field = 'id'): Question|null
     {
         $query = Question::translation($this->lang);
-        if (!($this->user->is_admin)) {
-            $query->free()->take(12);
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
         }
         return $query->where($query_field, $param)->first();
     }

@@ -42,7 +42,7 @@ class SubjectService
     {
         $query = Subject::translation($this->lang);
         if (!($this->user->is_premium || $this->user->is_admin)) {
-            $query->free()->take(12);
+            $query->take(12);
         }
         return $query->orderBy($orderBy, $direction)->latest();
     }
@@ -52,7 +52,7 @@ class SubjectService
 
         $query = Subject::translation($this->lang);
         if (!($this->user->is_premium || $this->user->is_admin)) {
-            $query->free();
+            $query->take(12);
         }
         $subject = $query->where($query_field, $param)->first();
         return $subject;

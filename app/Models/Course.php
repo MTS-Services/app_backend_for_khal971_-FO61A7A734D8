@@ -98,17 +98,6 @@ class Course extends BaseModel
     {
         return $query->where('status', self::STATUS_INACTIVE);
     }
-
-    // public function scopeFree(Builder $query): Builder
-    // {
-    //     return $query->where('is_premium', false);
-    // }
-
-    // public function scopePremium(Builder $query): Builder
-    // {
-    //     return $query->where('is_premium', true);
-    // }
-
     public function translate($language): CourseTranslation|null
     {
         return $this->translations->where('language', $language)->first();

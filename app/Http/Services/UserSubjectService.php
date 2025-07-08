@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Models\User;
 use App\Models\UserSubject;
 use Illuminate\Support\Facades\DB;
 
@@ -17,10 +18,10 @@ class UserSubjectService
     public function getUserSubjects(string $orderBy = 'order_index', string $direction = 'asc')
     {
 
-        $query = UserSubject::query();
+        $query = User::findOrFail(request()->user()->id)->subjects();
         return $query->orderBy($orderBy, $direction)->latest();
     }
-     public function storeSubjectsForUser(int $userId, array $subjectIds, int $creatorId): void
+    public function storeSubjectsForUser(int $userId, array $subjectIds, int $creatorId): void
     {
         DB::transaction(function () use ($userId, $subjectIds, $creatorId) {
             // Remove old selections

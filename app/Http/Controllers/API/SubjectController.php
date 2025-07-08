@@ -33,14 +33,6 @@ class SubjectController extends Controller
 
     }
 
-    // /**
-    //  * Show the form for creating a new resource.
-    //  */
-    // public function create()
-    // {
-    //     //
-    // }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -51,10 +43,7 @@ class SubjectController extends Controller
             $validated = $request->validated();
             $file = $request->validated('icon') && $request->hasFile('icon') ? $request->file('icon') : null;
             $subject = $this->subjectService->createSubject($validated, $file);
-
-
             if (!$subject) {
-
                 return sendResponse(false, 'Failed to create subject', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             return sendResponse(true, 'Subject created successfully', $subject, Response::HTTP_CREATED);

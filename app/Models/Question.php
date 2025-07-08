@@ -42,7 +42,9 @@ class Question extends BaseModel
 
     public function questionDetails(): BelongsTo
     {
-        return $this->belongsTo(QuestionDetails::class, 'question_details_id', 'id');
+        return $this->belongsTo(QuestionDetails::class, 'question_details_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
+        ])->withDefault();
     }
 
     public function userItemProgress(): HasMany
@@ -111,17 +113,6 @@ class Question extends BaseModel
     {
         return $query->where('status', self::STATUS_INACTIVE);
     }
-
-
-    // public function scopeFree(Builder $query): Builder
-    // {
-    //     return $query->where('is_premium', false);
-    // }
-
-    // public function scopePremium(Builder $query): Builder
-    // {
-    //     return $query->where('is_premium', true);
-    // }
     public function translate($language): QuestionTranslation|null
     {
         return $this->translations->where('language', $language)->first();

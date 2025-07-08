@@ -8,16 +8,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Subject extends BaseModel
 {
     protected $fillable =
-    [
-        'order_index',
-        // 'name',
-        'icon',
-        'status',
-        'is_premium',
+        [
+            'order_index',
+            // 'name',
+            'icon',
+            'status',
 
-        'created_by',
-        'updated_by',
-    ];
+            'created_by',
+            'updated_by',
+        ];
 
 
     /**
@@ -27,7 +26,6 @@ class Subject extends BaseModel
      */
     protected $casts = [
         'status' => 'integer',
-        'is_premium' => 'boolean',
     ];
 
 
@@ -37,7 +35,9 @@ class Subject extends BaseModel
 
     public function courses(): HasMany
     {
-        return $this->hasMany(Course::class, 'subject_id', 'id');
+        return $this->hasMany(Course::class, 'subject_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ])->withDefault();
     }
 
     public function translations(): HasMany
@@ -99,17 +99,6 @@ class Subject extends BaseModel
     {
         return $query->where('status', self::STATUS_INACTIVE);
     }
-
-    public function scopeFree(Builder $query): Builder
-    {
-        return $query->where('is_premium', false);
-    }
-
-    public function scopePremium(Builder $query): Builder
-    {
-        return $query->where('is_premium', true);
-    }
-
     public function translate($language): SubjectTranslation|null
     {
         return $this->translations->where('language', $language)->first();
