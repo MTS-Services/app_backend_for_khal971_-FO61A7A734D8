@@ -23,7 +23,7 @@ class QuestionDetailsController extends Controller
     public function index()
     {
         try {
-            $questionDetails = $this->questionDetailsService->getQuestionDetails()->get();
+            $questionDetails = $this->questionDetailsService->getQuestionDetails()->with('topic.course.subject')->get();
             if (empty($questionDetails)) {
                 return sendResponse(false, 'No question details found', null, Response::HTTP_NOT_FOUND);
             }
@@ -64,7 +64,7 @@ class QuestionDetailsController extends Controller
     public function show(QuestionDetails $question_detail)
     {
         try{
-            $question_detail = $this->questionDetailsService->getQuestionDetail($question_detail->id);
+            $question_detail = $this->questionDetailsService->getQuestionDetail($question_detail->id)->load('topic.course.subject');
             if (!$question_detail) {
                 return sendResponse(false, 'Question details not found', null, Response::HTTP_NOT_FOUND);
             }
