@@ -27,7 +27,7 @@ class TopicController extends Controller
             if (!$course_id) {
                 return sendResponse(false, 'Course ID param is required', null, Response::HTTP_BAD_REQUEST);
             }
-            $topics = $this->topicService->getTopics($course_id)->with('course')->get();
+            $topics = $this->topicService->getTopics($course_id)->with('course.subject')->get();
             return sendResponse(true, 'Topic list fetched successfully', $topics, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('topic List Error: ' . $e->getMessage());
@@ -58,6 +58,7 @@ class TopicController extends Controller
             if (!$topic) {
                 return sendResponse(false, 'topic not found', null, Response::HTTP_NOT_FOUND);
             }
+            $topic->load('course.subject');
             return sendResponse(true, 'topic fetched successfully', $topic, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('topic Fetch Error: ' . $e->getMessage());
