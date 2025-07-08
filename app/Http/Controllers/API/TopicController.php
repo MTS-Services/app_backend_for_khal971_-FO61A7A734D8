@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TopicController extends Controller
 {
-    protected TopicService $topicService;    
+    protected TopicService $topicService;
 
     public function __construct(TopicService $topicService)
     {
@@ -26,10 +26,11 @@ class TopicController extends Controller
     public function courseTopics($course_id): JsonResponse
     {
         try {
-            if (!$course_id) {
+            if (is_null($course_id)) {
                 return sendResponse(false, 'Course ID param is required', null, Response::HTTP_BAD_REQUEST);
             }
-            $topics = $this->topicService->getTopics($course_id)->with('course.subject')->get();    
+            $topics = $this->topicService->getTopics($course_id);
+            // $topics = $this->topicService->getTopics($course_id)->with('course.subject')->get();
             return sendResponse(true, 'Topic list fetched successfully', $topics, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('topic List Error: ' . $e->getMessage());

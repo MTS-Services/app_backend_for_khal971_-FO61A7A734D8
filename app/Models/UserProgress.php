@@ -99,4 +99,22 @@ class UserProgress extends Model
     public const STATUS_IN_PROGRESS = '1';
     public const STATUS_COMPLETED = '2';
     public const STATUS_MASTERED = '3';
+
+    public const CONTENT_TYPES = [
+        'question' => 'question',
+        'topic' => 'topic',
+        'course' => 'course',
+        'subject' => 'subject',
+        'quiz' => 'quiz',
+        'question_set' => 'question_set',
+    ];
+
+    public const CONTENT_TYPE_LABEL = [
+        'question' => 'Question',
+        'topic' => 'Topic',
+        'course' => 'Course',
+        'subject' => 'Subject',
+        'quiz' => 'Quiz',
+        'question_set' => 'Question Set',
+    ];
 }
