@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuestionDetailsRequest;
 use App\Http\Services\QuestionDetailsService;
 use App\Models\QuestionDetails;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,10 +21,10 @@ class QuestionDetailsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function topicQuestionDetails($topic_id): JsonResponse
     {
         try {
-            $questionDetails = $this->questionDetailsService->getQuestionDetails()->get();
+            $questionDetails = $this->questionDetailsService->getQuestionDetails($topic_id)->get();
             if (empty($questionDetails)) {
                 return sendResponse(false, 'No question details found', null, Response::HTTP_NOT_FOUND);
             }
@@ -44,7 +45,7 @@ class QuestionDetailsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(QuestionDetailsRequest $request)
+    public function store(QuestionDetailsRequest $request): JsonResponse
     {
         try {
             $validated = $request->validated();
@@ -61,9 +62,9 @@ class QuestionDetailsController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(QuestionDetails $question_detail)
+    public function show(QuestionDetails $question_detail): JsonResponse
     {
-        try{
+        try {
             $question_detail = $this->questionDetailsService->getQuestionDetail($question_detail->id);
             if (!$question_detail) {
                 return sendResponse(false, 'Question details not found', null, Response::HTTP_NOT_FOUND);
@@ -72,7 +73,7 @@ class QuestionDetailsController extends Controller
         } catch (\Exception $e) {
             return sendResponse(false, $e->getMessage(), null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-    }   
+    }
 
     /**
      * Show the form for editing the specified resource.
@@ -85,7 +86,7 @@ class QuestionDetailsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(QuestionDetailsRequest $request, QuestionDetails $question_detail)
+    public function update(QuestionDetailsRequest $request, QuestionDetails $question_detail): JsonResponse
     {
         try {
             $validated = $request->validated();
@@ -106,9 +107,9 @@ class QuestionDetailsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
-        try{
+        try {
             $question_detail = $this->questionDetailsService->getQuestionDetail($id);
             if (!$question_detail) {
                 return sendResponse(false, 'Question details not found', null, Response::HTTP_NOT_FOUND);
@@ -119,7 +120,7 @@ class QuestionDetailsController extends Controller
             return sendResponse(false, $e->getMessage(), null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    public function toggleStatus(QuestionDetails $question_detail)
+    public function toggleStatus(QuestionDetails $question_detail): JsonResponse
     {
         try {
             $question_detail = $this->questionDetailsService->toggleStatus($question_detail);

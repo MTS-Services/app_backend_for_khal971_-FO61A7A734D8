@@ -10,21 +10,21 @@ use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class  QuizController extends Controller
+class QuizController extends Controller
 {
     protected QuizService $quizService;
 
-    public function __construct( QuizService $quizService)
+    public function __construct(QuizService $quizService)
     {
         $this->quizService = $quizService;
     }
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function quizzes($topic_id): JsonResponse
     {
         try {
-            $quizzes = $this->quizService->getQuizzes()->get();
+            $quizzes = $this->quizService->getQuizzes($topic_id)->get();
             return sendResponse(true, ' Quiz list fetched successfully', $quizzes, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz List Error: ' . $e->getMessage());
@@ -44,7 +44,7 @@ class  QuizController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store( QuizRequest $request): JsonResponse
+    public function store(QuizRequest $request): JsonResponse
     {
 
         try {
@@ -68,7 +68,7 @@ class  QuizController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( Quiz $quiz): JsonResponse
+    public function show(Quiz $quiz): JsonResponse
     {
         try {
             $quiz = $this->quizService->getQuiz($quiz->id)->load('topics.course.subject');
@@ -93,7 +93,7 @@ class  QuizController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update( QuizRequest $request, Quiz $quiz): JsonResponse
+    public function update(QuizRequest $request, Quiz $quiz): JsonResponse
     {
         try {
             $quiz = $this->quizService->getQuiz($quiz->id);
@@ -113,7 +113,7 @@ class  QuizController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy( Quiz $quiz): JsonResponse
+    public function destroy(Quiz $quiz): JsonResponse
     {
         try {
             $quiz = $this->quizService->getQuiz($quiz->id);
@@ -128,7 +128,7 @@ class  QuizController extends Controller
         }
     }
 
-    public function toggleStatus( Quiz $quiz): JsonResponse
+    public function toggleStatus(Quiz $quiz): JsonResponse
     {
         try {
             $quiz = $this->quizService->getQuiz($quiz->id);

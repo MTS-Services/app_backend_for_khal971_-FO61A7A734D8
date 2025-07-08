@@ -54,16 +54,19 @@ Route::prefix('plans')->group(function () {
     Route::get('/{id}', [PlanController::class, 'show']);
 });
 
+Route::apiResource('question-details', QuestionDetailsController::class);
+Route::get('topic-question-details/{topic_id}', [QuestionDetailsController::class, 'topicQuestionDetails'])->name('topic-question-details');
+Route::get('question-details/status/{question_detail}', [QuestionDetailsController::class, 'toggleStatus'])->name('question-details.toggleStatus');
 
 Route::apiResource('questions', QuestionController::class);
+Route::get('question-details/questions/{question_details_id}', [QuestionController::class, 'questions'])->name('question-details.questions');
 Route::get('questions/status/{question}', [QuestionController::class, 'toggoleStatus'])->name('questions.toggleStatus');
 
-Route::apiResource('question-details', QuestionDetailsController::class);
-Route::get('question-details/status/{question_detail}', [QuestionDetailsController::class, 'toggleStatus'])->name('question-details.toggleStatus');
 
 Route::apiResource('question-answers', QuestionAnswerController::class);
 
 Route::apiResource('quizzes', QuizController::class);
+Route::get('topic-quizzes/{topic_id}', [QuizController::class, 'quizzes'])->name('topic-quizzes');
 Route::get('quizzes/status/{quiz}', [QuizController::class, 'toggleStatus'])->name('quizzes.toggleStatus');
 
 Route::apiResource('quiz-options', QuizOptionController::class);

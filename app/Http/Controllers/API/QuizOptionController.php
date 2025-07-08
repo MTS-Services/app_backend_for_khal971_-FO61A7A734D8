@@ -22,9 +22,9 @@ class QuizOptionController extends Controller
      */
     public function index()
     {
-        try{
-            $quizOpitons = $this->quizOptionService->getQuizOptions()->with('quiz.topics.course.subject')->get();
-            if(!$quizOpitons) {
+        try {
+            $quizOpitons = $this->quizOptionService->getQuizOptions()->with('quiz.topics')->get();
+            if (!$quizOpitons) {
                 return sendResponse(false, 'Failed to fetch Quiz Option list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             return sendResponse(true, ' Quiz Option list fetched successfully', $quizOpitons, Response::HTTP_OK);
@@ -47,10 +47,10 @@ class QuizOptionController extends Controller
      */
     public function store(QuizOptionRequest $request)
     {
-        try{
+        try {
             $validated = $request->validated();
             $quizOption = $this->quizOptionService->createQuizOption($validated);
-            if(!$quizOption) {
+            if (!$quizOption) {
                 return sendResponse(false, 'Failed to create Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             return sendResponse(true, ' Quiz Option created successfully', $quizOption, Response::HTTP_CREATED);
@@ -65,9 +65,9 @@ class QuizOptionController extends Controller
      */
     public function show(QuizOption $quiz_option)
     {
-        try{
+        try {
             $quizOption = $this->quizOptionService->getQuizOption($quiz_option->id)->load('quiz.topics.course.subject');
-            if(!$quizOption) {
+            if (!$quizOption) {
                 return sendResponse(false, 'Failed to fetch Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             return sendResponse(true, ' Quiz Option fetched successfully', $quizOption, Response::HTTP_OK);
@@ -90,14 +90,14 @@ class QuizOptionController extends Controller
      */
     public function update(QuizOptionRequest $request, QuizOption $quiz_option)
     {
-        try{
+        try {
             $quiz_option = $this->quizOptionService->getQuizOption($quiz_option->id);
-            if(!$quiz_option) {
+            if (!$quiz_option) {
                 return sendResponse(false, 'Failed to update Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             $validated = $request->validated();
             $quizOption = $this->quizOptionService->updateQuizOption($validated, $quiz_option);
-            if(!$quizOption) {
+            if (!$quizOption) {
                 return sendResponse(false, 'Failed to update Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             return sendResponse(true, ' Quiz Option updated successfully', $quizOption, Response::HTTP_OK);
@@ -112,9 +112,9 @@ class QuizOptionController extends Controller
      */
     public function destroy(QuizOption $quiz_option)
     {
-        try{
+        try {
             $quiz_option = $this->quizOptionService->getQuizOption($quiz_option->id);
-            if(!$quiz_option) {
+            if (!$quiz_option) {
                 return sendResponse(false, 'Failed to delete Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             $quiz_option = $this->quizOptionService->deleteQuizOption($quiz_option);
