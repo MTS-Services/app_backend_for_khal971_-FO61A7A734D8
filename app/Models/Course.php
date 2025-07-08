@@ -37,11 +37,11 @@ class Course extends BaseModel
         return $this->hasMany(CourseTranslation::class, 'course_id', 'id')->select('course_id', 'language', 'name');
     }
 
-   public function subject(): BelongsTo
+    public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class)->with([
             'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
-        ])->withDefault();
+        ]);
     }
 
     public function topics(): HasMany

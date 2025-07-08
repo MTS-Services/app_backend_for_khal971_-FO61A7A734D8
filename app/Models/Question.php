@@ -44,7 +44,7 @@ class Question extends BaseModel
     {
         return $this->belongsTo(QuestionDetails::class, 'question_details_id', 'id')->with([
             'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
-        ])->withDefault();
+        ]);
     }
 
     public function userItemProgress(): HasMany

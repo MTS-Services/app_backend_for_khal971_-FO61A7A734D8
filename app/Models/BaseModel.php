@@ -19,12 +19,12 @@ class BaseModel extends Model
 
     public function creater(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by', 'id')->select(['name', 'id'])->withDefault();
+        return $this->belongsTo(User::class, 'created_by', 'id')->select(['name', 'id']);
     }
 
     public function updater(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by', 'id')->select(['name', 'id'])->withDefault();
+        return $this->belongsTo(User::class, 'updated_by', 'id')->select(['name', 'id']);
     }
 
     // Accessor for created time

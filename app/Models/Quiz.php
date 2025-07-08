@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Quiz extends Model
 {
-     protected $fillable = [
+    protected $fillable = [
         'order_index',
         'topic_id',
         'status',
@@ -75,12 +75,12 @@ class Quiz extends Model
     // Relationships
     public function topics()
     {
-        return $this->belongsTo(Topic::class, 'topic_id', 'id')->withDefault();
+        return $this->belongsTo(Topic::class, 'topic_id', 'id');
     }
 
-     public function translations(): HasMany
+    public function translations(): HasMany
     {
-        return $this->hasMany( QuizTranslation::class, 'quiz_id', 'id')->select('quiz_id', 'language', 'title', 'description');
+        return $this->hasMany(QuizTranslation::class, 'quiz_id', 'id')->select('quiz_id', 'language', 'title', 'description');
     }
 
     public function translate($language): QuizTranslation|null
