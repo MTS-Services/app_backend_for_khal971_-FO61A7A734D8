@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
 use Jenssegers\Agent\Agent;
+use Log;
 use Torann\GeoIP\Facades\GeoIP;
 
 class AuthenticationService
@@ -49,8 +50,7 @@ class AuthenticationService
 
     public function isVerified(User $user): bool
     {
-        return User::whereNotNull('email_verified_at')
-            ->exists();
+        return $user->email_verified_at !== null;
     }
 
 
