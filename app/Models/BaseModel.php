@@ -50,4 +50,9 @@ class BaseModel extends Model
     {
         return $this->created_at != $this->updated_at ? timeFormatHuman($this->updated_at) : null;
     }
+
+    public static function getDefaultLang(): string
+    {
+        return defaultLang() ?: 'en';
+    }
 }
