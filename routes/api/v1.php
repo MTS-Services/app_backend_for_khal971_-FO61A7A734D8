@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\PlanController;
+use App\Http\Controllers\Api\ProgressController;
+use App\Http\Controllers\Api\ProgressControllerTest;
 use App\Http\Controllers\API\ProgressMilestoneController;
 use App\Http\Controllers\API\QuestionAnswerController;
 use App\Http\Controllers\API\QuestionController;
@@ -78,3 +80,16 @@ Route::apiResource('quiz-answers', QuizAnswerController::class);
 // Route::apiResource('progress-milestones', ProgressMilestoneController::class);
 
 // Route::apiResource('user-milestone-achievements', UserMilestoneAchievementController::class);
+// Route::get('/progress/question/{userId}/{questionId}', [ProgressController::class, 'getQuestionProgress']);
+
+// Existing routes (assuming these are already converted or exist)
+Route::get('/progress/question/{userId}/{questionId}', [ProgressControllerTest::class, 'getQuestionProgress']);
+Route::get('/progress/topic/{userId}/{topicId}', [ProgressControllerTest::class, 'getTopicProgress']);
+
+// New 
+Route::get('/progress/topic/{userId}/{topicId}/questions', [ProgressControllerTest::class, 'getTopicQuestionsProgress']);
+Route::post('/progress/item/update', [ProgressControllerTest::class, 'updateItemProgress']);
+Route::get('/progress/next/{userId}', [ProgressControllerTest::class, 'getNextItemToStudy']);
+Route::post('/progress/batch', [ProgressControllerTest::class, 'getBatchProgress']);
+Route::post('/progress/bookmark', [ProgressControllerTest::class, 'toggleBookmark']);
+Route::post('/progress/flag', [ProgressControllerTest::class, 'toggleFlag']);

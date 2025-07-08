@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class UserItemProgresss extends BaseModel
 {
@@ -69,6 +70,43 @@ class UserItemProgresss extends BaseModel
     /* ******************************************************************
                         Attributes Start Here
       ****************************************************************** */
+
+    public function progressPercentage(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return match ($this->status) {
+                    'completed', 'correct' => 100.0,
+                    'attempted', 'incorrect' => 50.0,
+                    'viewed' => 25.0,
+                    default => 0.0
+                };
+            }
+        );
+    }
+
+    public function successRate(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->attempts > 0 ? ($this->correct_attempts / $this->attempts) * 100 : 0
+        );
+    }
+
+    public function progressIcon(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                return match ($this->status) {
+                    'correct' => '✓',
+                    'incorrect' => '✗',
+                    'attempted' => '⚠',
+                    'viewed' => '👁',
+                    default => '○'
+                };
+            }
+        );
+    }
+
     /* ******************************************************************
                         Attributes End Here
       ****************************************************************** */
