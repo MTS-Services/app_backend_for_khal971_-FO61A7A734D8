@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Log;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Services\AuthenticationService;
 
@@ -15,7 +16,7 @@ class EnsureEmailIsVerifiedViaOtp
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    protected $authService;
+    protected AuthenticationService $authService;
 
     public function __construct(AuthenticationService $authService)
     {
@@ -24,12 +25,11 @@ class EnsureEmailIsVerifiedViaOtp
 
     public function handle(Request $request, Closure $next): Response
     {
-        $user = Auth::guard('api')->user();
+        $user = request()->user();
 
         if (!$user) {
             return sendResponse(false, 'Unauthorized', null, Response::HTTP_UNAUTHORIZED);
         }
-
         if (!$this->authService->isVerified($user)) {
             // Send OTP automatically if needed (optional)
             $this->authService->generateOtp($user);
