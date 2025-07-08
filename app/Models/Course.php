@@ -46,7 +46,9 @@ class Course extends BaseModel
 
     public function topics(): HasMany
     {
-        return $this->hasMany(Topic::class);
+        return $this->hasMany(Topic::class, 'course_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ]);
     }
 
     /* ==================================================================
@@ -114,6 +116,22 @@ class Course extends BaseModel
     {
         return $this->load([
             'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+
+    public function scopeCounts(Builder $query): Builder
+    {
+        return $query->withCount([
+            'topics',
+            'topics as questions_count' => function (Builder $query) {
+                $query->join('question_details', 'topics.id', '=', 'question_details.topic_id')
+                    ->selectRaw('count(question_details.id)');
+            },
+
+            'topics as quizzes_count' => function (Builder $query) {
+                $query->join('quizzes', 'topics.id', '=', 'quizzes.topic_id')
+                    ->selectRaw('count(quizzes.id)');
+            },
         ]);
     }
 }

@@ -45,9 +45,14 @@ class Topic extends BaseModel
         ]);
     }
 
-    public function questionDetails(): HasMany
+    public function question_details(): HasMany
     {
         return $this->hasMany(QuestionDetails::class);
+    }
+
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class);
     }
 
     public function userProgress(): HasMany
