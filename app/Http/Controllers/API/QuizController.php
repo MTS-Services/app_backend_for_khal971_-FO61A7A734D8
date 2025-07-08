@@ -24,7 +24,10 @@ class QuizController extends Controller
     public function quizzes($topic_id): JsonResponse
     {
         try {
-            $quizzes = $this->quizService->getQuizzes($topic_id)->get();
+            if (!$topic_id) {
+                return sendResponse(false, 'Topic not found', null, Response::HTTP_NOT_FOUND);
+            }
+            $quizzes = $this->quizService->getQuizzes($topic_id)->with('topics')->get();
             return sendResponse(true, ' Quiz list fetched successfully', $quizzes, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz List Error: ' . $e->getMessage());
@@ -32,14 +35,6 @@ class QuizController extends Controller
         }
 
     }
-
-    // /**
-    //  * Show the form for creating a new resource.
-    //  */
-    // public function create()
-    // {
-    //     //
-    // }
 
     /**
      * Store a newly created resource in storage.
@@ -71,7 +66,7 @@ class QuizController extends Controller
     public function show(Quiz $quiz): JsonResponse
     {
         try {
-            $quiz = $this->quizService->getQuiz($quiz->id)->load('topics.course.subject');
+            $quiz = $this->quizService->getQuiz($quiz->id)->load('topics');
             if (!$quiz) {
                 return sendResponse(false, 'Quiz not found', null, Response::HTTP_NOT_FOUND);
             }

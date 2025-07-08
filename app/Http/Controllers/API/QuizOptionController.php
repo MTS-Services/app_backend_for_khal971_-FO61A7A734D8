@@ -20,10 +20,13 @@ class QuizOptionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function options($quiz_id)
     {
         try {
-            $quizOpitons = $this->quizOptionService->getQuizOptions()->with('quiz.topics')->get();
+            if (!$quiz_id) {
+                return sendResponse(false, 'Quiz not found', null, Response::HTTP_NOT_FOUND);
+            }
+            $quizOpitons = $this->quizOptionService->getQuizOptions($quiz_id)->with('quiz')->get();
             if (!$quizOpitons) {
                 return sendResponse(false, 'Failed to fetch Quiz Option list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }

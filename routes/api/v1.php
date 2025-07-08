@@ -70,6 +70,7 @@ Route::get('topic-quizzes/{topic_id}', [QuizController::class, 'quizzes'])->name
 Route::get('quizzes/status/{quiz}', [QuizController::class, 'toggleStatus'])->name('quizzes.toggleStatus');
 
 Route::apiResource('quiz-options', QuizOptionController::class);
+Route::get('quiz/options/{quiz_id}', [QuizOptionController::class, 'options'])->name('quiz.options');
 
 Route::apiResource('quiz-answers', QuizAnswerController::class);
 

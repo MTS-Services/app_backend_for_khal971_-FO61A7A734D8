@@ -30,19 +30,19 @@ class QuizOptionService
     {
         return defaultLang() ?: 'en';
     }
-    public function getQuizOptions(string $orderBy = 'order_index', string $direction = 'asc')
+    public function getQuizOptions(int $quiz_id, string $orderBy = 'order_index', string $direction = 'asc')
     {
-        $query = QuizOption::translation($this->lang);
-        if (!($this->user->is_admin)) {
-            $query->free()->take(12);
+        $query = QuizOption::translation($this->lang)->where('quiz_id', $quiz_id);
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
         }
         return $query->orderBy($orderBy, $direction)->latest();
     }
     public function getQuizOption($param, string $query_field = 'id'): QuizOption|null
     {
         $query = QuizOption::translation($this->lang);
-        if (!($this->user->is_admin)) {
-            $query->free()->take(12);
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
         }
         return $query->where($query_field, $param)->first();
     }

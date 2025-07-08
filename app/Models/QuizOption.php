@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class QuizOption extends Model
+class QuizOption extends BaseModel
 {
     protected $table = 'quiz_options';
     protected $fillable = ['quiz_id', 'order_index', 'is_correct'];
@@ -17,7 +17,9 @@ class QuizOption extends Model
 
     public function quiz(): BelongsTo
     {
-        return $this->belongsTo(Quiz::class);
+        return $this->belongsTo(Quiz::class, 'quiz_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ]);
     }
      public function translations(): HasMany
     {
