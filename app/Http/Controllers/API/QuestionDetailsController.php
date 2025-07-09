@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuestionDetailsRequest;
+use App\Http\Resources\QuestionDetailResource;
 use App\Http\Services\QuestionDetailsService;
 use App\Models\QuestionDetails;
 use Illuminate\Http\JsonResponse;
@@ -23,23 +24,15 @@ class QuestionDetailsController extends Controller
     public function topicQuestionDetails($topic_id): JsonResponse
     {
         try {
-            $questionDetails = $this->questionDetailsService->getQuestionDetails($topic_id)->with('topic')->get();
-            if (empty($questionDetails)) {
+            $question_details = $this->questionDetailsService->getQuestionDetails($topic_id)->get();
+            if (empty($question_details)) {
                 return sendResponse(false, 'No question details found', null, Response::HTTP_NOT_FOUND);
             }
-            return sendResponse(true, 'Question details fetched successfully', $questionDetails, Response::HTTP_OK);
+            return sendResponse(true, 'Question details fetched successfully', QuestionDetailResource::collection($question_details), Response::HTTP_OK);
         } catch (\Exception $e) {
             return sendResponse(false, $e->getMessage(), null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-    //     //
-    // }
 
     /**
      * Store a newly created resource in storage.
@@ -48,11 +41,11 @@ class QuestionDetailsController extends Controller
     {
         try {
             $validated = $request->validated();
-            $questionDetails = $this->questionDetailsService->createQuestionDetail($validated);
-            if (!$questionDetails) {
+            $question_detail = $this->questionDetailsService->createQuestionDetail($validated);
+            if (!$question_detail) {
                 return sendResponse(false, 'Failed to create question details', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, 'Question details created successfully', $questionDetails, Response::HTTP_CREATED);
+            return sendResponse(true, 'Question details created successfully', new QuestionDetailResource($question_detail), Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return sendResponse(false, $e->getMessage(), null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -63,12 +56,12 @@ class QuestionDetailsController extends Controller
      */
     public function show(QuestionDetails $question_detail): JsonResponse
     {
-        try{
+        try {
             $question_detail = $this->questionDetailsService->getQuestionDetail($question_detail->id)->load('topic');
             if (!$question_detail) {
                 return sendResponse(false, 'Question details not found', null, Response::HTTP_NOT_FOUND);
             }
-            return sendResponse(true, 'Question details fetched successfully', $question_detail, Response::HTTP_OK);
+            return sendResponse(true, 'Question details fetched successfully', new QuestionDetailResource($question_detail), Response::HTTP_OK);
         } catch (\Exception $e) {
             return sendResponse(false, $e->getMessage(), null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -96,7 +89,7 @@ class QuestionDetailsController extends Controller
                 return sendResponse(false, 'Failed to update question details', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
-            return sendResponse(true, 'Question details updated successfully', $question_detail, Response::HTTP_OK);
+            return sendResponse(true, 'Question details updated successfully', new QuestionDetailResource($question_detail), Response::HTTP_OK);
         } catch (\Exception $e) {
             return sendResponse(false, $e->getMessage(), null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }

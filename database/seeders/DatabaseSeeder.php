@@ -38,6 +38,9 @@ class DatabaseSeeder extends Seeder
             SubscriptionSeeder::class,
             PaymentSeeder::class,
 
+            BookmarkSeeder::class,
+            PracticeSeeder::class,
+
         ]);
     }
 }

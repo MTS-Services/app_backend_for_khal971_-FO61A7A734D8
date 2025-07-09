@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\API\BookmarkController;
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\PlanController;
+use App\Http\Controllers\API\PracticeController;
 use App\Http\Controllers\Api\ProgressController;
 use App\Http\Controllers\Api\ProgressControllerTest;
 use App\Http\Controllers\API\ProgressMilestoneController;
@@ -73,3 +75,8 @@ Route::apiResource('quiz-options', QuizOptionController::class);
 Route::get('quiz/options/{quiz_id}', [QuizOptionController::class, 'options'])->name('quiz.options');
 
 Route::apiResource('quiz-answers', QuizAnswerController::class);
+
+// Practice and Bookmark 
+Route::get('/practices', [PracticeController::class, 'practices'])->name('practices');
+Route::get('/bookmarks/questions', [BookmarkController::class, 'bookmarkQuestions'])->name('bookmark-questions');
+Route::get('/bookmarks/quizzes', [BookmarkController::class, 'bookmarkQuizzes'])->name('bookmark-quizzes');
