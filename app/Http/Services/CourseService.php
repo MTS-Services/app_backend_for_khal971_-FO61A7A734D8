@@ -31,21 +31,21 @@ class CourseService
      * @param  string  $direction asc|desc default: asc
      * @return Builder
      */
-    public function getCourses(string $orderBy = 'order_index', string $direction = 'asc'): Builder
+    public function getCourses(int $subject_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
     {
-        $query = Course::translation($this->lang);
-        // if (!($this->user->is_premium || $this->user->is_admin)) {
-        //     $query->free()->take(12);
-        // }
+        $query = Course::counts()->translation($this->lang)->where('subject_id', $subject_id);
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
+        }
         return $query->orderBy($orderBy, $direction)->latest();
     }
 
     public function getCourse($param, string $query_field = 'id'): Course|null
     {
-        $query = Course::translation($this->lang);
-        // if (!($this->user->is_premium || $this->user->is_admin)) {
-        //     $query->free()->take(12);
-        // }
+        $query = Course::counts()->translation($this->lang);
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
+        }
         return $query->where($query_field, $param)->first();
     }
     public function createCourse($data): Course|null
@@ -67,7 +67,7 @@ class CourseService
 
     public function updateCourse(Course $Course, $data): Course|null
     {
-        try{
+        try {
             $data['updated_by'] = $this->user->id;
             return DB::transaction(function () use ($Course, $data) {
                 $Course->update($data);

@@ -13,7 +13,6 @@ class Subject extends BaseModel
             // 'name',
             'icon',
             'status',
-            'is_premium',
 
             'created_by',
             'updated_by',
@@ -27,8 +26,28 @@ class Subject extends BaseModel
      */
     protected $casts = [
         'status' => 'integer',
-        'is_premium' => 'boolean',
     ];
+
+
+    /* ==================================================================
+                        Relations Start Here
+      ================================================================== */
+
+    public function courses(): HasMany
+    {
+        return $this->hasMany(Course::class, 'subject_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ]);
+    }
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(SubjectTranslation::class, 'subject_id', 'id')->select('subject_id', 'language', 'name');
+    }
+    /* ==================================================================
+                        Relations End Here
+      ================================================================== */
+
 
     public function __construct(array $attributes = [])
     {
@@ -71,11 +90,6 @@ class Subject extends BaseModel
         return $this->attributes['icon'] ? asset("storage/{$this->attributes['icon']}") : null;
     }
 
-
-    public function courses(): HasMany
-    {
-        return $this->hasMany(Course::class, 'subject_id', 'id');
-    }
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_ACTIVE);
@@ -85,22 +99,6 @@ class Subject extends BaseModel
     {
         return $query->where('status', self::STATUS_INACTIVE);
     }
-
-    public function scopeFree(Builder $query): Builder
-    {
-        return $query->where('is_premium', false);
-    }
-
-    public function scopePremium(Builder $query): Builder
-    {
-        return $query->where('is_premium', true);
-    }
-
-    public function translations(): HasMany
-    {
-        return $this->hasMany(SubjectTranslation::class, 'subject_id', 'id')->select('subject_id', 'language', 'name');
-    }
-
     public function translate($language): SubjectTranslation|null
     {
         return $this->translations->where('language', $language)->first();
@@ -117,6 +115,27 @@ class Subject extends BaseModel
     {
         return $this->load([
             'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
+
+    public function scopeCounts(Builder $query): Builder
+    {
+        return $query->withCount([
+            'courses',
+            'courses as topics_count' => function (Builder $query) {
+                $query->join('topics', 'courses.id', '=', 'topics.course_id')
+                    ->selectRaw('count(topics.id)');
+            },
+            'courses as questions_count' => function (Builder $query) {
+                $query->join('topics', 'courses.id', '=', 'topics.course_id')
+                    ->join('question_details', 'topics.id', '=', 'question_details.topic_id')
+                    ->selectRaw('count(question_details.id)');
+            },
+            'courses as quizzes_count' => function (Builder $query) {
+                $query->join('topics', 'courses.id', '=', 'topics.course_id')
+                    ->join('quizzes', 'topics.id', '=', 'quizzes.topic_id')
+                    ->selectRaw('count(quizzes.id)');
+            },
         ]);
     }
 

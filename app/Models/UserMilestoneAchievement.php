@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class UserMilestoneAchievement extends Model
 {
-     protected $fillable = [
+    protected $fillable = [
         'user_id',
         'milestone_id',
         'progress_id',
@@ -25,15 +25,15 @@ class UserMilestoneAchievement extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id')->withDefault();
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
     public function milestone(): BelongsTo
     {
-        return $this->belongsTo(ProgressMilestone::class, 'milestone_id', 'id')->withDefault();
+        return $this->belongsTo(ProgressMilestone::class, 'milestone_id', 'id');
     }
     public function progress(): BelongsTo
     {
-        return $this->belongsTo(UserItemProgresss::class, 'progress_id', 'id')->withDefault();
+        return $this->belongsTo(UserItemProgresss::class, 'progress_id', 'id');
     }
 
 }

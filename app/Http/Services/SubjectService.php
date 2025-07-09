@@ -40,9 +40,10 @@ class SubjectService
      */
     public function getSubjects(string $orderBy = 'order_index', string $direction = 'asc')
     {
-        $query = Subject::translation($this->lang);
+        $query = Subject::counts()
+            ->translation($this->lang);
         if (!($this->user->is_premium || $this->user->is_admin)) {
-            $query->free()->take(12);
+            $query->take(12);
         }
         return $query->orderBy($orderBy, $direction)->latest();
     }
@@ -50,9 +51,9 @@ class SubjectService
     public function getSubject($param, string $query_field = 'id'): Subject|null
     {
 
-        $query = Subject::translation($this->lang);
+        $query = Subject::counts()->translation($this->lang);
         if (!($this->user->is_premium || $this->user->is_admin)) {
-            $query->free();
+            $query->take(12);
         }
         $subject = $query->where($query_field, $param)->first();
         return $subject;

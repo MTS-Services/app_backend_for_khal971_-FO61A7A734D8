@@ -31,6 +31,33 @@ class Question extends BaseModel
     ];
 
 
+    /* ==================================================================
+                        Relations Start Here
+      ================================================================== */
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(QuestionTranslation::class, 'question_id', 'id')->select('question_id', 'language', 'title', 'answer');
+    }
+
+    public function questionDetails(): BelongsTo
+    {
+        return $this->belongsTo(QuestionDetails::class, 'question_details_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
+        ]);
+    }
+
+    public function userItemProgress(): HasMany
+    {
+        return $this->hasMany(UserItemProgresss::class, 'item_id')
+            ->where('item_type', 'question');
+    }
+
+
+    /* ==================================================================
+                        Relations End Here
+      ================================================================== */
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -39,10 +66,6 @@ class Question extends BaseModel
             // 'hints',
             // 'tags',
         ]);
-    }
-    public function questionDetails(): BelongsTo
-    {
-        return $this->belongsTo(QuestionDetails::class, 'question_details_id', 'id');
     }
 
     /////////////////////////
@@ -90,22 +113,6 @@ class Question extends BaseModel
     {
         return $query->where('status', self::STATUS_INACTIVE);
     }
-
-
-    // public function scopeFree(Builder $query): Builder
-    // {
-    //     return $query->where('is_premium', false);
-    // }
-
-    // public function scopePremium(Builder $query): Builder
-    // {
-    //     return $query->where('is_premium', true);
-    // }
-    public function translations(): HasMany
-    {
-        return $this->hasMany(QuestionTranslation::class, 'question_id', 'id')->select('question_id', 'language', 'title', 'answer');
-    }
-
     public function translate($language): QuestionTranslation|null
     {
         return $this->translations->where('language', $language)->first();
@@ -124,5 +131,4 @@ class Question extends BaseModel
             'translations' => fn($q) => $q->where('language', $lang)
         ]);
     }
-
 }

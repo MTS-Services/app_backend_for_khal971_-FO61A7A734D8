@@ -7,8 +7,8 @@ use App\Http\Requests\API\TopicRequest;
 use App\Http\Services\TopicService;
 use App\Models\Topic;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class TopicController extends Controller
 {
@@ -21,10 +21,13 @@ class TopicController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function courseTopics($course_id): JsonResponse
     {
         try {
-            $topics = $this->topicService->getTopics()->with('course.subject')->get();
+            if (!$course_id) {
+                return sendResponse(false, 'Course ID param is required', null, Response::HTTP_BAD_REQUEST);
+            }
+            $topics = $this->topicService->getTopics($course_id)->with('course.subject')->get();
             return sendResponse(true, 'Topic list fetched successfully', $topics, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('topic List Error: ' . $e->getMessage());
@@ -55,6 +58,7 @@ class TopicController extends Controller
             if (!$topic) {
                 return sendResponse(false, 'topic not found', null, Response::HTTP_NOT_FOUND);
             }
+            $topic->load('course.subject');
             return sendResponse(true, 'topic fetched successfully', $topic, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('topic Fetch Error: ' . $e->getMessage());

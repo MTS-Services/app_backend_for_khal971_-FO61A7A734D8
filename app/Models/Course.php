@@ -9,15 +9,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Course extends BaseModel
 {
     protected $fillable =
-    [
-        'order_index',
-        'subject_id',
-        'status',
+        [
+            'order_index',
+            'subject_id',
+            'status',
 
-        'created_by',
-        'updated_by'
+            'created_by',
+            'updated_by'
 
-    ];
+        ];
 
     /**
      * Get the attributes that should be cast.
@@ -27,6 +27,33 @@ class Course extends BaseModel
     protected $casts = [
         'status' => 'integer',
     ];
+
+    /* ==================================================================
+                        Relations Start Here
+      ================================================================== */
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(CourseTranslation::class, 'course_id', 'id')->select('course_id', 'language', 'name');
+    }
+
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class)->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ]);
+    }
+
+    public function topics(): HasMany
+    {
+        return $this->hasMany(Topic::class, 'course_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ]);
+    }
+
+    /* ==================================================================
+                        Relations End Here
+      ================================================================== */
 
 
     public function __construct(array $attributes = [])
@@ -64,12 +91,6 @@ class Course extends BaseModel
         return self::getStatusList();
     }
 
-    // Relations
-    public function subject(): BelongsTo
-    {
-        return $this->belongsTo(Subject::class, 'subject_id', 'id')->withDefault();
-    }
-
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_ACTIVE);
@@ -79,22 +100,7 @@ class Course extends BaseModel
     {
         return $query->where('status', self::STATUS_INACTIVE);
     }
-
-    // public function scopeFree(Builder $query): Builder
-    // {
-    //     return $query->where('is_premium', false);
-    // }
-
-    // public function scopePremium(Builder $query): Builder
-    // {
-    //     return $query->where('is_premium', true);
-    // }
-
-    public function translations(): HasMany
-    {
-        return $this->hasMany(CourseTranslation::class, 'course_id', 'id')->select('course_id', 'language', 'name');
-    }
-     public function translate($language): CourseTranslation|null
+    public function translate($language): CourseTranslation|null
     {
         return $this->translations->where('language', $language)->first();
     }
@@ -113,4 +119,19 @@ class Course extends BaseModel
         ]);
     }
 
+    public function scopeCounts(Builder $query): Builder
+    {
+        return $query->withCount([
+            'topics',
+            'topics as questions_count' => function (Builder $query) {
+                $query->join('question_details', 'topics.id', '=', 'question_details.topic_id')
+                    ->selectRaw('count(question_details.id)');
+            },
+
+            'topics as quizzes_count' => function (Builder $query) {
+                $query->join('quizzes', 'topics.id', '=', 'quizzes.topic_id')
+                    ->selectRaw('count(quizzes.id)');
+            },
+        ]);
+    }
 }

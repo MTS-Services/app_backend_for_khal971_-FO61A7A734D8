@@ -72,7 +72,7 @@ class UserLogin extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'user_id', 'id')->withDefault();
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function scopeSelf(Builder $query): Builder

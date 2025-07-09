@@ -29,6 +29,42 @@ class Topic extends BaseModel
         'course_id' => 'integer',
     ];
 
+    /* ==================================================================
+                        Relations Start Here
+      ================================================================== */
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(TopicTranslation::class, 'topic_id', 'id')->select('topic_id', 'language', 'name');
+    }
+
+    public function course(): BelongsTo
+    {
+        return $this->belongsTo(Course::class, 'course_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ]);
+    }
+
+    public function question_details(): HasMany
+    {
+        return $this->hasMany(QuestionDetails::class);
+    }
+
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class);
+    }
+
+    public function userProgress(): HasMany
+    {
+        return $this->hasMany(UserProgress::class, 'content_id')
+            ->where('content_type', 'topic');
+    }
+
+    /* ==================================================================
+                        Relations End Here
+      ================================================================== */
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -62,13 +98,6 @@ class Topic extends BaseModel
         return self::getStatusList();
     }
 
-
-    public function course(): BelongsTo
-    {
-        return $this->belongsTo(Course::class, 'course_id', 'id');
-    }
-
-
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_ACTIVE);
@@ -87,10 +116,6 @@ class Topic extends BaseModel
     // {
     //     return $query->where('is_premium', true);
     // }
-    public function translations(): HasMany
-    {
-        return $this->hasMany(TopicTranslation::class, 'topic_id', 'id')->select('topic_id', 'language', 'name');
-    }
     public function translate($language): SubjectTranslation|null
     {
         return $this->translations->where('language', $language)->first();

@@ -6,6 +6,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
@@ -149,12 +152,12 @@ class User extends Authenticatable
 
     public function creater(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'created_by', 'id')->select(['name', 'id'])->withDefault();
+        return $this->belongsTo(User::class, 'created_by', 'id')->select(['name', 'id']);
     }
 
     public function updater(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'updated_by', 'id')->select(['name', 'id'])->withDefault();
+        return $this->belongsTo(User::class, 'updated_by', 'id')->select(['name', 'id']);
     }
 
     // Accessor for created time
@@ -183,7 +186,7 @@ class User extends Authenticatable
 
     public function userClass(): BelongsTo
     {
-        return $this->belongsTo(UserClass::class, 'user_class_id', 'id')->select(['id', 'name'])->withDefault();
+        return $this->belongsTo(UserClass::class, 'user_class_id', 'id')->select(['id', 'name']);
     }
 
 
@@ -243,6 +246,26 @@ class User extends Authenticatable
     public function scopeUser(Builder $query): Builder
     {
         return $query->where('is_admin', false);
+    }
+
+
+    public function subjects(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Subject::class,
+            UserSubject::class,
+            'user_id',
+            'id',
+            'id',
+            'subject_id'
+        )->with([
+                    'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+                ]);
+    }
+
+    public static function getDefaultLang(): string
+    {
+        return defaultLang() ?: 'en';
     }
 
 

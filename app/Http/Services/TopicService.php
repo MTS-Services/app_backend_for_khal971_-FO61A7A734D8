@@ -31,11 +31,11 @@ class TopicService
      * @param  string  $direction asc|desc default: asc
      * @return Builder
      */
-    public function getTopics(string $orderBy = 'order_index', string $direction = 'asc'): Builder
+    public function getTopics(int $course_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
     {
-        $query = Topic::translation($this->lang);
-        if (!($this->user->is_admin)) {
-            $query->free()->take(12);
+        $query = Topic::translation($this->lang)->where('course_id', $course_id);
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
         }
         return $query->orderBy($orderBy, $direction)->latest();
     }
@@ -43,8 +43,8 @@ class TopicService
     public function getTopic($param, string $query_field = 'id'): Topic|null
     {
         $query = Topic::translation($this->lang);
-        if (!($this->user->is_admin)) {
-            $query->free()->take(12);
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
         }
         return $query->where($query_field, $param)->first();
     }
@@ -67,7 +67,7 @@ class TopicService
 
     public function updateTopic(Topic $topic, $data): Topic|null
     {
-        try{
+        try {
             $data['updated_by'] = $this->user->id;
             return DB::transaction(function () use ($topic, $data) {
                 $topic->update($data);
@@ -76,7 +76,7 @@ class TopicService
                 $topic = $topic->refresh()->loadTranslation($this->lang);
                 return $topic;
             });
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             Log::error('Topic Update Error: ' . $e->getMessage());
             return null;
         }

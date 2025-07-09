@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\SubjectRequest;
 use App\Http\Services\SubjectService;
 use App\Models\Subject;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,14 +34,6 @@ class SubjectController extends Controller
 
     }
 
-    // /**
-    //  * Show the form for creating a new resource.
-    //  */
-    // public function create()
-    // {
-    //     //
-    // }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -51,10 +44,7 @@ class SubjectController extends Controller
             $validated = $request->validated();
             $file = $request->validated('icon') && $request->hasFile('icon') ? $request->file('icon') : null;
             $subject = $this->subjectService->createSubject($validated, $file);
-
-
             if (!$subject) {
-
                 return sendResponse(false, 'Failed to create subject', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             return sendResponse(true, 'Subject created successfully', $subject, Response::HTTP_CREATED);

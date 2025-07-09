@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\API\CourseController;
 use App\Http\Controllers\API\PlanController;
+use App\Http\Controllers\Api\ProgressController;
+use App\Http\Controllers\Api\ProgressControllerTest;
 use App\Http\Controllers\API\ProgressMilestoneController;
 use App\Http\Controllers\API\QuestionAnswerController;
 use App\Http\Controllers\API\QuestionController;
@@ -39,9 +41,12 @@ Route::post('user-subjects', [UserSubjectController::class, 'store'])->name('use
 
 
 Route::apiResource('courses', CourseController::class);
+Route::get('subject-courses/{subject_id}', [CourseController::class, 'subjectCourses'])->name('subject-courses');
 Route::get('courses/status/{course}', [CourseController::class, 'toggleStatus'])->name('courses.toggleStatus');
 
 Route::apiResource('topics', TopicController::class);
+Route::get('course-topics/{course_id}', [TopicController::class, 'courseTopics'])->name('course-topics');
+Route::get('topics/status/{topic}', [TopicController::class, 'toggleStatus'])->name('topics.toggleStatus');
 
 Route::prefix('plans')->group(function () {
     Route::get('/', [PlanController::class, 'index']);
@@ -49,32 +54,48 @@ Route::prefix('plans')->group(function () {
     Route::get('/{id}', [PlanController::class, 'show']);
 });
 
-Route::get('topics/status/{topic}', [TopicController::class, 'toggleStatus'])->name('topics.toggleStatus');
+Route::apiResource('question-details', QuestionDetailsController::class);
+Route::get('topic-question-details/{topic_id}', [QuestionDetailsController::class, 'topicQuestionDetails'])->name('topic-question-details');
+Route::get('question-details/status/{question_detail}', [QuestionDetailsController::class, 'toggleStatus'])->name('question-details.toggleStatus');
 
 Route::apiResource('questions', QuestionController::class);
+Route::get('question-details/questions/{question_details_id}', [QuestionController::class, 'questions'])->name('question-details.questions');
 Route::get('questions/status/{question}', [QuestionController::class, 'toggoleStatus'])->name('questions.toggleStatus');
 
-Route::apiResource('question-details', QuestionDetailsController::class);
-Route::get('question-details/status/{question_detail}', [QuestionDetailsController::class, 'toggleStatus'])->name('question-details.toggleStatus');
 
 Route::apiResource('question-answers', QuestionAnswerController::class);
 
 Route::apiResource('quizzes', QuizController::class);
+Route::get('topic-quizzes/{topic_id}', [QuizController::class, 'quizzes'])->name('topic-quizzes');
 Route::get('quizzes/status/{quiz}', [QuizController::class, 'toggleStatus'])->name('quizzes.toggleStatus');
 
 Route::apiResource('quiz-options', QuizOptionController::class);
+Route::get('quiz/options/{quiz_id}', [QuizOptionController::class, 'options'])->name('quiz.options');
 
 Route::apiResource('quiz-answers', QuizAnswerController::class);
 
 // Route::get('user-progress', [UserProgressController::class, 'userProgress'])->name('user-progress');
-Route::post('user-progress', [UserProgressController::class, 'storeOrUpdateUserProgress'])->name('user-progress.store');
+// Route::post('user-progress', [UserProgressController::class, 'storeOrUpdateUserProgress'])->name('user-progress.store');
 
-Route::get('/user-progress-list', [UserProgressController::class, 'index']);
+// Route::get('/user-progress-list', [UserProgressController::class, 'index']);
 
-Route::apiResource('user-item-progress', UserItemProgressController::class);
-Route::get('user-item-progress/toggle-bookmark/{bookmark}', [UserItemProgressController::class, 'toggleBookmark'])->name('toggle-bookmark');
-Route::get('user-item-progress/toggle-flag/{flag}', [UserItemProgressController::class, 'toggleFlag'])->name('toggle-flag');
+// Route::apiResource('user-item-progress', UserItemProgressController::class);
+// Route::get('user-item-progress/toggle-bookmark/{bookmark}', [UserItemProgressController::class, 'toggleBookmark'])->name('toggle-bookmark');
+// Route::get('user-item-progress/toggle-flag/{flag}', [UserItemProgressController::class, 'toggleFlag'])->name('toggle-flag');
 
-Route::apiResource('progress-milestones', ProgressMilestoneController::class);
+// Route::apiResource('progress-milestones', ProgressMilestoneController::class);
 
-Route::apiResource('user-milestone-achievements', UserMilestoneAchievementController::class);
+// Route::apiResource('user-milestone-achievements', UserMilestoneAchievementController::class);
+// Route::get('/progress/question/{userId}/{questionId}', [ProgressController::class, 'getQuestionProgress']);
+
+// Existing routes (assuming these are already converted or exist)
+Route::get('/progress/question/{userId}/{questionId}', [ProgressControllerTest::class, 'getQuestionProgress']);
+Route::get('/progress/topic/{userId}/{topicId}', [ProgressControllerTest::class, 'getTopicProgress']);
+
+// New
+Route::get('/progress/topic/{userId}/{topicId}/questions', [ProgressControllerTest::class, 'getTopicQuestionsProgress']);
+Route::post('/progress/item/update', [ProgressControllerTest::class, 'updateItemProgress']);
+Route::get('/progress/next/{userId}', [ProgressControllerTest::class, 'getNextItemToStudy']);
+Route::post('/progress/batch', [ProgressControllerTest::class, 'getBatchProgress']);
+Route::post('/progress/bookmark', [ProgressControllerTest::class, 'toggleBookmark']);
+Route::post('/progress/flag', [ProgressControllerTest::class, 'toggleFlag']);

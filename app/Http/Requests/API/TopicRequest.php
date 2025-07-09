@@ -23,7 +23,6 @@ class TopicRequest extends BaseRequest
     {
         return [
             'course_id' => 'required|exists:subjects,id',
-            'is_premium' => 'nullable|boolean',
         ]+($this->isMethod('POST') ? $this->stote() : $this->update());
     }
 
