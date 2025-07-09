@@ -10,7 +10,6 @@ class UserClass extends BaseModel
 
     protected $fillable = [
         'order_index',
-        'name',
         'icon',
         'status',
 
@@ -74,6 +73,26 @@ class UserClass extends BaseModel
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
+    public function translations()
+    {
+        return $this->hasMany(UserClassTranslation::class, 'user_class_id', 'id')->select('user_class_id', 'language', 'name');
+    }
+    public function translate($language): QuizTranslation|null
+    {
+        return $this->translations->where('language', $language)->first();
+    }
 
+    public function scopeTranslation(Builder $query, $lang): Builder
+    {
+        return $query->with([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
 
+    public function loadTranslation($lang)
+    {
+        return $this->load([
+            'translations' => fn($q) => $q->where('language', $lang)
+        ]);
+    }
 }

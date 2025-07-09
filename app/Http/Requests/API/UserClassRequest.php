@@ -27,7 +27,7 @@ class UserClassRequest extends BaseRequest
     public function stote(): array
     {
         return [
-            'name' => 'required|string|unique:user_classes,name',
+            'name' => 'required|string|unique:user_class_translations,name',
         ];
     }
     public function update(): array
@@ -36,7 +36,9 @@ class UserClassRequest extends BaseRequest
             'name' => [
                 'required',
                 'string',
-                Rule::unique('user_classes', 'name')->ignore($this->route('user_class')),
+                Rule::unique('user_class_translations', 'name')->where(
+                    fn ($query) => $query->where('id', '!=', $this->route('user_class')->id)
+                ),
             ],
         ];
     }

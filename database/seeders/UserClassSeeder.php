@@ -12,16 +12,14 @@ class UserClassSeeder extends Seeder
      */
     public function run(): void
     {
-         DB::table('class_translations')->insert([
-            [
-                'name' => 'Class One',
-            ],
-            [
-                'name' => 'Clase Uno',
-            ],
-            [
-                'name' => 'الصف الأول',
-            ],
-        ]);
+        $classes = [];
+
+        for ($k = 0; $k < 12; $k++) {
+            $classes[] = [
+                'order_index' => $k + 1,
+            ];
+        }
+
+        DB::table('user_classes')->insert($classes);
     }
 }

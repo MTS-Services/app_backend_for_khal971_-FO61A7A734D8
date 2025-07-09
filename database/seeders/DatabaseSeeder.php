@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             SubjectSeeder::class,
             SubjectTranslationSeeder::class,
             UserSubjectSeeder::class,
+            UserClassSeeder::class,
+            UserClassTranslationSeeder::class,
             CourseSeeder::class,
             CourseTranslationSeeder::class,
             TopicSeeder::class,
