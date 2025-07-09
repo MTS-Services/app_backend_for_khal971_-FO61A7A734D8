@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuestionAnswerRequest;
 use App\Http\Services\QuestionAnswerService;
 use App\Models\QuestionAnswer;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -21,20 +21,19 @@ class QuestionAnswerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function questionAnswers(int $question_id): JsonResponse
     {
         try{
-            $questionAnswers = $this->questionAnswerService->getQuestionAnswers()->with('user', 'question.questionDetails.topic.course.subject')->get();
-            // dd($questionAnswers);
-            if (empty($questionAnswers)) {
-                return sendResponse(false, 'No question answers found', null, Response::HTTP_NOT_FOUND);
+            if (!$question_id) {
+                return sendResponse(false, 'Question ID param is required', null, Response::HTTP_BAD_REQUEST);
             }
-            return sendResponse(true, 'Question answers fetched successfully', $questionAnswers, Response::HTTP_OK);
+            $questionAnswers = $this->questionAnswerService->getQuestionAnswers($question_id)->with('question.questionDetails')->get();
+            return sendResponse(true, 'Question answer list fetched successfully', $questionAnswers, Response::HTTP_OK);
         } catch (\Exception $e) {
-            return sendResponse(false, $e->getMessage(), null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            Log::error('Question Answer List Error: ' . $e->getMessage());
+            return sendResponse(false, 'Failed to fetch question answer list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
     /**
      * Show the form for creating a new resource.
      */

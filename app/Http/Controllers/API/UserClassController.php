@@ -123,7 +123,7 @@ class UserClassController extends Controller
     {
         try {
             $user_class = $this->userClassService->toggleStatus($user_class);
-            return sendResponse(true, "UserClass {$user_class->status_label}  successfully", ["status" => $user_class["status"]], Response::HTTP_OK);
+            return sendResponse(true, "UserClass {$user_class->status_label}  successfully", ["status" => $user_class->status_label], Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('UserClass Status Toggle Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to toggle UserClass status', null, Response::HTTP_INTERNAL_SERVER_ERROR);

@@ -64,6 +64,7 @@ Route::get('questions/status/{question}', [QuestionController::class, 'toggoleSt
 
 
 Route::apiResource('question-answers', QuestionAnswerController::class);
+Route::get('questons/answers/{question_id}', [QuestionAnswerController::class, 'questionAnswers'])->name('questions.answers');
 
 Route::apiResource('quizzes', QuizController::class);
 Route::get('topic-quizzes/{topic_id}', [QuizController::class, 'quizzes'])->name('topic-quizzes');
@@ -73,6 +74,9 @@ Route::apiResource('quiz-options', QuizOptionController::class);
 Route::get('quiz/options/{quiz_id}', [QuizOptionController::class, 'options'])->name('quiz.options');
 
 Route::apiResource('quiz-answers', QuizAnswerController::class);
+Route::get('quiz/answers/{quiz_id}', [QuizAnswerController::class, 'quizAnswers'])->name('quiz.answers', function ($id) {
+    
+});
 
 // Route::get('user-progress', [UserProgressController::class, 'userProgress'])->name('user-progress');
 // Route::post('user-progress', [UserProgressController::class, 'storeOrUpdateUserProgress'])->name('user-progress.store');
