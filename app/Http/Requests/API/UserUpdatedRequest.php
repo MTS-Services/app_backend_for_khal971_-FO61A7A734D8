@@ -21,25 +21,26 @@ class UserUpdatedRequest extends BaseRequest
      */
     public function rules(): array
     {
-         return [
+        $userId = $this->route('id');
+        return [
             'username' => [
                 'nullable',
                 'string',
                 'max:100',
-                Rule::unique('users', 'username')->ignore($this->user()->id),
+                Rule::unique('users', 'username')->where(fn($query) => $query->where('id', '!=', $userId)),
             ],
             'name' => 'required|string|max:255',
             'phone' => [
                 'required',
                 'string',
-                Rule::unique('users', 'phone')->ignore($this->user()->id),
+                Rule::unique('users', 'phone')->where(fn($query) => $query->where('id', '!=', $userId)),
             ],
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users', 'email')->ignore($this->user()->id),
+                Rule::unique('users', 'email')->where(fn($query) => $query->where('id', '!=', $userId)),
             ],
-
+            'is_premium' => 'required|boolean',
             'dob' => 'nullable|date',
             'gender' => 'nullable|numeric|between:0,2',
             'country' => 'nullable|string',

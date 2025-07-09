@@ -6,13 +6,13 @@ use App\Models\User;
 
 class UserService
 {
-    // protected FileService $fileService;
+    protected FileService $fileService;
 
     public function __construct(FileService $fileService)
     {
         return $this->fileService = $fileService;
     }
-    public function getUser($pararm, string $query_field = 'id'): User
+    public function getUser($pararm, string $query_field = 'id'): User|null
     {
         return User::where($query_field, $pararm)->first();
 

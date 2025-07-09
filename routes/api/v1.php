@@ -24,8 +24,10 @@ use App\Http\Controllers\API\UserProgressController;
 
 Route::controller(UserController::class)->group(function () {
     Route::get('user', 'user')->name('user');
+    Route::get('users-access/{id}', 'userAccessByAdmin')->name('user-access');
+    Route::put('users-update/{id}', 'userUpdateByAdmin')->name('user.update');
     Route::get('users', 'users')->name('users');
-    Route::put('users', 'updateUser')->name('users.update');
+    Route::put('user-update', 'updateUser')->name('users.update');
 });
 
 
