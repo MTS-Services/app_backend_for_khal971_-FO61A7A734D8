@@ -12,7 +12,6 @@ use App\Http\Controllers\API\QuizAnswerController;
 use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\QuizOptionController;
 use App\Http\Controllers\API\User\UserController;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\SubjectController;
 use App\Http\Controllers\API\TopicController;
@@ -95,13 +94,13 @@ Route::get('quiz/answers/{quiz_id}', [QuizAnswerController::class, 'quizAnswers'
 // Route::get('/progress/question/{userId}/{questionId}', [ProgressController::class, 'getQuestionProgress']);
 
 // Existing routes (assuming these are already converted or exist)
-Route::get('/progress/question/{userId}/{questionId}', [ProgressControllerTest::class, 'getQuestionProgress']);
-Route::get('/progress/topic/{userId}/{topicId}', [ProgressControllerTest::class, 'getTopicProgress']);
+// Route::get('/progress/question/{userId}/{questionId}', [ProgressControllerTest::class, 'getQuestionProgress']);
+// Route::get('/progress/topic/{userId}/{topicId}', [ProgressControllerTest::class, 'getTopicProgress']);
 
-// New
-Route::get('/progress/topic/{userId}/{topicId}/questions', [ProgressControllerTest::class, 'getTopicQuestionsProgress']);
-Route::post('/progress/item/update', [ProgressControllerTest::class, 'updateItemProgress']);
-Route::get('/progress/next/{userId}', [ProgressControllerTest::class, 'getNextItemToStudy']);
-Route::post('/progress/batch', [ProgressControllerTest::class, 'getBatchProgress']);
-Route::post('/progress/bookmark', [ProgressControllerTest::class, 'toggleBookmark']);
-Route::post('/progress/flag', [ProgressControllerTest::class, 'toggleFlag']);
+// // New
+// Route::get('/progress/topic/{userId}/{topicId}/questions', [ProgressControllerTest::class, 'getTopicQuestionsProgress']);
+// Route::post('/progress/item/update', [ProgressControllerTest::class, 'updateItemProgress']);
+// Route::get('/progress/next/{userId}', [ProgressControllerTest::class, 'getNextItemToStudy']);
+// Route::post('/progress/batch', [ProgressControllerTest::class, 'getBatchProgress']);
+// Route::post('/progress/bookmark', [ProgressControllerTest::class, 'toggleBookmark']);
+// Route::post('/progress/flag', [ProgressControllerTest::class, 'toggleFlag']);

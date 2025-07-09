@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 
 class PlanFeature extends BaseModel
 {
@@ -13,7 +13,7 @@ class PlanFeature extends BaseModel
         'icon',
         'description',
         'status',
-        
+
         'created_by',
         'updated_by',
     ];
@@ -56,9 +56,9 @@ class PlanFeature extends BaseModel
         return self::getStatusList()[$this->status];
     }
 
-    public function getStatusListAttribute(): array
+    public function getStatusListAttribute(): object
     {
-        return self::getStatusList();
+        return (object) self::getStatusList();
     }
 
     // Modified icon

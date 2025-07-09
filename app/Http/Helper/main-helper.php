@@ -73,6 +73,17 @@ function defaultLang(): string
 }
 
 
+function translation($translations)
+{
+    $lang = request()->header('Accept-Language', defaultLang());
+    $translation = $translations->where('language', $lang)->first();
+    if (!$translation) {
+        $translation = $translations->where('language', 'en')->first();
+    }
+    return $translation;
+}
+
+
 
 
 

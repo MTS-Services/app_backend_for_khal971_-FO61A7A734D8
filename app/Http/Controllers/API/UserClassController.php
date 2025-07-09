@@ -25,11 +25,11 @@ class UserClassController extends Controller
     public function index()
     {
         try {
-            $user_classes = $this->userClassService->getUserClasses()->get()->toArray();
-            return sendResponse(true, 'UserClass list', $user_classes, Response::HTTP_OK);
+            $user_classes = $this->userClassService->getUserClasses()->get();
+            return sendResponse(true, 'User class list fetched successfully', $user_classes, Response::HTTP_OK);
         } catch (\Exception $e) {
-            Log::error('UserClass List Error: ' . $e->getMessage());
-            return sendResponse(false, 'Failed to fetch UserClass list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            Log::error('User class list error: ' . $e->getMessage());
+            return sendResponse(false, 'Failed to fetch user class list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

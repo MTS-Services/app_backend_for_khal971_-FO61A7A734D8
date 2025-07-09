@@ -27,13 +27,13 @@ class QuizController extends Controller
             if (!$topic_id) {
                 return sendResponse(false, 'Topic not found', null, Response::HTTP_NOT_FOUND);
             }
-            $quizzes = $this->quizService->getQuizzes($topic_id)->with('topics')->get();
+            $quizzes = $this->quizService->getQuizzes($topic_id);
+            // $quizzes = $this->quizService->getQuizzes($topic_id)->with('topics')->get();
             return sendResponse(true, ' Quiz list fetched successfully', $quizzes, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch Quiz list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
     }
 
     /**
@@ -96,8 +96,7 @@ class QuizController extends Controller
                 return sendResponse(false, ' Quiz not found', null, Response::HTTP_NOT_FOUND);
             }
             $validated = $request->validated();
-            $file = $request->validated('icon') && $request->hasFile('icon') ? $request->file('icon') : null;
-            $quiz = $this->quizService->updateQuiz($quiz, $validated, $file);
+            $quiz = $this->quizService->updateQuiz($quiz, $validated);
             return sendResponse(true, ' Quiz updated successfully', $quiz, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz Update Error: ' . $e->getMessage());

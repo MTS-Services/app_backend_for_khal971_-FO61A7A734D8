@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\BaseModel;
 
 class Question extends BaseModel
 {
@@ -46,13 +47,6 @@ class Question extends BaseModel
             'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
         ]);
     }
-
-    public function userItemProgress(): HasMany
-    {
-        return $this->hasMany(UserItemProgresss::class, 'item_id')
-            ->where('item_type', 'question');
-    }
-
 
     /* ==================================================================
                         Relations End Here
@@ -100,9 +94,9 @@ class Question extends BaseModel
         return array_key_exists($this->status, self::getStatusList()) ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
-    public function getStatusListAttribute(): array
+    public function getStatusListAttribute(): object
     {
-        return self::getStatusList();
+        return (object) self::getStatusList();
     }
     public function scopeActive(Builder $query): Builder
     {

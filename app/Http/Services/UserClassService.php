@@ -30,22 +30,16 @@ class UserClassService
      * @param  string  $direction asc|desc default: asc
      * @return Builder
      */
-    public function getUserClasses(string $orderBy = 'order_index', string $direction = 'asc'): Builder
+    public function getUserClasses(string $orderBy = 'order_index', string $direction = 'asc')
     {
 
         $query = UserClass::query()->translation($this->lang);
-        if (!($this->user->is_admin)) {
-            $query->free()->take(12);
-        }
         return $query->orderBy($orderBy, $direction);
     }
 
     public function getUserClass($param, string $query_field = 'id'): UserClass|null
     {
         $query = UserClass::query()->translation($this->lang);
-        if (!($this->user->is_admin)) {
-            $query->free()->take(12);
-        }
         return $query->where($query_field, $param)->first();
     }
     public function createUserClass($data): UserClass|null

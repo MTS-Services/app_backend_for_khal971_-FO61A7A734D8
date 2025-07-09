@@ -48,7 +48,7 @@ class UserUpdatedRequest extends BaseRequest
             'school' => 'nullable|string',
             'user_class_id' => 'nullable|exists:user_classes,id',
 
-            'image' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:2048',
 
             'updated_by' => 'nullable|exists:users,id',
         ];

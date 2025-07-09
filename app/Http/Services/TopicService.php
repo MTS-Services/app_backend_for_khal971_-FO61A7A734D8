@@ -6,10 +6,12 @@ use App\Jobs\TranslateModelJob;
 use App\Models\Topic;
 use App\Models\TopicTranslation;
 use App\Models\User;
+use App\Models\UserProgress;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Collection;
 
 class TopicService
 {
@@ -31,14 +33,31 @@ class TopicService
      * @param  string  $direction asc|desc default: asc
      * @return Builder
      */
-    public function getTopics(int $course_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
+    // public function getTopics(int $course_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
+    // {
+    //     $query = Topic::translation($this->lang)->where('course_id', $course_id);
+    //     if (!($this->user->is_premium || $this->user->is_admin)) {
+    //         $query->take(12);
+    //     }
+    //     return $query->orderBy($orderBy, $direction)->latest();
+    // }
+
+
+    public function getTopics(int $course_id, string $orderBy = 'order_index', string $direction = 'asc'): Collection
     {
-        $query = Topic::translation($this->lang)->where('course_id', $course_id);
-        if (!($this->user->is_premium || $this->user->is_admin)) {
+        $query = Topic::translation($this->lang)
+            ->where('course_id', $course_id)
+            ->with('course.subject')
+            ->orderBy($orderBy, $direction)
+            ->latest();
+
+        if (!($this->user && ($this->user->is_premium || $this->user->is_admin))) {
             $query->take(12);
         }
-        return $query->orderBy($orderBy, $direction)->latest();
+        $topics = $query->get();
+        return $topics;
     }
+
 
     public function getTopic($param, string $query_field = 'id'): Topic|null
     {

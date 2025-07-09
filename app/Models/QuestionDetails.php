@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\BaseModel;
 
 class QuestionDetails extends BaseModel
 {
@@ -63,9 +64,9 @@ class QuestionDetails extends BaseModel
         return self::getStatusList()[$this->status] ?? 'Unknown';
     }
 
-    public function getStatusListAttribute(): array
+    public function getStatusListAttribute(): object
     {
-        return self::getStatusList();
+        return (object) self::getStatusList();
     }
 
     public function scopeActive(Builder $query): Builder

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payment extends BaseModel
@@ -28,7 +28,7 @@ class Payment extends BaseModel
         'status' => 'integer',
     ];
 
-      public function __construct(array $attributes = [])
+    public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
         $this->appends = array_merge(parent::getAppends(), [
@@ -61,9 +61,9 @@ class Payment extends BaseModel
         return self::getStatusList()[$this->status];
     }
 
-    public function getStatusListAttribute(): array
+    public function getStatusListAttribute(): object
     {
-        return self::getStatusList();
+        return (object) self::getStatusList();
     }
 
     public function user(): BelongsTo
