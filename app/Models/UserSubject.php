@@ -20,11 +20,11 @@ class UserSubject extends BaseModel
     ];
     public function user()
     {
-        return $this->belongsTo(User::class)->withDefault();
+        return $this->belongsTo(User::class);
     }
 
     public function subject()
     {
-        return $this->belongsTo(Subject::class)->withDefault();
+        return $this->belongsTo(Subject::class);
     }
 }

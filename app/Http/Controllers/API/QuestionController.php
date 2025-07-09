@@ -24,10 +24,10 @@ class QuestionController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function questions($question_details_id): JsonResponse
     {
-        try{
-            $questions = $this->questionService->getQuestions()->with('questionDetails.topic.course.subject')->get();
+        try {
+            $questions = $this->questionService->getQuestions($question_details_id)->with('questionDetails.topic')->get();
             return sendResponse(true, 'Question list fetched successfully', $questions, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question List Error: ' . $e->getMessage());
@@ -48,7 +48,7 @@ class QuestionController extends Controller
      */
     public function store(QuestionRequest $request)
     {
-        try{
+        try {
             $validated = $request->validated();
             $question = $this->questionService->createQuestion($validated);
             if (!$question) {
@@ -66,12 +66,12 @@ class QuestionController extends Controller
      */
     public function show(Question $question): JsonResponse
     {
-        try{
+        try {
             $question = $this->questionService->getQuestion($question->id)->load('questionDetails.topic.course.subject');
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
             }
-            return sendResponse(true, 'Question fetched successfully', $question, Response::HTTP_OK);   
+            return sendResponse(true, 'Question fetched successfully', $question, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question Fetch Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch question', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -91,7 +91,7 @@ class QuestionController extends Controller
      */
     public function update(QuestionRequest $request, Question $question): JsonResponse
     {
-        try{
+        try {
             $question = $this->questionService->getQuestion($question->id);
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
@@ -99,7 +99,7 @@ class QuestionController extends Controller
             $validated = $request->validated();
             $question = $this->questionService->updateQuestion($question, $validated);
             return sendResponse(true, 'Question updated successfully', $question, Response::HTTP_OK);
-        }catch(\Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Question Update Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to update question', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -110,7 +110,7 @@ class QuestionController extends Controller
      */
     public function destroy(Question $question): JsonResponse
     {
-        try{
+        try {
             $question = $this->questionService->getQuestion($question->id);
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
@@ -124,7 +124,7 @@ class QuestionController extends Controller
     }
     public function toggoleStatus(Question $question): JsonResponse
     {
-        try{
+        try {
             $question = $this->questionService->getQuestion($question->id);
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);

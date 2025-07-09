@@ -35,13 +35,13 @@ class QuizService
      * @param  string  $direction asc|desc default: asc
      * @return Builder
      */
-    public function getQuizzes(string $orderBy = 'order_index', string $direction = 'asc')
+    public function getQuizzes(int $topic_id, string $orderBy = 'order_index', string $direction = 'asc')
     {
 
-        $query = Quiz::translation($this->lang);
-        // if (!($this->user->is_admin)) {
-        //     $query->free()->take(12);
-        // }
+        $query = Quiz::translation($this->lang)->where('topic_id', $topic_id);
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
+        }
         return $query->orderBy($orderBy, $direction)->latest();
     }
 
@@ -49,8 +49,8 @@ class QuizService
     {
 
         $query = Quiz::translation($this->lang);
-        if (!( $this->user->is_admin)) {
-            $query->free();
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
         }
         $quiz = $query->where($query_field, $param)->first();
         return $quiz;
@@ -68,7 +68,7 @@ class QuizService
                     'title' => $data['title'],
                     'description' => $data['description'] ?? ''
                 ]);
-                TranslateModelJob::dispatch( Quiz::class, QuizTranslation::class, 'quiz_id', $quiz->id, ['title', 'description'], $this->lang);
+                TranslateModelJob::dispatch(Quiz::class, QuizTranslation::class, 'quiz_id', $quiz->id, ['title', 'description'], $this->lang);
                 $quiz = $quiz->refresh()->loadTranslation($this->lang);
                 return $quiz;
             });
@@ -78,18 +78,20 @@ class QuizService
         }
     }
 
-    public function updateQuiz( Quiz $quiz, $data): Quiz|null
+    public function updateQuiz(Quiz $quiz, $data): Quiz|null
     {
         try {
             $data['updated_by'] = $this->user->id;
             return DB::transaction(function () use ($quiz, $data) {
                 $quiz->update($data);
-                QuizTranslation::updateOrCreate(['quiz_id' => $quiz->id, 'language' => $this->lang], 
-                [
-                    'title' => $data['title'] ?? '',
-                    'description' => $data['description'] ?? '',
-                ]);
-                TranslateModelJob::dispatch( Quiz::class, QuizTranslation::class, 'quiz_id', $quiz->id, ['title', 'description'], $this->lang);
+                QuizTranslation::updateOrCreate(
+                    ['quiz_id' => $quiz->id, 'language' => $this->lang],
+                    [
+                        'title' => $data['title'] ?? '',
+                        'description' => $data['description'] ?? '',
+                    ]
+                );
+                TranslateModelJob::dispatch(Quiz::class, QuizTranslation::class, 'quiz_id', $quiz->id, ['title', 'description'], $this->lang);
                 $quiz = $quiz->refresh()->loadTranslation($this->lang);
                 return $quiz;
             });
@@ -99,12 +101,12 @@ class QuizService
         }
     }
 
-    public function deleteQuiz( Quiz $quiz): bool
+    public function deleteQuiz(Quiz $quiz): bool
     {
         return $quiz->delete();
     }
 
-    public function toggleStatus( Quiz $quiz): Quiz|null
+    public function toggleStatus(Quiz $quiz): Quiz|null
     {
         $quiz->update(['status' => !$quiz->status, 'updated_by' => $this->user->id]);
         return $quiz->refresh();

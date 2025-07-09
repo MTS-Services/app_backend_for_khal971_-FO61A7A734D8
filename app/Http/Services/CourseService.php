@@ -33,7 +33,7 @@ class CourseService
      */
     public function getCourses(int $subject_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
     {
-        $query = Course::translation($this->lang)->where('subject_id', $subject_id);
+        $query = Course::counts()->translation($this->lang)->where('subject_id', $subject_id);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -42,7 +42,7 @@ class CourseService
 
     public function getCourse($param, string $query_field = 'id'): Course|null
     {
-        $query = Course::translation($this->lang);
+        $query = Course::counts()->translation($this->lang);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }

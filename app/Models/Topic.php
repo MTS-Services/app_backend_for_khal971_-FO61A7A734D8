@@ -42,12 +42,17 @@ class Topic extends BaseModel
     {
         return $this->belongsTo(Course::class, 'course_id', 'id')->with([
             'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
-        ])->withDefault();
+        ]);
     }
 
-    public function questionDetails(): HasMany
+    public function question_details(): HasMany
     {
         return $this->hasMany(QuestionDetails::class);
+    }
+
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class);
     }
 
     public function userProgress(): HasMany

@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Quiz extends Model
+class Quiz extends BaseModel
 {
-     protected $fillable = [
+    protected $fillable = [
         'order_index',
         'topic_id',
         'status',
@@ -75,12 +75,14 @@ class Quiz extends Model
     // Relationships
     public function topics()
     {
-        return $this->belongsTo(Topic::class, 'topic_id', 'id')->withDefault();
+        return $this->belongsTo(Topic::class, 'topic_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ]);
     }
 
-     public function translations(): HasMany
+    public function translations(): HasMany
     {
-        return $this->hasMany( QuizTranslation::class, 'quiz_id', 'id')->select('quiz_id', 'language', 'title', 'description');
+        return $this->hasMany(QuizTranslation::class, 'quiz_id', 'id')->select('quiz_id', 'language', 'title', 'description');
     }
 
     public function translate($language): QuizTranslation|null

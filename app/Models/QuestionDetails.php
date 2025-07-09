@@ -32,7 +32,7 @@ class QuestionDetails extends BaseModel
     {
         return $this->belongsTo(Topic::class, 'topic_id', 'id')->with([
             'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
-        ])->withDefault();
+        ]);
     }
 
     public function questions(): HasMany
