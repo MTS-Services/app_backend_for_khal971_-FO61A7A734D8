@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuizOptionRequest;
 use App\Http\Services\QuizOptionService;
 use App\Models\QuizOption;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class QuizOptionController extends Controller
 {
