@@ -83,16 +83,16 @@ class User extends Authenticatable
 
 
     protected $appends = [
-        'created_at_formatted',
-        'updated_at_formatted',
+        // 'created_at_formatted',
+        // 'updated_at_formatted',
 
-        'created_at_human',
-        'updated_at_human',
+        // 'created_at_human',
+        // 'updated_at_human',
         'status_label',
         'status_list',
 
         'gender_label',
-        // 'gender_list',
+        'gender_list',
 
     ];
 
@@ -116,9 +116,9 @@ class User extends Authenticatable
         return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
-    public function getStatusListAttribute(): array
+    public function getStatusListAttribute(): object
     {
-        return self::getStatusList();
+        return (object) self::getStatusList();
     }
 
 
@@ -144,9 +144,9 @@ class User extends Authenticatable
         return $this->gender ? self::getGenderList()[$this->gender] : 'Unknown';
     }
 
-    public function getGenderListAttribute(): array
+    public function getGenderListAttribute(): object
     {
-        return self::getGenderList();
+        return (object) self::getGenderList();
     }
 
 

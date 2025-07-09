@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\SubjectRequest;
+use App\Http\Resources\SubjectResource;
 use App\Http\Services\SubjectService;
 use App\Models\Subject;
 use Illuminate\Database\Eloquent\Builder;
@@ -26,7 +27,7 @@ class SubjectController extends Controller
     {
         try {
             $subjects = $this->subjectService->getSubjects()->get();
-            return sendResponse(true, 'Subject list fetched successfully', $subjects, Response::HTTP_OK);
+            return sendResponse(true, 'Subject list fetched successfully', SubjectResource::collection($subjects), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Subject List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch subject list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -47,7 +48,7 @@ class SubjectController extends Controller
             if (!$subject) {
                 return sendResponse(false, 'Failed to create subject', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, 'Subject created successfully', $subject, Response::HTTP_CREATED);
+            return sendResponse(true, 'Subject created successfully', new SubjectResource($subject), Response::HTTP_CREATED);
         } catch (\Exception $e) {
             Log::error('Subject Create Error: ' . $e->getMessage(), [
                 'request' => $request->all(),
@@ -66,7 +67,7 @@ class SubjectController extends Controller
             if (!$subject) {
                 return sendResponse(false, 'Subject not found', null, Response::HTTP_NOT_FOUND);
             }
-            return sendResponse(true, 'Subject fetched successfully', $subject, Response::HTTP_OK);
+            return sendResponse(true, 'Subject fetched successfully', new SubjectResource($subject), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Subject Fetch Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch subject', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -95,7 +96,7 @@ class SubjectController extends Controller
             $validated = $request->validated();
             $file = $request->validated('icon') && $request->hasFile('icon') ? $request->file('icon') : null;
             $subject = $this->subjectService->updateSubject($subject, $validated, $file);
-            return sendResponse(true, 'Subject updated successfully', $subject, Response::HTTP_OK);
+            return sendResponse(true, 'Subject updated successfully', new SubjectResource($subject), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Subject Update Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to update subject', null, Response::HTTP_INTERNAL_SERVER_ERROR);

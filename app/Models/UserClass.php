@@ -33,7 +33,7 @@ class UserClass extends BaseModel
         parent::__construct($attributes);
         $this->appends = array_merge(parent::getAppends(), [
             'status_label',
-            // 'status_list',
+            'status_list',
         ]);
     }
 
@@ -55,12 +55,12 @@ class UserClass extends BaseModel
 
     public function getStatusLabelAttribute(): string
     {
-        return array_key_exists($this->status, self::getStatusList()) ? self::getStatusList()[$this->status] : 'Unknown';
+        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
-    public function getStatusListAttribute(): array
+    public function getStatusListAttribute(): object
     {
-        return self::getStatusList();
+        return (object) self::getStatusList();
     }
 
 

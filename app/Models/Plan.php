@@ -62,8 +62,8 @@ class Plan extends BaseModel
         return self::getStatusList()[$this->status];
     }
 
-    public function getStatusListAttribute(): array
+    public function getStatusListAttribute(): object
     {
-        return self::getStatusList();
+        return (object) self::getStatusList();
     }
 }

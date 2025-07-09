@@ -40,9 +40,7 @@ class Topic extends BaseModel
 
     public function course(): BelongsTo
     {
-        return $this->belongsTo(Course::class, 'course_id', 'id')->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
-        ]);
+        return $this->belongsTo(Course::class, 'course_id', 'id')->with(['translations']);
     }
 
     public function question_details(): HasMany
@@ -55,11 +53,11 @@ class Topic extends BaseModel
         return $this->hasMany(Quiz::class);
     }
 
-    public function userProgress(): HasMany
-    {
-        return $this->hasMany(UserProgress::class, 'content_id')
-            ->where('content_type', 'topic');
-    }
+    // public function userProgress(): HasMany
+    // {
+    //     return $this->hasMany(UserProgress::class, 'content_id')
+    //         ->where('content_type', 'topic');
+    // }
 
     /* ==================================================================
                         Relations End Here
@@ -93,9 +91,9 @@ class Topic extends BaseModel
         return array_key_exists($this->status, self::getStatusList()) ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
-    public function getStatusListAttribute(): array
+    public function getStatusListAttribute(): object
     {
-        return self::getStatusList();
+        return (object) self::getStatusList();
     }
 
     public function scopeActive(Builder $query): Builder
@@ -116,22 +114,31 @@ class Topic extends BaseModel
     // {
     //     return $query->where('is_premium', true);
     // }
-    public function translate($language): SubjectTranslation|null
-    {
-        return $this->translations->where('language', $language)->first();
-    }
+    // public function translate($language): SubjectTranslation|null
+    // {
+    //     return $this->translations->where('language', $language)->first();
+    // }
 
-    public function scopeTranslation(Builder $query, $lang): Builder
-    {
-        return $query->with([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function scopeTranslation(Builder $query, $lang): Builder
+    // {
+    //     return $query->with([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 
-    public function loadTranslation($lang)
+    // public function loadTranslation($lang)
+    // {
+    //     return $this->load([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
+
+
+    public function scopeCounts(Builder $query): Builder
     {
-        return $this->load([
-            'translations' => fn($q) => $q->where('language', $lang)
+        return $query->withCount([
+            'quizzes',
+            'question_details'
         ]);
     }
 }

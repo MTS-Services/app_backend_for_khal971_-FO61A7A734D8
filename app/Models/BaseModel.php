@@ -10,11 +10,11 @@ class BaseModel extends Model
 {
     use HasFactory;
     protected $appends = [
-        'created_at_formatted',
-        'updated_at_formatted',
+        // 'created_at_formatted',
+        // 'updated_at_formatted',
 
-        'created_at_human',
-        'updated_at_human',
+        // 'created_at_human',
+        // 'updated_at_human',
     ];
 
     public function creater(): BelongsTo

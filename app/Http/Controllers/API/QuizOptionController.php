@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuizOptionRequest;
 use App\Http\Services\QuizOptionService;
 use App\Models\QuizOption;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class QuizOptionController extends Controller
 {
@@ -120,8 +120,8 @@ class QuizOptionController extends Controller
             if (!$quiz_option) {
                 return sendResponse(false, 'Failed to delete Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            $quiz_option = $this->quizOptionService->deleteQuizOption($quiz_option);
-            return sendResponse(true, ' Quiz Option deleted successfully', $quiz_option, Response::HTTP_OK);
+            $this->quizOptionService->deleteQuizOption($quiz_option);
+            return sendResponse(true, ' Quiz Option deleted successfully', null, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz Option Delete Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to delete Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
