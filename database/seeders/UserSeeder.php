@@ -39,5 +39,7 @@ class UserSeeder extends Seeder
             'is_premium' => true,
             'premium_expires_at' => now()->addDays(30)
         ]);
+
+        User::factory()->count(10)->create();
     }
 }

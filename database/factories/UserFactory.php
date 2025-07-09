@@ -23,12 +23,24 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+
+        $isPrimium = fake()->boolean();
+        $premiumExpiresAt = $isPrimium ? fake()->dateTimeBetween(now(), now()->addDays(30)) : null;
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+
+            'name' => fake()->name(),
+            'email' => fake()->unique()->safeEmail(),
+            'phone' => fake()->unique()->phoneNumber(),
+            'password' => static::$password ??= Hash::make('password'),
+            'email_verified_at' => now(),
+            'is_premium' => $isPrimium,
+            'premium_expires_at' =>  $premiumExpiresAt
         ];
     }
 
