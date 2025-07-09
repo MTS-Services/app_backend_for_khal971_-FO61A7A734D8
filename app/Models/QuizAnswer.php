@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class QuizAnswer extends Model
+class QuizAnswer extends BaseModel
 {
     protected $table = 'quiz_answers';
 

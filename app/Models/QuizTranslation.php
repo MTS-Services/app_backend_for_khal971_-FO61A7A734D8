@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class QuizTranslation extends Model
+class QuizTranslation extends BaseModel
 {
     protected $table = 'quizzes_translations';
     protected $fillable =[

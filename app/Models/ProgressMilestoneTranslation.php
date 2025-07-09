@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class ProgressMilestoneTranslation extends Model
+class ProgressMilestoneTranslation extends BaseModel
 {
 
     protected $fillable = [
