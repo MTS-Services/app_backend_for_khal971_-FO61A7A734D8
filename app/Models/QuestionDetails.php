@@ -31,9 +31,7 @@ class QuestionDetails extends BaseModel
 
     public function topic(): BelongsTo
     {
-        return $this->belongsTo(Topic::class, 'topic_id', 'id')->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
-        ]);
+        return $this->belongsTo(Topic::class, 'topic_id', 'id')->with(['translations']);
     }
 
     public function questions(): HasMany
@@ -79,22 +77,22 @@ class QuestionDetails extends BaseModel
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
-    public function translate($language): SubjectTranslation|null
-    {
-        return $this->translations->where('language', $language)->first();
-    }
+    // public function translate($language): SubjectTranslation|null
+    // {
+    //     return $this->translations->where('language', $language)->first();
+    // }
 
-    public function scopeTranslation(Builder $query, $lang): Builder
-    {
-        return $query->with([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function scopeTranslation(Builder $query, $lang): Builder
+    // {
+    //     return $query->with([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 
-    public function loadTranslation($lang)
-    {
-        return $this->load([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function loadTranslation($lang)
+    // {
+    //     return $this->load([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 }
