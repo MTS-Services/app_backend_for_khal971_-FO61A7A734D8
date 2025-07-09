@@ -41,9 +41,9 @@ class UserController extends Controller
     public function users(): JsonResponse
     {
         try {
-            // if (request()->user()->is_admin !== true) {
-            //     return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
-            // }
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $users = $this->userService->getUsers()->with(['userClass', 'creater', 'updater'])->paginate(request()->get('per_page', 10));
             return sendResponse(true, 'User list fetched successfully', UserResource::collection($users), Response::HTTP_OK);
         } catch (\Exception $e) {
