@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Course;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -14,16 +15,6 @@ class CourseSeeder extends Seeder
     public function run(): void
     {
 
-        DB::table('courses')->insert([
-            [
-                'subject_id' => 1,
-            ],
-            [
-                'subject_id' => 1,
-            ],
-            [
-                'subject_id' => 2,
-            ],
-        ]);
+        Course::factory()->count(10)->create();
     }
 }

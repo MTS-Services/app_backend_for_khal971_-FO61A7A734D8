@@ -42,7 +42,12 @@ class Quiz extends BaseModel
     /* ================================
              Relationships Start Here
      ================================ */
-
+    public function practices()
+    {
+        return $this->morphMany(Practice::class, 'practiceable')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
+        ]);
+    }
     /* ================================
              Relationships End Here
      ================================ */

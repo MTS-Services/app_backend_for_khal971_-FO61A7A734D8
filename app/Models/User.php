@@ -76,6 +76,11 @@ class User extends Authenticatable
     ];
 
 
+    public function practices()
+    {
+        return $this->hasMany(Practice::class);
+    }
+
 
     protected $appends = [
         'created_at_formatted',
@@ -90,6 +95,7 @@ class User extends Authenticatable
         // 'gender_list',
 
     ];
+
 
     /////////////////////////
     // Status Attributes
@@ -257,15 +263,12 @@ class User extends Authenticatable
             'id',
             'subject_id'
         )->with([
-                    'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
-                ]);
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ]);
     }
 
     public static function getDefaultLang(): string
     {
         return defaultLang() ?: 'en';
     }
-
-
-
 }
