@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 
-class UserProgressSnapshot extends Model
+class UserProgressSnapshot extends BaseModel
 {
     //
 }

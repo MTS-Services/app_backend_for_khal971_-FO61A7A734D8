@@ -7,7 +7,6 @@ use App\Http\Requests\API\QuestionDetailsRequest;
 use App\Http\Services\QuestionDetailsService;
 use App\Models\QuestionDetails;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class QuestionDetailsController extends Controller
@@ -24,7 +23,7 @@ class QuestionDetailsController extends Controller
     public function topicQuestionDetails($topic_id): JsonResponse
     {
         try {
-            $questionDetails = $this->questionDetailsService->getQuestionDetails($topic_id)->get();
+            $questionDetails = $this->questionDetailsService->getQuestionDetails($topic_id)->with('topic')->get();
             if (empty($questionDetails)) {
                 return sendResponse(false, 'No question details found', null, Response::HTTP_NOT_FOUND);
             }
@@ -64,8 +63,8 @@ class QuestionDetailsController extends Controller
      */
     public function show(QuestionDetails $question_detail): JsonResponse
     {
-        try {
-            $question_detail = $this->questionDetailsService->getQuestionDetail($question_detail->id);
+        try{
+            $question_detail = $this->questionDetailsService->getQuestionDetail($question_detail->id)->load('topic');
             if (!$question_detail) {
                 return sendResponse(false, 'Question details not found', null, Response::HTTP_NOT_FOUND);
             }
