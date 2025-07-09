@@ -4,11 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\TopicRequest;
+use App\Http\Resources\TopicResource;
 use App\Http\Services\TopicService;
 use App\Models\Topic;
-use App\Models\UserProgress;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,12 +25,12 @@ class TopicController extends Controller
     public function courseTopics($course_id): JsonResponse
     {
         try {
-            if (is_null($course_id)) {
+            if (!$course_id) {
                 return sendResponse(false, 'Course ID param is required', null, Response::HTTP_BAD_REQUEST);
             }
             $topics = $this->topicService->getTopics($course_id);
             // $topics = $this->topicService->getTopics($course_id)->with('course.subject')->get();
-            return sendResponse(true, 'Topic list fetched successfully', $topics, Response::HTTP_OK);
+            return sendResponse(true, 'Topic list fetched successfully', TopicResource::collection($topics), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('topic List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch topic list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -44,7 +43,7 @@ class TopicController extends Controller
             $validated = $request->validated();
 
             $topic = $this->topicService->createTopic($validated);
-            return sendResponse(true, 'topic created successfully', $topic, Response::HTTP_CREATED);
+            return sendResponse(true, 'topic created successfully', new TopicResource($topic), Response::HTTP_CREATED);
         } catch (\Exception $e) {
             Log::error('topic Create Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to create topic', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -61,8 +60,7 @@ class TopicController extends Controller
             if (!$topic) {
                 return sendResponse(false, 'topic not found', null, Response::HTTP_NOT_FOUND);
             }
-            $topic->load('course.subject');
-            return sendResponse(true, 'topic fetched successfully', $topic, Response::HTTP_OK);
+            return sendResponse(true, 'topic fetched successfully', new TopicResource($topic), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('topic Fetch Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch topic', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -80,8 +78,8 @@ class TopicController extends Controller
                 return sendResponse(false, 'topic not found', null, Response::HTTP_NOT_FOUND);
             }
             $validated = $request->validated();
-            $topics = $this->topicService->updateTopic($topic, $validated);
-            return sendResponse(true, 'topic updated successfully', $topics, Response::HTTP_OK);
+            $topic = $this->topicService->updateTopic($topic, $validated);
+            return sendResponse(true, 'topic updated successfully', new TopicResource($topic), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('topic Update Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to update topic', null, Response::HTTP_INTERNAL_SERVER_ERROR);
