@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\CourseRequest;
+use App\Http\Resources\CourseResource;
 use App\Http\Services\CourseService;
 use App\Models\Course;
 use Illuminate\Http\JsonResponse;
@@ -30,7 +31,7 @@ class CourseController extends Controller
             }
             $courses = $this->courseService->getCourses($subject_id)->with('subject')
                 ->get();
-            return sendResponse(true, 'Course list fetched successfully', $courses, Response::HTTP_OK);
+            return sendResponse(true, 'Course list fetched successfully', CourseResource::collection($courses), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Course List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch course list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -54,7 +55,7 @@ class CourseController extends Controller
             $validated = $request->validated();
 
             $Course = $this->courseService->createCourse($validated);
-            return sendResponse(true, 'Course created successfully', $Course, Response::HTTP_CREATED);
+            return sendResponse(true, 'Course created successfully', new CourseResource($Course), Response::HTTP_CREATED);
         } catch (\Exception $e) {
             Log::error('Course Create Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to create Course', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -71,7 +72,7 @@ class CourseController extends Controller
             if (!$Course) {
                 return sendResponse(false, 'Course not found', null, Response::HTTP_NOT_FOUND);
             }
-            return sendResponse(true, 'Course fetched successfully', $Course, Response::HTTP_OK);
+            return sendResponse(true, 'Course fetched successfully', new CourseResource($Course), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Course Fetch Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch course', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -90,7 +91,7 @@ class CourseController extends Controller
             }
             $validated = $request->validated();
             $courses = $this->courseService->updateCourse($course, $validated);
-            return sendResponse(true, 'Course updated successfully', $courses, Response::HTTP_OK);
+            return sendResponse(true, 'Course updated successfully', new CourseResource($courses), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Course Update Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to update course', null, Response::HTTP_INTERNAL_SERVER_ERROR);

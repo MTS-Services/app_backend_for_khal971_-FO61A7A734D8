@@ -33,7 +33,7 @@ class CourseService
      */
     public function getCourses(int $subject_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
     {
-        $query = Course::counts()->translation($this->lang)->where('subject_id', $subject_id);
+        $query = Course::counts()->with(['subject', 'translations'])->where('subject_id', $subject_id);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -42,7 +42,7 @@ class CourseService
 
     public function getCourse($param, string $query_field = 'id'): Course|null
     {
-        $query = Course::counts()->translation($this->lang);
+        $query = Course::counts()->with(['subject', 'translations']);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -56,7 +56,7 @@ class CourseService
                 $Course = Course::create($data);
                 CourseTranslation::create(['course_id' => $Course->id, 'language' => $this->lang, 'name' => $data['name']]);
                 TranslateModelJob::dispatch(Course::class, CourseTranslation::class, 'course_id', $Course->id, ['name'], $this->lang);
-                $Course = $Course->refresh()->loadTranslation($this->lang);
+                $Course = $Course->refresh()->load(['translations', 'subject']);
                 return $Course;
             });
         } catch (\Exception $e) {
@@ -73,7 +73,7 @@ class CourseService
                 $Course->update($data);
                 CourseTranslation::updateOrCreate(['course_id' => $Course->id, 'language' => $this->lang], ['name' => $data['name']]);
                 TranslateModelJob::dispatch(Course::class, CourseTranslation::class, 'course_id', $Course->id, ['name'], $this->lang);
-                $Course = $Course->refresh()->loadTranslation($this->lang);
+                $Course = $Course->refresh()->load(['translations', 'subject']);
                 return $Course;
             });
         } catch (\Exception $e) {

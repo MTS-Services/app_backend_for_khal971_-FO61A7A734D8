@@ -58,9 +58,9 @@ class UserClass extends BaseModel
         return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
     }
 
-    public function getStatusListAttribute(): array
+    public function getStatusListAttribute(): object
     {
-        return self::getStatusList();
+        return (object) self::getStatusList();
     }
 
 
