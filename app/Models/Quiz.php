@@ -43,11 +43,6 @@ class Quiz extends BaseModel
              Relationships Start Here
      ================================ */
 
-    public function quizProgress(): HasMany
-    {
-        return $this->hasMany(UserProgress::class, 'content_id')->where('content_type', 'quiz');
-    }
-
     /* ================================
              Relationships End Here
      ================================ */
