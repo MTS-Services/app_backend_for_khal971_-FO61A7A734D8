@@ -58,6 +58,11 @@ class UserProgress extends BaseModel
         return $this->hasMany(UserItemProgresss::class, 'parent_progress_id');
     }
 
+    public function quizProgress(): HasMany
+    {
+        return $this->hasMany(UserItemProgresss::class, 'parent_progress_id')->where('item_type', 'quiz');
+    }
+
     /* ==================================================================
                         Relations End Here
       ================================================================== */
