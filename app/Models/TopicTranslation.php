@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 
-class TopicTranslation extends Model
+class TopicTranslation extends BaseModel
 {
     protected $table = 'topic_translations';
     protected $fillable = ['topic_id', 'language', 'name'];

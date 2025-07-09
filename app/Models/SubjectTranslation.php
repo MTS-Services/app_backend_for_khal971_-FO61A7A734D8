@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SubjectTranslation extends Model
+class SubjectTranslation extends BaseModel
 {
     protected $table = 'subject_translations';
 

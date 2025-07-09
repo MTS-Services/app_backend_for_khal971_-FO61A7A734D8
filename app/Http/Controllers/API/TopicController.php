@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\TopicRequest;
 use App\Http\Services\TopicService;
 use App\Models\Topic;
+use App\Models\UserProgress;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -24,10 +26,11 @@ class TopicController extends Controller
     public function courseTopics($course_id): JsonResponse
     {
         try {
-            if (!$course_id) {
+            if (is_null($course_id)) {
                 return sendResponse(false, 'Course ID param is required', null, Response::HTTP_BAD_REQUEST);
             }
-            $topics = $this->topicService->getTopics($course_id)->with('course.subject')->get();
+            $topics = $this->topicService->getTopics($course_id);
+            // $topics = $this->topicService->getTopics($course_id)->with('course.subject')->get();
             return sendResponse(true, 'Topic list fetched successfully', $topics, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('topic List Error: ' . $e->getMessage());
