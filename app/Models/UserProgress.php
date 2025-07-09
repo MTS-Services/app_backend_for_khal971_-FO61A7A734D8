@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class UserProgress extends BaseModel
 {
+
     protected $table = 'user_progress';
 
     protected $fillable = [
@@ -31,7 +33,6 @@ class UserProgress extends BaseModel
     ];
 
     protected $casts = [
-        'last_activity_date' => 'date',
         'completion_percentage' => 'float',
         'accuracy_percentage' => 'float',
         'total_time_spent' => 'integer',
@@ -39,7 +40,8 @@ class UserProgress extends BaseModel
         'current_streak' => 'integer',
         'first_accessed_at' => 'datetime',
         'last_accessed_at' => 'datetime',
-        'completed_at' => 'datetime'
+        'completed_at' => 'datetime',
+        'last_activity_date' => 'date',
     ];
 
     /* ==================================================================
@@ -50,14 +52,15 @@ class UserProgress extends BaseModel
     {
         return $this->belongsTo(User::class);
     }
-    public function topic(): BelongsTo
-    {
-        return $this->belongsTo(Topic::class, 'content_id');
-    }
 
     public function userItemProgress(): HasMany
     {
         return $this->hasMany(UserItemProgresss::class, 'parent_progress_id');
+    }
+
+    public function quizProgress(): HasMany
+    {
+        return $this->hasMany(UserItemProgresss::class, 'parent_progress_id')->where('item_type', 'quiz');
     }
 
     /* ==================================================================
@@ -98,4 +101,23 @@ class UserProgress extends BaseModel
     public const STATUS_IN_PROGRESS = '1';
     public const STATUS_COMPLETED = '2';
     public const STATUS_MASTERED = '3';
+
+    public static function getStatusList(): array
+    {
+        return [
+            self::STATUS_NOT_STARTED => 'Not Started',
+            self::STATUS_IN_PROGRESS => 'In Progress',
+            self::STATUS_COMPLETED => 'Completed',
+            self::STATUS_MASTERED => 'Mastered',
+        ];
+    }
+
+    public const CONTENT_TYPES = [
+        'question' => 'question',
+        'topic' => 'topic',
+        'course' => 'course',
+        'subject' => 'subject',
+        'quiz' => 'quiz',
+        'question_set' => 'question_set',
+    ];
 }

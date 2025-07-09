@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class QuizAnswer extends BaseModel

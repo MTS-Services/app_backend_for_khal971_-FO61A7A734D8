@@ -6,10 +6,12 @@ use App\Jobs\TranslateModelJob;
 use App\Models\Topic;
 use App\Models\TopicTranslation;
 use App\Models\User;
+use App\Models\UserProgress;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Collection;
 
 class TopicService
 {
@@ -31,14 +33,54 @@ class TopicService
      * @param  string  $direction asc|desc default: asc
      * @return Builder
      */
-    public function getTopics(int $course_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
+    // public function getTopics(int $course_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
+    // {
+    //     $query = Topic::translation($this->lang)->where('course_id', $course_id);
+    //     if (!($this->user->is_premium || $this->user->is_admin)) {
+    //         $query->take(12);
+    //     }
+    //     return $query->orderBy($orderBy, $direction)->latest();
+    // }
+
+
+    public function getTopics(int $course_id, string $orderBy = 'order_index', string $direction = 'asc'): Collection
     {
-        $query = Topic::translation($this->lang)->where('course_id', $course_id);
-        if (!($this->user->is_premium || $this->user->is_admin)) {
+        $query = Topic::translation($this->lang)
+            ->where('course_id', $course_id)
+            ->with('course.subject')
+            ->orderBy($orderBy, $direction)
+            ->latest();
+
+        if (!($this->user && ($this->user->is_premium || $this->user->is_admin))) {
             $query->take(12);
         }
-        return $query->orderBy($orderBy, $direction)->latest();
+
+        $topics = $query->get();
+
+        if ($topics->isEmpty()) {
+            return $topics;
+        }
+
+        $progressMap = UserProgress::where('user_id', $this->user->id)
+            ->where('content_type', 'topic')
+            ->whereIn('content_id', $topics->pluck('id'))
+            ->get()->keyBy('content_id');
+
+        $topics = $topics->map(function ($topic) use ($progressMap) {
+            $progress = $progressMap->get($topic->id);
+
+            // Add progress-related info
+            $topic->progress_percentage = $progress->completion_percentage ?? 0;
+            $topic->progress_status = $progress->progressStatusText ?? 'Not Started';
+            $topic->accuracy_percentage = $progress->accuracy_percentage ?? 0;
+            $topic->remaining_questions = $progress?->remainingQuestions() ?? null;
+
+            return $topic;
+        });
+
+        return $topics;
     }
+
 
     public function getTopic($param, string $query_field = 'id'): Topic|null
     {

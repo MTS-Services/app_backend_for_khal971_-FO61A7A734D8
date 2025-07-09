@@ -120,6 +120,19 @@ class UserItemProgresss extends BaseModel
     const STATUS_INCORRECT = 5;
     const STATUS_SKIPPED = 6;
 
+    public static function getStatusList(): array
+    {
+        return [
+            self::STATUS_NOT_STARTED => 'Not Started',
+            self::STATUS_VIEWED => 'Viewed',
+            self::STATUS_ATTEMPTED => 'Attempted',
+            self::STATUS_COMPLETED => 'Completed',
+            self::STATUS_CORRECT => 'Correct',
+            self::STATUS_INCORRECT => 'Incorrect',
+            self::STATUS_SKIPPED => 'Skipped',
+        ];
+    }
+
     // Item type constants
     const ITEM_TYPE_QUESTION = 'question';
     const ITEM_TYPE_LESSON = 'lesson';
