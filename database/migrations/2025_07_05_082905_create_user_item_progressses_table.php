@@ -33,7 +33,6 @@ return new class extends Migration
             $table->date('completed_at')->nullable();
 
             // not decimal it should be float  
-            // $table->decimal('score', 5, 2)->nullable();
             $table->float('score')->nullable();
             $table->boolean('is_bookmarked')->default(false);
             $table->boolean('is_flagged')->default(false);
@@ -44,7 +43,9 @@ return new class extends Migration
 
             // Foreign Keys
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete()->cascadeOnUpdate();
-            $table->foreign('parent_progress_id')->references('id')->on('user_item_progress')->nullOnDelete()->cascadeOnUpdate();;
+            // $table->foreign('parent_progress_id')->references('id')->on('user_item_progress')->nullOnDelete()->cascadeOnUpdate();
+            $table->foreign('parent_progress_id')->references('id')->on('user_progress')->nullOnDelete()->cascadeOnUpdate();
+
 
             $table->unique(['user_id', 'item_type', 'item_id']);
         });
