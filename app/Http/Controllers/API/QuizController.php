@@ -96,8 +96,7 @@ class QuizController extends Controller
                 return sendResponse(false, ' Quiz not found', null, Response::HTTP_NOT_FOUND);
             }
             $validated = $request->validated();
-            $file = $request->validated('icon') && $request->hasFile('icon') ? $request->file('icon') : null;
-            $quiz = $this->quizService->updateQuiz($quiz, $validated, $file);
+            $quiz = $this->quizService->updateQuiz($quiz, $validated);
             return sendResponse(true, ' Quiz updated successfully', $quiz, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz Update Error: ' . $e->getMessage());
