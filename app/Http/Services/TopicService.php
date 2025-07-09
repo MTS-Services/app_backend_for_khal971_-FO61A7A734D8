@@ -54,30 +54,7 @@ class TopicService
         if (!($this->user && ($this->user->is_premium || $this->user->is_admin))) {
             $query->take(12);
         }
-
         $topics = $query->get();
-
-        if ($topics->isEmpty()) {
-            return $topics;
-        }
-
-        $progressMap = UserProgress::where('user_id', $this->user->id)
-            ->where('content_type', 'topic')
-            ->whereIn('content_id', $topics->pluck('id'))
-            ->get()->keyBy('content_id');
-
-        $topics = $topics->map(function ($topic) use ($progressMap) {
-            $progress = $progressMap->get($topic->id);
-
-            // Add progress-related info
-            $topic->progress_percentage = $progress->completion_percentage ?? 0;
-            $topic->progress_status = $progress->progressStatusText ?? 'Not Started';
-            $topic->accuracy_percentage = $progress->accuracy_percentage ?? 0;
-            $topic->remaining_questions = $progress?->remainingQuestions() ?? null;
-
-            return $topic;
-        });
-
         return $topics;
     }
 

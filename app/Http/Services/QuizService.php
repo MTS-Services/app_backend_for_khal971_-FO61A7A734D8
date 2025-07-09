@@ -58,33 +58,8 @@ class QuizService
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
-
         $quizzes = $query->get();
-
-        // if ($quizzes->isEmpty()) {
-            return $quizzes;
-        // }
-        // $progressMap = UserProgress::where('user_id', $this->user->id)
-        //     ->where('content_type', 'quiz')
-        //     // ->whereIn('content_id', $quizzes->pluck('id'))
-        //     ->get()
-        //     ->keyBy('content_id');
-
-        // return $progressMap;
-
-        // $quizzes = $quizzes->each(function ($quize) use ($progressMap) {
-        //     $progress = $progressMap->get($quize->id);
-
-        //     // Add progress-related info
-        //     $quize->progress_percentage = $progress->completion_percentage ?? 0;
-        //     $quize->progress_status = $progress->progressStatusText ?? 'Not Started';
-        //     $quize->accuracy_percentage = $progress->accuracy_percentage ?? 0;
-        //     $quize->remaining_questions = $progress?->remainingQuestions() ?? null;
-        //     $quize->total_attempts = $progress->total_attempts ?? 0;
-        //     return $quize;
-        // });
-
-        // return $quizzes;
+        return $quizzes;
     }
 
     public function getQuiz($param, string $query_field = 'id'): Quiz|null

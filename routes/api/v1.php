@@ -73,29 +73,3 @@ Route::apiResource('quiz-options', QuizOptionController::class);
 Route::get('quiz/options/{quiz_id}', [QuizOptionController::class, 'options'])->name('quiz.options');
 
 Route::apiResource('quiz-answers', QuizAnswerController::class);
-
-// Route::get('user-progress', [UserProgressController::class, 'userProgress'])->name('user-progress');
-// Route::post('user-progress', [UserProgressController::class, 'storeOrUpdateUserProgress'])->name('user-progress.store');
-
-// Route::get('/user-progress-list', [UserProgressController::class, 'index']);
-
-// Route::apiResource('user-item-progress', UserItemProgressController::class);
-// Route::get('user-item-progress/toggle-bookmark/{bookmark}', [UserItemProgressController::class, 'toggleBookmark'])->name('toggle-bookmark');
-// Route::get('user-item-progress/toggle-flag/{flag}', [UserItemProgressController::class, 'toggleFlag'])->name('toggle-flag');
-
-// Route::apiResource('progress-milestones', ProgressMilestoneController::class);
-
-// Route::apiResource('user-milestone-achievements', UserMilestoneAchievementController::class);
-// Route::get('/progress/question/{userId}/{questionId}', [ProgressController::class, 'getQuestionProgress']);
-
-// Existing routes (assuming these are already converted or exist)
-Route::get('/progress/question/{userId}/{questionId}', [ProgressControllerTest::class, 'getQuestionProgress']);
-Route::get('/progress/topic/{userId}/{topicId}', [ProgressControllerTest::class, 'getTopicProgress']);
-
-// New
-Route::get('/progress/topic/{userId}/{topicId}/questions', [ProgressControllerTest::class, 'getTopicQuestionsProgress']);
-Route::post('/progress/item/update', [ProgressControllerTest::class, 'updateItemProgress']);
-Route::get('/progress/next/{userId}', [ProgressControllerTest::class, 'getNextItemToStudy']);
-Route::post('/progress/batch', [ProgressControllerTest::class, 'getBatchProgress']);
-Route::post('/progress/bookmark', [ProgressControllerTest::class, 'toggleBookmark']);
-Route::post('/progress/flag', [ProgressControllerTest::class, 'toggleFlag']);

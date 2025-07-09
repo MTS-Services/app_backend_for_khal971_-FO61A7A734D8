@@ -33,8 +33,6 @@ class DatabaseSeeder extends Seeder
             QuizOptionSeeder::class,
             QuizOptionTranslationSeeder::class,
             QuizAnswerSeeder::class,
-            UserProgressSeeder::class,
-            UserItemProgressSeeder::class,
             PlanSeeder::class,
             PlanFeatureSeeder::class,
             SubscriptionSeeder::class,
