@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class UserProgress extends BaseModel
 {
+
     protected $table = 'user_progress';
 
     protected $fillable = [
@@ -32,7 +33,6 @@ class UserProgress extends BaseModel
     ];
 
     protected $casts = [
-        'last_activity_date' => 'date',
         'completion_percentage' => 'float',
         'accuracy_percentage' => 'float',
         'total_time_spent' => 'integer',
@@ -40,7 +40,8 @@ class UserProgress extends BaseModel
         'current_streak' => 'integer',
         'first_accessed_at' => 'datetime',
         'last_accessed_at' => 'datetime',
-        'completed_at' => 'datetime'
+        'completed_at' => 'datetime',
+        'last_activity_date' => 'date',
     ];
 
     /* ==================================================================
@@ -50,10 +51,6 @@ class UserProgress extends BaseModel
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-    public function topic(): BelongsTo
-    {
-        return $this->belongsTo(Topic::class, 'content_id');
     }
 
     public function userItemProgress(): HasMany
@@ -100,6 +97,16 @@ class UserProgress extends BaseModel
     public const STATUS_COMPLETED = '2';
     public const STATUS_MASTERED = '3';
 
+    public static function getStatusList(): array
+    {
+        return [
+            self::STATUS_NOT_STARTED => 'Not Started',
+            self::STATUS_IN_PROGRESS => 'In Progress',
+            self::STATUS_COMPLETED => 'Completed',
+            self::STATUS_MASTERED => 'Mastered',
+        ];
+    }
+
     public const CONTENT_TYPES = [
         'question' => 'question',
         'topic' => 'topic',
@@ -107,14 +114,5 @@ class UserProgress extends BaseModel
         'subject' => 'subject',
         'quiz' => 'quiz',
         'question_set' => 'question_set',
-    ];
-
-    public const CONTENT_TYPE_LABEL = [
-        'question' => 'Question',
-        'topic' => 'Topic',
-        'course' => 'Course',
-        'subject' => 'Subject',
-        'quiz' => 'Quiz',
-        'question_set' => 'Question Set',
     ];
 }

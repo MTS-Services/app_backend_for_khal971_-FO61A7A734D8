@@ -61,22 +61,21 @@ class TopicService
             return $topics;
         }
 
-        // Fetch all user progress records for these topics
-        $topicProgress = UserProgress::where('user_id', $this->user->id)
+        $progressMap = UserProgress::where('user_id', $this->user->id)
             ->where('content_type', 'topic')
             ->whereIn('content_id', $topics->pluck('id'))
-            ->get()
-            ->keyBy('content_id');
+            ->get()->keyBy('content_id');
 
-        // Attach progress and calculated percentage to each topic
-        $topics->each(function ($topic) use ($topicProgress) {
-            $progress = $topicProgress->get($topic->id);
+        $topics = $topics->map(function ($topic) use ($progressMap) {
+            $progress = $progressMap->get($topic->id);
 
-            $topic->progress = $progress;
-            $topic->is_completed = (bool)($progress && $progress->completion_percentage == 100);
-            $topic->completion_percentage = $progress->completion_percentage ?? 0;
+            // Add progress-related info
+            $topic->progress_percentage = $progress->completion_percentage ?? 0;
+            $topic->progress_status = $progress->progressStatusText ?? 'Not Started';
             $topic->accuracy_percentage = $progress->accuracy_percentage ?? 0;
-            $topic->status = $progress->status ?? 'not_started';
+            $topic->remaining_questions = $progress?->remainingQuestions() ?? null;
+
+            return $topic;
         });
 
         return $topics;

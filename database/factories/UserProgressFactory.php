@@ -20,15 +20,28 @@ class UserProgressFactory extends Factory
      */
     public function definition(): array
     {
-
-         $total = $this->faker->numberBetween(5, 20);
+        $total = $this->faker->numberBetween(5, 20);
         $completed = $this->faker->numberBetween(0, $total);
         $correct = $this->faker->numberBetween(0, $completed);
 
+        // Ensure unique combination by caching
+        static $used = [];
+
+        $maxTries = 20;
+        do {
+            $userId = User::inRandomOrder()->value('id') ?? User::factory()->create()->id;
+            $contentType = $this->faker->randomElement(['question', 'quiz', 'topic']);
+            $contentId = $this->faker->numberBetween(1, 500);
+            $key = "$userId-$contentType-$contentId";
+            $maxTries--;
+        } while (isset($used[$key]) && $maxTries > 0);
+
+        $used[$key] = true;
+
         return [
-            'user_id' => User::factory(),
-            'content_type' => $this->faker->randomElement(['subject', 'course', 'topic']),
-            'content_id' => $this->faker->numberBetween(1, 500),
+            'user_id' => $userId,
+            'content_type' => $contentType,
+            'content_id' => $contentId,
             'total_items' => $total,
             'completed_items' => $completed,
             'correct_items' => $correct,
@@ -36,7 +49,7 @@ class UserProgressFactory extends Factory
             'accuracy_percentage' => $completed > 0 ? round(($correct / $completed) * 100, 2) : 0,
             'total_time_spent' => $this->faker->numberBetween(100, 10000),
             'average_time_per_item' => $total > 0 ? round($this->faker->numberBetween(10, 600), 2) : 0,
-            'status' => $this->faker->randomElement(['not_started', 'in_progress', 'completed']),
+            'status' => array_rand(UserProgress::getStatusList()),
             'first_accessed_at' => now()->subDays(rand(1, 30)),
             'last_accessed_at' => now(),
             'completed_at' => $this->faker->boolean ? now() : null,
