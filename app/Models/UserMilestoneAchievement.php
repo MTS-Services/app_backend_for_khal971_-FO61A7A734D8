@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class UserMilestoneAchievement extends Model
+class UserMilestoneAchievement extends BaseModel
 {
     protected $fillable = [
         'user_id',

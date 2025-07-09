@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class PlanFeature extends Model
+class PlanFeature extends BaseModel
 {
     protected $fillable = [
         'order_index',
