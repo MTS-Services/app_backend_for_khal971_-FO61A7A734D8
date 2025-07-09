@@ -117,4 +117,29 @@ class UserController extends Controller
         $users = User::all();
         return sendResponse(true, 'Users fetched successfully', $users, Response::HTTP_OK);
     }
+    public function destroy($user_id): JsonResponse
+    {
+        // try {
+        //     $course = $this->courseService->getCourse($course->id);
+        //     if (!$course) {
+        //         return sendResponse(false, 'Course not found', null, Response::HTTP_NOT_FOUND);
+        //     }
+        //     $this->courseService->deleteCourse($course);
+        //     return sendResponse(true, 'Course deleted successfully', null, Response::HTTP_OK);
+        // } catch (\Exception $e) {
+        //     Log::error('Course Delete Error: ' . $e->getMessage());
+            // return sendResponse(false, 'Failed to delete course', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        // }
+        try{
+            $user = $this->userService->getUser($user_id);
+            if (!$user) {
+                return sendResponse(false, 'User not found', null, Response::HTTP_NOT_FOUND);
+            }
+            $this->userService->deleteUser($user);
+            return sendResponse(true, 'User deleted successfully', null, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('User Delete Error: ' . $e->getMessage());
+            return sendResponse(false, 'Failed to delete user', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

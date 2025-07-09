@@ -27,6 +27,7 @@ Route::controller(UserController::class)->group(function () {
     Route::put('users-update/{id}', 'userUpdateByAdmin')->name('user.update');
     Route::get('users', 'users')->name('users');
     Route::put('user-update', 'updateUser')->name('users.update');
+    Route::delete('user-delete/{id}', 'destroy')->name('users.destroy');
 });
 
 

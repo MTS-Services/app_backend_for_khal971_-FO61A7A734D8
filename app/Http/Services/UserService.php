@@ -32,4 +32,8 @@ class UserService
         return $user->refresh();
     }
 
+    public function deleteUser(User $user): bool
+    {
+        return $user->delete();
+    }
 }
