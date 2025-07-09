@@ -29,7 +29,7 @@ class UserResource extends JsonResource
             'genderList' => $this->gender_list,
             'status' => $this->status_label,
             'statusList' => $this->status_list,
-            'image' => $this->image ?? "N/A",
+            'image' => storage_url($this->image),
             'is_admin' => $this->is_admin,
             'is_premium' => $this->is_premium,
             'created_by' => $this->creater?->name ?? "System",
