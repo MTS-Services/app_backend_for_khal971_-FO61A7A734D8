@@ -52,5 +52,4 @@ class PracticeService
             ->get();
         return $courses;
     }
-
 }
