@@ -119,7 +119,7 @@ class QuestionDetailsController extends Controller
             if (!$question_detail) {
                 return sendResponse(false, 'Failed to toggle status', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, 'Status toggled to ' . $question_detail->status_label . ' successfully', [], Response::HTTP_OK);
+            return sendResponse(true, 'Status toggled to ' . $question_detail->status_label . ' successfully', null, Response::HTTP_OK);
         } catch (\Exception $e) {
             return sendResponse(false, $e->getMessage(), null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
