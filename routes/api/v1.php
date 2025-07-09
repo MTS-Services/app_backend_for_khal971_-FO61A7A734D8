@@ -73,3 +73,6 @@ Route::apiResource('quiz-options', QuizOptionController::class);
 Route::get('quiz/options/{quiz_id}', [QuizOptionController::class, 'options'])->name('quiz.options');
 
 Route::apiResource('quiz-answers', QuizAnswerController::class);
+
+// Practice and Bookmark 
+
