@@ -35,9 +35,7 @@ class Subject extends BaseModel
 
     public function courses(): HasMany
     {
-        return $this->hasMany(Course::class, 'subject_id', 'id')->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
-        ]);
+        return $this->hasMany(Course::class, 'subject_id', 'id')->with(['translations']);
     }
 
     public function translations(): HasMany
@@ -99,24 +97,28 @@ class Subject extends BaseModel
     {
         return $query->where('status', self::STATUS_INACTIVE);
     }
-    public function translate($language): SubjectTranslation|null
-    {
-        return $this->translations->where('language', $language)->first();
-    }
+    // public function translate($language): SubjectTranslation|null
+    // {
+    //     return $this->translations->where('language', $language)->first();
+    // }
 
-    public function scopeTranslation(Builder $query, $lang): Builder
-    {
-        return $query->with([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function scopeTranslation(Builder $query, $lang): Builder
+    // {
+    //     return $query->with([
+    //         'translations' => fn($q) => $q->where('language', $lang) ?? $q->where('language', 'en')
+    //     ]);
+    // }
 
-    public function loadTranslation($lang)
-    {
-        return $this->load([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function loadTranslation($lang)
+    // {
+    //     $this->load(['translations' => fn($q) => $q->where('language', $lang)]);
+
+    //     if ($this->translations->isEmpty()) {
+    //         $this->load(['translations' => fn($q) => $q->where('language', 'en')]);
+    //     }
+
+    //     return $this;
+    // }
 
     public function scopeCounts(Builder $query): Builder
     {

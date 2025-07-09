@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class SubjectResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -18,25 +18,20 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'order_index' => $this->order_index,
-            'name' => $this->name,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'user_class' => $this->userClass?->name ?? "N/A",
-            'country' => $this->country ?? "N/A",
-            'city' => $this->city ?? "N/A",
-            'school' => $this->school ?? "N/A",
-            'dob' => $this->dob ?? "N/A",
-            'gender' => $this->gender_label,
-            'genderList' => $this->gender_list,
+            'icon' => storage_url($this->icon),
             'status' => $this->status_label,
             'statusList' => $this->status_list,
-            'image' => storage_url($this->image),
-            'is_admin' => $this->is_admin,
-            'is_premium' => $this->is_premium,
+            'courses_count' => $this->courses_count,
+            'topics_count' => $this->topics_count,
+            'questions_count' => $this->questions_count,
+            'quizzes_count' => $this->quizzes_count,
+            'language' => translation($this->translations)->language,
+            'name' => translation($this->translations)->name,
             'created_at' => $this->created_at_formatted ?? dateTimeFormat(Carbon::now()),
             'updated_at' => $this->updated_at_formatted ?? "N/A",
             'created_by' => $this->creater?->name ?? "System",
             'updated_by' => $this->updater?->name ?? "N/A",
+
         ];
     }
 }

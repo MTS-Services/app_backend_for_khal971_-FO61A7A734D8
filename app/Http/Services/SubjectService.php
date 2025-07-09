@@ -40,8 +40,7 @@ class SubjectService
      */
     public function getSubjects(string $orderBy = 'order_index', string $direction = 'asc')
     {
-        $query = Subject::counts()
-            ->translation($this->lang);
+        $query = Subject::counts()->with('translations');
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -51,7 +50,7 @@ class SubjectService
     public function getSubject($param, string $query_field = 'id'): Subject|null
     {
 
-        $query = Subject::counts()->translation($this->lang);
+        $query = Subject::counts()->with('translations');
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -70,7 +69,7 @@ class SubjectService
                 $subject = Subject::create($data);
                 SubjectTranslation::create(['subject_id' => $subject->id, 'language' => $this->lang, 'name' => $data['name']]);
                 TranslateModelJob::dispatch(Subject::class, SubjectTranslation::class, 'subject_id', $subject->id, ['name'], $this->lang);
-                $subject = $subject->refresh()->loadTranslation($this->lang);
+                $subject = $subject->refresh()->load('translations');
                 return $subject;
             });
         } catch (\Exception $e) {
@@ -92,7 +91,7 @@ class SubjectService
                 $subject->update($data);
                 SubjectTranslation::updateOrCreate(['subject_id' => $subject->id, 'language' => $this->lang], ['name' => $data['name']]);
                 TranslateModelJob::dispatch(Subject::class, SubjectTranslation::class, 'subject_id', $subject->id, ['name'], $this->lang);
-                $subject = $subject->refresh()->loadTranslation($this->lang);
+                $subject = $subject->refresh()->load('translations');
                 return $subject;
             });
         } catch (\Exception $e) {
