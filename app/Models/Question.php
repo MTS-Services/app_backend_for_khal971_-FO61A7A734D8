@@ -48,13 +48,6 @@ class Question extends BaseModel
         ]);
     }
 
-    public function userItemProgress(): HasMany
-    {
-        return $this->hasMany(UserItemProgresss::class, 'item_id')
-            ->where('item_type', 'question');
-    }
-
-
     /* ==================================================================
                         Relations End Here
       ================================================================== */
