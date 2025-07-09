@@ -4,9 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Services\BookmarkService;
-use App\Models\Bookmark;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class BookmarkController extends Controller
@@ -18,9 +15,14 @@ class BookmarkController extends Controller
         $this->bookmarkService = $bookmarkService;
     }
 
-    public function bookmarkQuestions()
+    public function bookmarkedQuestions()
     {
-        $data = Bookmark::all();
-        return sendResponse(true, 'Question bookmarked successfully', $data, Response::HTTP_OK);
+        $data = $this->bookmarkService->getBookmarkedQuestions();
+        return sendResponse(true, 'Bookmarked questions fetched successfully', $data, Response::HTTP_OK);
+    }
+    public function bookmarkedQuizzes()
+    {
+        $data = $this->bookmarkService->getBookmarkedQuizzes();
+        return sendResponse(true, 'Bookmarked quizzes fetched successfully', $data, Response::HTTP_OK);
     }
 }
