@@ -77,9 +77,9 @@ class Subject extends BaseModel
         return self::getStatusList()[$this->status] ?? 'Unknown';
     }
 
-    public function getStatusListAttribute(): array
+    public function getStatusListAttribute(): object
     {
-        return self::getStatusList();
+        return (object) self::getStatusList();
     }
 
     // Modified icon
