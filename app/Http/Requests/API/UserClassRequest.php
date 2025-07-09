@@ -37,7 +37,7 @@ class UserClassRequest extends BaseRequest
                 'required',
                 'string',
                 Rule::unique('user_class_translations', 'name')->where(
-                    fn ($query) => $query->where('id', '!=', $this->route('user_class')->id)
+                    fn ($query) => $query->where('user_class_id', '!=', $this->route('user_class')->id)
                 ),
             ],
         ];

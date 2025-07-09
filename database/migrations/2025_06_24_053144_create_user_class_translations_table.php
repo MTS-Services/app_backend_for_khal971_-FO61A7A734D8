@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('language', 5)->index();
             $table->string('name')->unique();
             $table->timestamps();
+
+            $table->foreign('user_class_id')->references('id')->on('user_classes')->cascadeOnDelete()->cascadeOnUpdate();
         });
     }
 

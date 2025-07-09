@@ -33,13 +33,13 @@ class UserClassService
     public function getUserClasses(string $orderBy = 'order_index', string $direction = 'asc')
     {
 
-        $query = UserClass::query()->translation($this->lang);
+        $query = UserClass::query()->with('translations');
         return $query->orderBy($orderBy, $direction);
     }
 
     public function getUserClass($param, string $query_field = 'id'): UserClass|null
     {
-        $query = UserClass::query()->translation($this->lang);
+        $query = UserClass::query()->with('translations');
         return $query->where($query_field, $param)->first();
     }
     public function createUserClass($data): UserClass|null
@@ -48,9 +48,12 @@ class UserClassService
             $data['created_by'] = $this->user->id;
             return DB::transaction(function () use ($data) {
                 $user_class = UserClass::create($data);
+                // UserClassTranslation::create(['user_class_id' => $user_class->id, 'language' => $this->lang, 'name' => $data['name']]);
+                // TranslateModelJob::dispatch(UserClass::class, UserClassTranslation::class, 'user_class_id', $user_class->id, ['name'], $this->lang);
+                // $user_class = $user_class->refresh()->load('translations');
                 UserClassTranslation::create(['user_class_id' => $user_class->id, 'language' => $this->lang, 'name' => $data['name']]);
                 TranslateModelJob::dispatch(UserClass::class, UserClassTranslation::class, 'user_class_id', $user_class->id, ['name'], $this->lang);
-                $user_class = $user_class->refresh()->loadTranslation($this->lang);
+                $user_class = $user_class->refresh()->load('translations');
                 return $user_class;
             });
         } catch (\Exception $e) {
@@ -67,7 +70,7 @@ class UserClassService
                 $suer_class->update($data);
                 UserClassTranslation::updateOrCreate(['user_class_id' => $suer_class->id, 'language' => $this->lang], ['name' => $data['name']]);
                 TranslateModelJob::dispatch(UserClass::class, UserClassTranslation::class, 'user_class_id', $suer_class->id, ['name'], $this->lang);
-                $suer_class = $suer_class->refresh()->loadTranslation($this->lang);
+                $suer_class = $suer_class->refresh()->load('translations');
                 return $suer_class;
             });
         } catch (\Exception $e) {
