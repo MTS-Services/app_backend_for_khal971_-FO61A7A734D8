@@ -66,4 +66,8 @@ class Plan extends BaseModel
     {
         return (object) self::getStatusList();
     }
+    public function translations()
+    {
+        return $this->hasMany(PlanTranslation::class, 'plan_id', 'id')->select('plan_id', 'language', 'name', 'description');
+    }
 }

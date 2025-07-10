@@ -17,8 +17,6 @@ return new class extends Migration
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('order_index')->default(0)->index();
-            $table->string('name', 255);
-            $table->text('description')->nullable();
             $table->decimal('price', 15, 2);
             $table->integer('duration')->comment('in months');
             $table->string('stripe_price_id', 255)->nullable()->comment('Stripe Price ID');
