@@ -40,7 +40,6 @@ class UserUpdatedRequest extends BaseRequest
                 'email',
                 Rule::unique('users', 'email')->where(fn($query) => $query->where('id', '!=', $userId)),
             ],
-            'is_premium' => 'required|boolean',
             'dob' => 'nullable|date',
             'gender' => 'nullable|numeric|between:0,2',
             'country' => 'nullable|string',
