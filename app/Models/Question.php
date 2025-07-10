@@ -107,22 +107,22 @@ class Question extends BaseModel
     {
         return $query->where('status', self::STATUS_INACTIVE);
     }
-    public function translate($language): QuestionTranslation|null
-    {
-        return $this->translations->where('language', $language)->first();
-    }
+    // public function translate($language): QuestionTranslation|null
+    // {
+    //     return $this->translations->where('language', $language)->first();
+    // }
 
-    public function scopeTranslation(Builder $query, $lang): Builder
-    {
-        return $query->with([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function scopeTranslation(Builder $query, $lang): Builder
+    // {
+    //     return $query->with([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 
-    public function loadTranslation($lang)
-    {
-        return $this->load([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function loadTranslation($lang)
+    // {
+    //     return $this->load([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 }
