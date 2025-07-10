@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\UserSubjectRequest;
+use App\Http\Resources\SubjectResource;
+use App\Http\Resources\UserResource;
 use App\Http\Services\SubjectService;
 use App\Http\Services\UserSubjectService;
 use App\Models\User;
@@ -28,23 +30,26 @@ class UserSubjectController extends Controller
          */
         $this->userSubjectService = $userSubjectService;
         $this->user = Auth::user();
-
     }
     public function userSubjects(): JsonResponse
     {
-        $userSubjects = !$this->user->is_premium || $this->user->is_admin ? $this->userSubjectService->getUserSubjects()->get() : $userSubjects = $this->subjectService->getSubjects()->get();
-        return response()->json($userSubjects);
+        try {
+            $user_subjects = !$this->user->is_premium || $this->user->is_admin ? $this->userSubjectService->getUserSubjects()->get() : $user_subjects = $this->subjectService->getSubjects()->get();
+            if (!$user_subjects) {
+                return sendResponse(false, 'User subjects not found', null, Response::HTTP_NOT_FOUND);
+            }
+            return sendResponse(true, 'User subjects fetched successfully', SubjectResource::collection($user_subjects), Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('User Subjects Fetch Error: ' . $e->getMessage());
+            return sendResponse(false, 'Failed to fetch user subjects', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
     public function store(UserSubjectRequest $request): JsonResponse
     {
         try {
-            if (request()->user()->is_admin !== true) {
-                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
-            }
             $this->userSubjectService->storeSubjectsForUser(
                 $this->user->id,
                 $request->subjects,
-                $this->user->id
             );
             return sendResponse(true, 'Subjects selected successfully.', null, Response::HTTP_OK);
         } catch (\Exception $e) {

@@ -262,13 +262,6 @@ class User extends Authenticatable
             'id',
             'id',
             'subject_id'
-        )->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
-        ]);
-    }
-
-    public static function getDefaultLang(): string
-    {
-        return defaultLang() ?: 'en';
+        );
     }
 }
