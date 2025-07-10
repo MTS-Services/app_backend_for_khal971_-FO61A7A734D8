@@ -34,53 +34,7 @@ class UserController extends Controller
             return sendResponse(false, 'Failed to fetch user details', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    public function userAccessByAdmin(int $id)
-    {
-        try {
-            if (!$id) {
-                return sendResponse(false, 'User ID parameter is required.', null, Response::HTTP_BAD_REQUEST);
-            }
-            $authenticatedUser = request()->user();
-            if (!$authenticatedUser || !$authenticatedUser->is_admin) {
-                return sendResponse(false, 'Unauthorized access.', null, Response::HTTP_UNAUTHORIZED);
-            }
-            $user = $this->userService->getUser($id);
-            if (!$user) {
-                return sendResponse(false, 'User not found.', null, Response::HTTP_NOT_FOUND);
-            }
-            $user->load('userClass');
-            return sendResponse(true, 'User details fetched successfully.', $user, Response::HTTP_OK);
-        } catch (\Throwable $e) {
-            Log::error('User Fetch Error', ['message' => $e->getMessage(), 'user_id' => $id]);
 
-            return sendResponse(false, 'An error occurred while fetching user details.', null, Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-    public function userUpdateByAdmin(int $id, UserUpdatedRequest $request)
-    {
-        try {
-            if (!$id) {
-                return sendResponse(false, 'User ID parameter is required.', null, Response::HTTP_BAD_REQUEST);
-            }
-            $authenticatedUser = request()->user();
-            if (!$authenticatedUser || !$authenticatedUser->is_admin) {
-                return sendResponse(false, 'Unauthorized access.', null, Response::HTTP_UNAUTHORIZED);
-            }
-            $user = $this->userService->getUser($id);
-            if (!$user) {
-                return sendResponse(false, 'User not found.', null, Response::HTTP_NOT_FOUND);
-            }
-            $user = $this->userService->updateUser($user, $request->validated(), $request->file('image'));
-            return sendResponse(true, 'User details updated successfully.', $user, Response::HTTP_OK);
-        } catch (\Throwable $e) {
-            Log::error('User Update Error', ['message' => $e->getMessage(), 'user_id' => $id]);
-            if ($e instanceof \Illuminate\Validation\ValidationException) {
-                return sendResponse(false, 'Validation Error', $e->validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
-            } else {
-                return sendResponse(false, 'An error occurred while updating user details.', null, Response::HTTP_INTERNAL_SERVER_ERROR);
-            }
-        }
-    }
 
     /**
      * Get paginated user list (authenticated).
@@ -111,26 +65,12 @@ class UserController extends Controller
             return sendResponse(false, 'Failed to update user', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    public function getUsers(Request $request): JsonResponse
-    {
-        $users = User::all();
-        return sendResponse(true, 'Users fetched successfully', $users, Response::HTTP_OK);
-    }
     public function destroy($user_id): JsonResponse
     {
-        // try {
-        //     $course = $this->courseService->getCourse($course->id);
-        //     if (!$course) {
-        //         return sendResponse(false, 'Course not found', null, Response::HTTP_NOT_FOUND);
-        //     }
-        //     $this->courseService->deleteCourse($course);
-        //     return sendResponse(true, 'Course deleted successfully', null, Response::HTTP_OK);
-        // } catch (\Exception $e) {
-        //     Log::error('Course Delete Error: ' . $e->getMessage());
-            // return sendResponse(false, 'Failed to delete course', null, Response::HTTP_INTERNAL_SERVER_ERROR);
-        // }
-        try{
+        try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $user = $this->userService->getUser($user_id);
             if (!$user) {
                 return sendResponse(false, 'User not found', null, Response::HTTP_NOT_FOUND);
@@ -140,6 +80,52 @@ class UserController extends Controller
         } catch (\Exception $e) {
             Log::error('User Delete Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to delete user', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    public function userAccessByAdmin(int $id)
+    {
+        try {
+            if (!$id) {
+                return sendResponse(false, 'User ID parameter is required.', null, Response::HTTP_BAD_REQUEST);
+            }
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
+            $user = $this->userService->getUser($id);
+            if (!$user) {
+                return sendResponse(false, 'User not found.', null, Response::HTTP_NOT_FOUND);
+            }
+            $user->load(['userClass', 'creater', 'updater']);
+            return sendResponse(true, 'User details fetched successfully.', new UserResource($user), Response::HTTP_OK);
+        } catch (\Throwable $e) {
+            Log::error('User Fetch Error', ['message' => $e->getMessage(), 'user_id' => $id]);
+            return sendResponse(false, 'An error occurred while fetching user details.', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+    public function userUpdateByAdmin(int $id, UserUpdatedRequest $request)
+    {
+        try {
+            if (!$id) {
+                return sendResponse(false, 'User ID parameter is required.', null, Response::HTTP_BAD_REQUEST);
+            }
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
+            $user = $this->userService->getUser($id);
+            if (!$user) {
+                return sendResponse(false, 'User not found.', null, Response::HTTP_NOT_FOUND);
+            }
+            $user = $this->userService->updateUser($user, $request->validated(), $request->file('image'));
+            return sendResponse(true, 'User details updated successfully.', new UserResource($user), Response::HTTP_OK);
+        } catch (\Throwable $e) {
+            Log::error('User Update Error', ['message' => $e->getMessage(), 'user_id' => $id]);
+            if ($e instanceof \Illuminate\Validation\ValidationException) {
+                return sendResponse(false, 'Validation Error', $e->validator->errors(), Response::HTTP_UNPROCESSABLE_ENTITY);
+            } else {
+                return sendResponse(false, 'An error occurred while updating user details.', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
         }
     }
 }

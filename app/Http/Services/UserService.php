@@ -10,7 +10,7 @@ class UserService
 
     public function __construct(FileService $fileService)
     {
-        return $this->fileService = $fileService;
+        $this->fileService = $fileService;
     }
     public function getUser($pararm, string $query_field = 'id'): User|null
     {
@@ -24,6 +24,7 @@ class UserService
     }
     public function updateUser(User $user, array $data, $file): User
     {
+        $data['updated_by'] = request()->user()->id;
         $user->update($data);
         if ($file) {
             $data['image'] = $this->fileService->uploadFile($file, 'users', $data['name']);
