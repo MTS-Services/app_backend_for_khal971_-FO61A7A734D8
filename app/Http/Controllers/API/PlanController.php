@@ -21,9 +21,9 @@ class PlanController extends Controller
 
     public function index(): JsonResponse
     {
-        try{
+        try {
             $plans = $this->planService->getPlans()->get();
-            if(!$plans){
+            if (!$plans) {
                 return sendResponse(false, 'Plan list not found', null, Response::HTTP_NOT_FOUND);
             }
             return sendResponse(true, 'Plan list fetched successfully', PlansResource::collection($plans), Response::HTTP_OK);
@@ -35,26 +35,26 @@ class PlanController extends Controller
 
     public function show($id): JsonResponse
     {
-       try{
-           $plan = $this->planService->getPlan($id);
-           if(!$plan){
-               return sendResponse(false, 'Plan not found', null, Response::HTTP_NOT_FOUND);
-           }
-           return sendResponse(true, 'Plan fetched successfully', new PlansResource($plan), Response::HTTP_OK);
-       } catch (\Exception $e) {
-           Log::error('Plan Error: ' . $e->getMessage());
-           return sendResponse(false, 'Failed to fetch plan', null, Response::HTTP_INTERNAL_SERVER_ERROR);
-       }
+        try {
+            $plan = $this->planService->getPlan($id);
+            if (!$plan) {
+                return sendResponse(false, 'Plan not found', null, Response::HTTP_NOT_FOUND);
+            }
+            return sendResponse(true, 'Plan fetched successfully', new PlansResource($plan), Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('Plan Error: ' . $e->getMessage());
+            return sendResponse(false, 'Failed to fetch plan', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
     public function store(PlanRequest $request): JsonResponse
     {
-        try{
+        try {
             if (request()->user()->is_admin !== true) {
                 return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
             }
             $validated = $request->validated();
             $plan = $this->planService->createPlan($validated);
-            if(!$plan){
+            if (!$plan) {
                 return sendResponse(false, 'Failed to create plan', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             return sendResponse(true, 'Plan created successfully', new PlansResource($plan), Response::HTTP_CREATED);
@@ -65,17 +65,17 @@ class PlanController extends Controller
     }
     public function update(PlanRequest $request, $id): JsonResponse
     {
-        try{
+        try {
             if (request()->user()->is_admin !== true) {
                 return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
             }
             $plan = $this->planService->getPlan($id);
-            if(!$plan){
+            if (!$plan) {
                 return sendResponse(false, 'Plan not found', null, Response::HTTP_NOT_FOUND);
             }
             $validated = $request->validated();
             $plan = $this->planService->updatePlan($plan, $validated);
-            if(!$plan){
+            if (!$plan) {
                 return sendResponse(false, 'Failed to update plan', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
             return sendResponse(true, 'Plan updated successfully', new PlansResource($plan), Response::HTTP_OK);
@@ -86,12 +86,12 @@ class PlanController extends Controller
     }
     public function destroy($id): JsonResponse
     {
-        try{
+        try {
             if (request()->user()->is_admin !== true) {
                 return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
             }
             $plan = $this->planService->getPlan($id);
-            if(!$plan){
+            if (!$plan) {
                 return sendResponse(false, 'Plan not found', null, Response::HTTP_NOT_FOUND);
             }
             $plan = $this->planService->deletePlan($plan);
@@ -112,7 +112,7 @@ class PlanController extends Controller
                 return sendResponse(false, 'Plan not found', null, Response::HTTP_NOT_FOUND);
             }
             $plan = $this->planService->toggleStatus($plan);
-            return sendResponse(true, "Plan {$plan->status_label}  successfully",["status" => $plan->status_label],  Response::HTTP_OK);
+            return sendResponse(true, "Plan {$plan->status_label}  successfully", null, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Plan Status Toggle Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to toggle Plan status', null, Response::HTTP_INTERNAL_SERVER_ERROR);
