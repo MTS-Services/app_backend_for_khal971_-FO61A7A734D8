@@ -77,10 +77,10 @@ Route::get('quiz/options/{quiz_id}', [QuizOptionController::class, 'options'])->
 Route::apiResource('quiz-answers', QuizAnswerController::class);
 
 // Practice and Bookmark
-Route::get('/bookmarked/questions', [BookmarkController::class, 'bookmarkedQuestions'])->name('bookmark-questions');
+Route::get('/bookmarked/question-details', [BookmarkController::class, 'bookmarkedQuestionDetails'])->name('bookmark-question-details');
 Route::get('/bookmarked/quizzes', [BookmarkController::class, 'bookmarkedQuizzes'])->name('bookmark-quizzes');
 
 Route::get('/practices/quizzes', [PracticeController::class, 'quizzes'])->name('practices.quizzes');
-Route::get('/practices/questions', [PracticeController::class, 'questions'])->name('practices.questions');
+Route::get('/practices/question-details', [PracticeController::class, 'questionDetails'])->name('practices.question-details');
 Route::get('/practices/topics', [PracticeController::class, 'topics'])->name('practices.topics');
 Route::get('/practices/courses', [PracticeController::class, 'courses'])->name('practices.courses');
