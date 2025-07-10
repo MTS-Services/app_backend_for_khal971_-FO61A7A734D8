@@ -22,6 +22,9 @@ class QuestionDetailResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+
+        // dd($this->translations);
+
         $lite = [
             'id' => $this->id,
             'order_index' => $this->order_index,
@@ -29,9 +32,9 @@ class QuestionDetailResource extends JsonResource
             'status' => $this->status_label,
             'statusList' => $this->status_list,
             'questions_count' => $this->questions_count ?? 0,
-            'language' => translation($this->translations)->language,
-            'title' => translation($this->translations)->title,
-            'description' => translation($this->translations)->description,
+            'language' => translation($this->translations)?->language ?? "Not Found",
+            'title' => translation($this->translations)?->title ?? "Not Found",
+            'description' => translation($this->translations)?->description ?? "Not Found",
             'created_at' => $this->created_at_formatted ?? dateTimeFormat(Carbon::now()),
             'updated_at' => $this->updated_at_formatted ?? "N/A",
             'created_by' => $this->creater?->name ?? "System",

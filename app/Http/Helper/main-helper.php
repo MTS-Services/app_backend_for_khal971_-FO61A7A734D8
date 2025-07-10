@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 
 function sendResponse($status, $message, $data = null, $statusCode = 200, $additional = null)

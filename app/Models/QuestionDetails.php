@@ -41,9 +41,7 @@ class QuestionDetails extends BaseModel
 
     public function practices()
     {
-        return $this->morphMany(Practice::class, 'practiceable')->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
-        ]);
+        return $this->morphMany(Practice::class, 'practiceable');
     }
 
     /* ==================================================================

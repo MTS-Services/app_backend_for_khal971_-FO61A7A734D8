@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\BookmarkedQuestionResource;
 use App\Http\Services\BookmarkService;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +21,8 @@ class BookmarkController extends Controller
     {
         try {
             $questions = $this->bookmarkService->getBookmarkedQuestions();
-            return sendResponse(true, 'Bookmarked questions fetched successfully', $questions, Response::HTTP_OK);
+            // return sendResponse(true, 'Bookmarked questions fetched successfully', $questions, Response::HTTP_OK);
+            return sendResponse(true, 'Bookmarked questions fetched successfully', BookmarkedQuestionResource::collection($questions), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch bookmarked questions', null, Response::HTTP_INTERNAL_SERVER_ERROR);

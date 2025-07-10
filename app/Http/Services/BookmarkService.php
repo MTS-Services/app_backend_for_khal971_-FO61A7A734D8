@@ -3,6 +3,9 @@
 namespace App\Http\Services;
 
 use App\Models\Bookmark;
+use App\Models\Practice;
+use App\Models\Question;
+use App\Models\QuestionDetails;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -24,8 +27,12 @@ class BookmarkService
     public function getBookmarkedQuestions()
     {
         $questions = Bookmark::where('user_id', $this->user->id)
-            ->where('bookmarkable_type', 'App\Models\QuestionDetails')
-            ->get();
+            ->whereHasMorph('bookmarkable', [QuestionDetails::class])
+            ->get()
+            ->loadMorph('bookmarkable', [
+                QuestionDetails::class => ['translations', 'practices']
+            ]);
+
         return $questions;
     }
     public function getBookmarkedQuizzes()
