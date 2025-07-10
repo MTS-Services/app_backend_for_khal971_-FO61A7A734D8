@@ -33,21 +33,12 @@ class TopicService
      * @param  string  $direction asc|desc default: asc
      * @return Builder
      */
-    // public function getTopics(int $course_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
-    // {
-    //     $query = Topic::translation($this->lang)->where('course_id', $course_id);
-    //     if (!($this->user->is_premium || $this->user->is_admin)) {
-    //         $query->take(12);
-    //     }
-    //     return $query->orderBy($orderBy, $direction)->latest();
-    // }
 
 
     public function getTopics(int $course_id, string $orderBy = 'order_index', string $direction = 'asc'): Collection
     {
-        $query = Topic::translation($this->lang)
+        $query = Topic::counts()->with(['translations', 'course.subject'])
             ->where('course_id', $course_id)
-            ->with('course.subject')
             ->orderBy($orderBy, $direction)
             ->latest();
 
@@ -61,7 +52,7 @@ class TopicService
 
     public function getTopic($param, string $query_field = 'id'): Topic|null
     {
-        $query = Topic::translation($this->lang);
+        $query = Topic::counts()->with(['translations', 'course.subject']);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -75,7 +66,10 @@ class TopicService
                 $topic = Topic::create($data);
                 TopicTranslation::create(['topic_id' => $topic->id, 'language' => $this->lang, 'name' => $data['name']]);
                 TranslateModelJob::dispatch(Topic::class, TopicTranslation::class, 'topic_id', $topic->id, ['name'], $this->lang);
-                $topic = $topic->refresh()->loadTranslation($this->lang);
+                $topic = $topic->refresh()->load([
+                    'translations',
+                    'course.subject'
+                ]);
                 return $topic;
             });
         } catch (\Exception $e) {
@@ -92,7 +86,10 @@ class TopicService
                 $topic->update($data);
                 TopicTranslation::updateOrCreate(['topic_id' => $topic->id, 'language' => $this->lang], ['name' => $data['name']]);
                 TranslateModelJob::dispatch(Topic::class, TopicTranslation::class, 'topic_id', $topic->id, ['name'], $this->lang);
-                $topic = $topic->refresh()->loadTranslation($this->lang);
+                $topic = $topic->refresh()->load([
+                    'translations',
+                    'course.subject'
+                ]);
                 return $topic;
             });
         } catch (\Exception $e) {

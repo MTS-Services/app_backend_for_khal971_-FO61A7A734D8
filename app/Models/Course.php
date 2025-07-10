@@ -10,15 +10,15 @@ use App\Models\BaseModel;
 class Course extends BaseModel
 {
     protected $fillable =
-        [
-            'order_index',
-            'subject_id',
-            'status',
+    [
+        'order_index',
+        'subject_id',
+        'status',
 
-            'created_by',
-            'updated_by'
+        'created_by',
+        'updated_by'
 
-        ];
+    ];
 
     /**
      * Get the attributes that should be cast.
@@ -41,6 +41,13 @@ class Course extends BaseModel
     public function subject(): BelongsTo
     {
         return $this->belongsTo(Subject::class)->with(['translations']);
+    }
+
+    public function practices()
+    {
+        return $this->morphMany(Practice::class, 'practiceable')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ]);
     }
 
     public function topics(): HasMany
