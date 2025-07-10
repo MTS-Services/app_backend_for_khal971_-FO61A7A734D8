@@ -2,18 +2,27 @@
 
 namespace App\Http\Services;
 
-use App\Models\UserClass;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\UserClass;
+use App\Jobs\TranslateModelJob;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Models\UserClassTranslation;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
 
 class UserClassService
 {
     private User $user;
-
+    protected $lang;
     public function __construct()
     {
         $this->user = Auth::user();
+        $this->lang = request()->header('Accept-Language') ?: self::getDefaultLang();
+    }
+    public function getDefaultLang(): string
+    {
+        return defaultLang() ?: 'en';
     }
     /**
      * Fetch UserClasss, optionally filtered and ordered.
@@ -23,27 +32,51 @@ class UserClassService
      */
     public function getUserClasses(string $orderBy = 'order_index', string $direction = 'asc')
     {
-        $query = UserClass::query();
-        return $query->orderBy($orderBy, $direction)->latest();
 
+        $query = UserClass::query()->with('translations');
+        return $query->orderBy($orderBy, $direction);
     }
 
     public function getUserClass($param, string $query_field = 'id'): UserClass|null
     {
-        $query = UserClass::where($query_field, $param)->first();
-        return $query;
+        $query = UserClass::query()->with('translations');
+        return $query->where($query_field, $param)->first();
     }
-    public function createUserClass($data): UserClass
+    public function createUserClass($data): UserClass|null
     {
-        $data['created_by'] = $this->user->id;
-        return UserClass::create($data)->refresh();
+        try {
+            $data['created_by'] = $this->user->id;
+            return DB::transaction(function () use ($data) {
+                $user_class = UserClass::create($data);
+                // UserClassTranslation::create(['user_class_id' => $user_class->id, 'language' => $this->lang, 'name' => $data['name']]);
+                // TranslateModelJob::dispatch(UserClass::class, UserClassTranslation::class, 'user_class_id', $user_class->id, ['name'], $this->lang);
+                // $user_class = $user_class->refresh()->load('translations');
+                UserClassTranslation::create(['user_class_id' => $user_class->id, 'language' => $this->lang, 'name' => $data['name']]);
+                TranslateModelJob::dispatch(UserClass::class, UserClassTranslation::class, 'user_class_id', $user_class->id, ['name'], $this->lang);
+                $user_class = $user_class->refresh()->load('translations');
+                return $user_class;
+            });
+        } catch (\Exception $e) {
+            Log::error('UserClass Create Error: ' . $e->getMessage());
+            return null;
+        }
     }
 
-    public function updateUserClass(UserClass $suer_class, $data): UserClass
+    public function updateUserClass(UserClass $suer_class, $data): UserClass|null
     {
-        $data['updated_by'] = $this->user->id;
-        $suer_class->update($data);
-        return $suer_class->refresh();
+        try {
+            $data['updated_by'] = $this->user->id;
+            return DB::transaction(function () use ($suer_class, $data) {
+                $suer_class->update($data);
+                UserClassTranslation::updateOrCreate(['user_class_id' => $suer_class->id, 'language' => $this->lang], ['name' => $data['name']]);
+                TranslateModelJob::dispatch(UserClass::class, UserClassTranslation::class, 'user_class_id', $suer_class->id, ['name'], $this->lang);
+                $suer_class = $suer_class->refresh()->load('translations');
+                return $suer_class;
+            });
+        } catch (\Exception $e) {
+            Log::error('UserClass Update Error: ' . $e->getMessage());
+            return null;
+        }
     }
 
     public function deleteUserClass(UserClass $suer_class): bool

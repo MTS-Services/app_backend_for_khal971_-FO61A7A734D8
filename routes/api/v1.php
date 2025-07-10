@@ -14,7 +14,6 @@ use App\Http\Controllers\API\QuizAnswerController;
 use App\Http\Controllers\API\QuizController;
 use App\Http\Controllers\API\QuizOptionController;
 use App\Http\Controllers\API\User\UserController;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\SubjectController;
 use App\Http\Controllers\API\TopicController;
@@ -26,8 +25,11 @@ use App\Http\Controllers\API\UserProgressController;
 
 Route::controller(UserController::class)->group(function () {
     Route::get('user', 'user')->name('user');
+    Route::get('user-access/{id}', 'userAccessByAdmin')->name('user.access');
+    Route::put('user-update/{id}', 'userUpdateByAdmin')->name('user.update');
     Route::get('users', 'users')->name('users');
-    Route::put('user', 'updateUser')->name('user.update');
+    Route::put('user-update', 'updateUser')->name('user.update');
+    Route::delete('user-delete/{id}', 'destroy')->name('user.destroy');
 });
 
 
@@ -66,6 +68,7 @@ Route::get('questions/status/{question}', [QuestionController::class, 'toggoleSt
 
 
 Route::apiResource('question-answers', QuestionAnswerController::class);
+Route::get('questons/answers/{question_id}', [QuestionAnswerController::class, 'questionAnswers'])->name('questions.answers');
 
 Route::apiResource('quizzes', QuizController::class);
 Route::get('topic-quizzes/{topic_id}', [QuizController::class, 'quizzes'])->name('topic-quizzes');
@@ -76,7 +79,7 @@ Route::get('quiz/options/{quiz_id}', [QuizOptionController::class, 'options'])->
 
 Route::apiResource('quiz-answers', QuizAnswerController::class);
 
-// Practice and Bookmark 
+// Practice and Bookmark
 Route::get('/practices', [PracticeController::class, 'practices'])->name('practices');
 Route::get('/bookmarks/questions', [BookmarkController::class, 'bookmarkQuestions'])->name('bookmark-questions');
 Route::get('/bookmarks/quizzes', [BookmarkController::class, 'bookmarkQuizzes'])->name('bookmark-quizzes');

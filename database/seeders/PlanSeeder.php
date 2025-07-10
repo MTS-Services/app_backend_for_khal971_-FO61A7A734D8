@@ -16,8 +16,8 @@ class PlanSeeder extends Seeder
         DB::table('plans')->insert([
             [
                 'order_index' => 101,
-                'name' => 'Basic',
-                'description' => 'Basic plan for individuals.',
+                // 'name' => 'Basic',
+                // 'description' => 'Basic plan for individuals.',
                 'price' => 9.99,
                 'duration' => 1,
                 'stripe_price_id' => 'price_abc123',
@@ -27,8 +27,8 @@ class PlanSeeder extends Seeder
             ],
             [
                 'order_index' => 102,
-                'name' => 'Pro',
-                'description' => 'Pro plan with advanced features.',
+                // 'name' => 'Pro',
+                // 'description' => 'Pro plan with advanced features.',
                 'price' => 29.99,
                 'duration' => 3,
                 'stripe_price_id' => 'price_def456',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\UserClassRequest;
+use App\Http\Resources\UserClassResource;
 use App\Http\Services\UserClassService;
 use App\Models\UserClass;
 use Illuminate\Http\Request;
@@ -26,7 +27,7 @@ class UserClassController extends Controller
     {
         try {
             $user_classes = $this->userClassService->getUserClasses()->get();
-            return sendResponse(true, 'User class list fetched successfully', $user_classes, Response::HTTP_OK);
+            return sendResponse(true, 'User class list fetched successfully', UserClassResource::collection($user_classes), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('User class list error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch user class list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -52,7 +53,7 @@ class UserClassController extends Controller
             if (!$user_class) {
                 return sendResponse(false, 'Failed to create UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, 'UserClass created successfully', $user_class, Response::HTTP_CREATED);
+            return sendResponse(true, 'UserClass created successfully', new UserClassResource($user_class), Response::HTTP_CREATED);
         } catch (\Exception $e) {
             Log::error('UserClass Create Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to create UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -69,7 +70,7 @@ class UserClassController extends Controller
             if (!$user_class) {
                 return sendResponse(false, 'Failed to fetch UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, 'UserClass fetched successfully', $user_class, Response::HTTP_OK);
+            return sendResponse(true, 'UserClass fetched successfully', new UserClassResource($user_class), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('UserClass Fetch Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -95,7 +96,7 @@ class UserClassController extends Controller
             if (!$user_class) {
                 return sendResponse(false, 'Failed to update UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, 'UserClass updated successfully', $user_class, Response::HTTP_OK);
+            return sendResponse(true, 'UserClass updated successfully', new UserClassResource($user_class), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('UserClass Update Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to update UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -112,7 +113,7 @@ class UserClassController extends Controller
             if (!$user_class) {
                 return sendResponse(false, 'Failed to delete UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, 'UserClass deleted successfully', $user_class, Response::HTTP_OK);
+            return sendResponse(true, 'UserClass deleted successfully', null, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('UserClass Delete Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to delete UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -123,7 +124,7 @@ class UserClassController extends Controller
     {
         try {
             $user_class = $this->userClassService->toggleStatus($user_class);
-            return sendResponse(true, "UserClass {$user_class->status_label}  successfully", ["status" => $user_class["status"]], Response::HTTP_OK);
+            return sendResponse(true, "UserClass {$user_class->status_label}  successfully", ["status" => $user_class->status_label], Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('UserClass Status Toggle Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to toggle UserClass status', null, Response::HTTP_INTERNAL_SERVER_ERROR);

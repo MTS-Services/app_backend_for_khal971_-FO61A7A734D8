@@ -14,7 +14,6 @@ return new class extends Migration {
         Schema::create('user_classes', function (Blueprint $table) {
             $table->id();
             $table->integer('order_index')->default(0);
-            $table->string('name')->unique();
             $table->tinyInteger('status')->index()->default(UserClass::STATUS_ACTIVE);
 
             $table->timestamps();
