@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\BaseModel;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class QuestionDetails extends BaseModel
 {
@@ -39,7 +40,7 @@ class QuestionDetails extends BaseModel
         return $this->hasMany(Question::class);
     }
 
-    public function practices()
+    public function practices(): MorphMany
     {
         return $this->morphMany(Practice::class, 'practiceable');
     }
