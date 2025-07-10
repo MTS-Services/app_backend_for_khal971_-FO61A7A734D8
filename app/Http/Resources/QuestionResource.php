@@ -8,6 +8,13 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class QuestionResource extends JsonResource
 {
+
+    private $type;
+    public function __construct($resource, $type = 'question')
+    {
+        parent::__construct($resource);
+        $this->type = $type;
+    }
     /**
      * Transform the resource into an array.
      *
