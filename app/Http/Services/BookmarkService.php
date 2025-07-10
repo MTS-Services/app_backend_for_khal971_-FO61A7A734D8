@@ -33,18 +33,18 @@ class BookmarkService
             ->latest()
             ->with([
                 'bookmarkable' => function (MorphTo $morphTo) {
-                        $morphTo->morphWith([
-                            QuestionDetails::class => ['translations', 'practice'],
-                        ])->morphWithCount([
-                            QuestionDetails::class => ['questions'],
-                        ]);
-                    }
+                    $morphTo->morphWith([
+                        QuestionDetails::class => ['translations', 'practice'],
+                    ])->morphWithCount([
+                        QuestionDetails::class => ['questions'],
+                    ]);
+                }
             ])
             ->get();
-            // ->get()
-            // ->loadMorph('bookmarkable', [
-            //     QuestionDetails::class => ['translations', 'practice','questions']
-            // ]);
+        // ->get()
+        // ->loadMorph('bookmarkable', [
+        //     QuestionDetails::class => ['translations', 'practice','questions']
+        // ]);
 
         return $questions;
     }
@@ -53,10 +53,16 @@ class BookmarkService
         $questions = Bookmark::where('user_id', $this->user->id)
             ->whereHasMorph('bookmarkable', [Quiz::class])
             ->latest()
-            ->get()
-            ->loadMorph('bookmarkable', [
-                Quiz::class => ['translations', 'practice']
-            ]);
+            ->with([
+                'bookmarkable' => function (MorphTo $morphTo) {
+                    $morphTo->morphWith([
+                        Quiz::class => ['translations', 'practice'],
+                    ])->morphWithCount([
+                        Quiz::class => ['options'],
+                    ]);
+                }
+            ])
+            ->get();
         return $questions;
     }
 }
