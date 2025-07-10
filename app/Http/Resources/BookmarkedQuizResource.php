@@ -16,7 +16,7 @@ class BookmarkedQuizResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'questions' => new QuestionDetailResource($this->whenLoaded('bookmarkable'), 'practice'),
+            'quizzes' => new QuizResource($this->whenLoaded('bookmarkable'), 'practice'),
         ];
     }
 }
