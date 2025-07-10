@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuizRequest;
+use App\Http\Resources\QuizResource;
 use App\Http\Services\QuizService;
 use App\Models\Quiz;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +30,7 @@ class QuizController extends Controller
             }
             $quizzes = $this->quizService->getQuizzes($topic_id);
             // $quizzes = $this->quizService->getQuizzes($topic_id)->with('topics')->get();
-            return sendResponse(true, ' Quiz list fetched successfully', $quizzes, Response::HTTP_OK);
+            return sendResponse(true, ' Quiz list fetched successfully', QuizResource::collection($quizzes), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch Quiz list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -54,7 +55,7 @@ class QuizController extends Controller
 
                 return sendResponse(false, 'Failed to create Quiz', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, ' Quiz created successfully', $quiz, Response::HTTP_CREATED);
+            return sendResponse(true, ' Quiz created successfully',new QuizResource($quiz), Response::HTTP_CREATED);
         } catch (\Exception $e) {
             Log::error(' Quiz Create Error: ' . $e->getMessage(), [
                 'request' => $request->all(),
@@ -73,7 +74,7 @@ class QuizController extends Controller
             if (!$quiz) {
                 return sendResponse(false, 'Quiz not found', null, Response::HTTP_NOT_FOUND);
             }
-            return sendResponse(true, 'Quiz fetched successfully', $quiz, Response::HTTP_OK);
+            return sendResponse(true, 'Quiz fetched successfully', new QuizResource($quiz), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz Fetch Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch Quiz', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -103,7 +104,7 @@ class QuizController extends Controller
             }
             $validated = $request->validated();
             $quiz = $this->quizService->updateQuiz($quiz, $validated);
-            return sendResponse(true, ' Quiz updated successfully', $quiz, Response::HTTP_OK);
+            return sendResponse(true, ' Quiz updated successfully', new QuizResource($quiz), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz Update Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to update  Quiz', null, Response::HTTP_INTERNAL_SERVER_ERROR);

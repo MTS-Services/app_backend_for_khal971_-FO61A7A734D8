@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuestionAnswerRequest;
+use App\Http\Resources\QuestionAnswerResource;
 use App\Http\Services\QuestionAnswerService;
 use App\Models\QuestionAnswer;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +29,7 @@ class QuestionAnswerController extends Controller
                 return sendResponse(false, 'Question ID param is required', null, Response::HTTP_BAD_REQUEST);
             }
             $questionAnswers = $this->questionAnswerService->getQuestionAnswers($question_id)->with('question.questionDetails')->get();
-            return sendResponse(true, 'Question answer list fetched successfully', $questionAnswers, Response::HTTP_OK);
+            return sendResponse(true, 'Question answer list fetched successfully', QuestionAnswerResource::collection($questionAnswers), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question Answer List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch question answer list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -56,7 +57,7 @@ class QuestionAnswerController extends Controller
             if (!$questionAnswer) {
                 return sendResponse(false, 'Failed to create question answer', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, 'Question answer created successfully', $questionAnswer, Response::HTTP_CREATED);
+            return sendResponse(true, 'Question answer created successfully', new QuestionAnswerResource($questionAnswer), Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return sendResponse(false, $e->getMessage(), null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -73,7 +74,7 @@ class QuestionAnswerController extends Controller
             if (!$question_answer) {
                 return sendResponse(false, 'Question answer not found', null, Response::HTTP_NOT_FOUND);
             }
-            return sendResponse(true, 'Question answer fetched successfully', $question_answer, Response::HTTP_OK);
+            return sendResponse(true, 'Question answer fetched successfully', new QuestionAnswerResource($question_answer), Response::HTTP_OK);
         } catch (\Exception $e) {
             return sendResponse(false, $e->getMessage(), null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -101,7 +102,7 @@ class QuestionAnswerController extends Controller
             if (!$question_answer) {
                 return sendResponse(false, 'Failed to update question answer', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, 'Question answer updated successfully', $question_answer, Response::HTTP_OK);
+            return sendResponse(true, 'Question answer updated successfully', new QuestionAnswerResource($question_answer), Response::HTTP_OK);
         } catch (\Exception $e) {
             return sendResponse(false, $e->getMessage(), null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }

@@ -36,8 +36,7 @@ class Quiz extends BaseModel
         parent::__construct($attributes);
         $this->appends = array_merge(parent::getAppends(), [
             'status_label',
-            // 'hints',
-            // 'tags',
+            'status_list',
         ]);
     }
 
@@ -52,7 +51,7 @@ class Quiz extends BaseModel
     public function topics()
     {
         return $this->belongsTo(Topic::class, 'topic_id', 'id')->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+            'translations'
         ]);
     }
 
@@ -85,7 +84,7 @@ class Quiz extends BaseModel
 
     public function getStatusLabelAttribute(): string
     {
-        return array_key_exists($this->status, self::getStatusList()) ? self::getStatusList()[$this->status] : 'Unknown';
+        return self::getStatusList()[$this->status] ?? 'Unknown';
     }
 
     public function getStatusListAttribute(): object
@@ -102,22 +101,23 @@ class Quiz extends BaseModel
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
-    public function translate($language): QuizTranslation|null
-    {
-        return $this->translations->where('language', $language)->first();
-    }
+    
+    // public function translate($language): QuizTranslation|null
+    // {
+    //     return $this->translations->where('language', $language)->first();
+    // }
 
-    public function scopeTranslation(Builder $query, $lang): Builder
-    {
-        return $query->with([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function scopeTranslation(Builder $query, $lang): Builder
+    // {
+    //     return $query->with([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 
-    public function loadTranslation($lang)
-    {
-        return $this->load([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function loadTranslation($lang)
+    // {
+    //     return $this->load([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 }
