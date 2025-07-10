@@ -3,7 +3,6 @@
 namespace App\Http\Services;
 
 use App\Jobs\TranslateModelJob;
-use App\Models\QuizOpitonTranslation;
 use App\Models\QuizOption;
 use App\Models\QuizOptionTranslation;
 use App\Models\User;
@@ -32,7 +31,7 @@ class QuizOptionService
     }
     public function getQuizOptions(int $quiz_id, string $orderBy = 'order_index', string $direction = 'asc')
     {
-        $query = QuizOption::translation($this->lang)->where('quiz_id', $quiz_id);
+        $query = QuizOption::with('translations')->where('quiz_id', $quiz_id);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -40,7 +39,7 @@ class QuizOptionService
     }
     public function getQuizOption($param, string $query_field = 'id'): QuizOption|null
     {
-        $query = QuizOption::translation($this->lang);
+        $query = QuizOption::with('translations');
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -58,7 +57,7 @@ class QuizOptionService
                     'title' => $data['title'] ?? '',
                 ]);
                 TranslateModelJob::dispatch(QuizOption::class, QuizOptionTranslation::class, 'quiz_option_id', $quiz_option->id, ['title'], $this->lang);
-                $quiz_option = $quiz_option->refresh()->loadTranslation($this->lang);
+                $quiz_option = $quiz_option->refresh()->load('translations');
                 return $quiz_option;
             });
         } catch (\Exception $e) {
@@ -76,7 +75,7 @@ class QuizOptionService
                     'title' => $data['title'] ?? '',
                 ]);
                 TranslateModelJob::dispatch(QuizOption::class, QuizOptionTranslation::class, 'quiz_option_id', $quiz_option->id, ['title'], $this->lang);
-                $quiz_option = $quiz_option->refresh()->loadTranslation($this->lang);
+                $quiz_option = $quiz_option->refresh()->load('translations');
                 return $quiz_option;
             });
         } catch (\Exception $e) {

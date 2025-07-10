@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Quiz;
 use App\Models\QuizTranslation;
-use App\Models\UserProgress;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Collection;
@@ -40,7 +39,7 @@ class QuizService
     // public function getQuizzes(int $topic_id, string $orderBy = 'order_index', string $direction = 'asc')
     // {
 
-    //     $query = Quiz::translation($this->lang)->where('topic_id', $topic_id);
+    //     $query = Quiz::with('translations'))->where('topic_id', $topic_id);
     //     if (!($this->user->is_premium || $this->user->is_admin)) {
     //         $query->take(12);
     //     }
@@ -49,7 +48,7 @@ class QuizService
 
     public function getQuizzes(int $topic_id, string $orderBy = 'order_index', string $direction = 'asc'): Collection
     {
-        $query = Quiz::translation($this->lang)
+        $query = Quiz::with('translations')
             ->where('topic_id', $topic_id)
             ->with('topics')
             ->orderBy($orderBy, $direction)
@@ -65,7 +64,7 @@ class QuizService
     public function getQuiz($param, string $query_field = 'id'): Quiz|null
     {
 
-        $query = Quiz::translation($this->lang);
+        $query = Quiz::with('translations');
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -86,7 +85,7 @@ class QuizService
                     'description' => $data['description'] ?? ''
                 ]);
                 TranslateModelJob::dispatch(Quiz::class, QuizTranslation::class, 'quiz_id', $quiz->id, ['title', 'description'], $this->lang);
-                $quiz = $quiz->refresh()->loadTranslation($this->lang);
+                $quiz = $quiz->refresh()->load('translations');
                 return $quiz;
             });
         } catch (\Exception $e) {
@@ -109,7 +108,7 @@ class QuizService
                     ]
                 );
                 TranslateModelJob::dispatch(Quiz::class, QuizTranslation::class, 'quiz_id', $quiz->id, ['title', 'description'], $this->lang);
-                $quiz = $quiz->refresh()->loadTranslation($this->lang);
+                $quiz = $quiz->refresh()->load('translations');
                 return $quiz;
             });
         } catch (\Exception $e) {

@@ -28,7 +28,7 @@ class QuestionService
     }
     public function getQuestions(int $question_details_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
     {
-        $query = Question::with('translations')->where('question_details_id', $question_details_id);
+        $query = Question::where('question_details_id', $question_details_id)->with(['translations', 'questionDetails']);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -36,7 +36,7 @@ class QuestionService
     }
     public function getQuestion($param, string $query_field = 'id'): Question|null
     {
-        $query = Question::with('translations');
+        $query = Question::with(['translations', 'questionDetails']);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -52,10 +52,10 @@ class QuestionService
                     'question_id' => $question->id,
                     'language' => $this->lang,
                     'title' => $data['title'] ?? '',
-                    'answer' => $data['answer'] ?? ''
+                    'answer' => $data['answer'] ?? '',
                 ]);
                 TranslateModelJob::dispatch(Question::class, QuestionTranslation::class, 'question_id', $question->id, ['title', 'answer'], $this->lang);
-                $question = $question->refresh()->load('translations');
+                $question = $question->refresh()->load(['translations', 'questionDetails']);
                 return $question;
             });
         } catch (\Exception $e) {
@@ -77,7 +77,7 @@ class QuestionService
             );
 
             TranslateModelJob::dispatch(Question::class, QuestionTranslation::class, 'question_id', $question->id, ['title', 'answer'], $this->lang);
-            $question = $question->refresh()->load('translations');
+            $question = $question->refresh()->load(['translations', 'questionDetails']);
             return $question;
         } catch (\Exception $e) {
             Log::error('Question Update Error: ' . $e->getMessage());

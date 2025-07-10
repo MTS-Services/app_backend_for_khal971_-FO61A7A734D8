@@ -33,7 +33,7 @@ class QuestionAnswerService
     }
     public function getQuestionAnswers(int $question_id, string $orderBy = 'order_index', string $direction = 'asc')
     {
-        $query = QuestionAnswer::translation($this->lang)->where('question_id', $question_id);
+        $query = QuestionAnswer::with(['translations', 'question'])->where('question_id', $question_id);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -41,7 +41,7 @@ class QuestionAnswerService
     }
     public function getQuestionAnswer($param, string $query_field = 'id'): QuestionAnswer|null
     {
-        $query = QuestionAnswer::translation($this->lang);
+        $query = QuestionAnswer::with(['translations', 'question']);
         if (!($this->user->is_admin)) {
             $query->free()->take(12);
         }
@@ -66,7 +66,7 @@ class QuestionAnswerService
                     'match_percentage' => round($percent),
                 ]);
                 TranslateModelJob::dispatch(QuestionAnswer::class, QuestionAnswerTranslation::class, 'question_answer_id', $question_answer->id, ['answer', 'match_percentage'], $this->lang);
-                $question_answer = $question_answer->refresh()->loadTranslation($this->lang);
+                $question_answer = $question_answer->refresh()->load(['translations', 'question']);
                 return $question_answer;
             });
         } catch (\Exception $e) {
@@ -85,7 +85,7 @@ class QuestionAnswerService
                     'match_percentage' => $data['match_percentage'] ?? 0
                 ]);
                 TranslateModelJob::dispatch(QuestionAnswer::class, QuestionAnswerTranslation::class, 'question_answer_id', $question_answer->id, ['answer', 'match_percentage'], $this->lang);
-                $question_answer = $question_answer->refresh()->loadTranslation($this->lang);
+                $question_answer = $question_answer->refresh()->load(['translations', 'question']);
                 return $question_answer;
             });
         } catch (\Exception $e) {
