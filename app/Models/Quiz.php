@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Facades\Auth;
 
 class Quiz extends BaseModel
 {
@@ -42,11 +44,9 @@ class Quiz extends BaseModel
     /* ================================
              Relationships Start Here
      ================================ */
-    public function practices()
+    public function practice(): MorphOne
     {
-        return $this->morphMany(Practice::class, 'practiceable')->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
-        ]);
+        return $this->morphOne(Practice::class, 'practiceable')->where('user_id', Auth::user()->id);
     }
     /* ================================
              Relationships End Here

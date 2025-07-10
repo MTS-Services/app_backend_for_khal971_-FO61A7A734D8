@@ -43,16 +43,51 @@ class QuestionDetailResource extends JsonResource
 
 
         $relations = ['topic' => new TopicResource($this->whenLoaded('topic'), 'lite')];
+
         if ($this->practice) {
-            $practice = ['practice' => new PracticeQuestionResource($this->whenLoaded('practice'))];
+            $totalQuestions = $this->questions_count ?? 0;
+            $totalAttempts = $this->practice->total_attempts ?? 0;
+            $wrongAttempts = $this->practice->wrong_attempts ?? 0;
+            $correctAttempts = $this->practice->correct_attempts ?? 0;
+
+
+            $progress = $totalQuestions > 0
+                ? min(100, round(($correctAttempts / $totalQuestions) * 100, 2))
+                : 0;
+
+            $progressStatus = match (true) {
+                $totalAttempts === 0 => 'Not Started',
+                $progress >= 100 => 'Completed',
+                default => 'In Progress',
+            };
+
+            $practices = [
+                'totalAttempts' => $totalAttempts,
+                'correctAttempts' => $correctAttempts,
+                'wrongAttempts' => $wrongAttempts,
+                'progress' => $progress,
+                'progressStatus' => $progressStatus,
+            ];
         } else {
-            $practice = ['practice' => 'Not Found'];
+            $practices = [
+                'totalAttempts' => 0,
+                'correctAttempts' => 0,
+                'wrongAttempts' => 0,
+                'progress' => 0,
+                'progressStatus' => 'Not Started',
+            ];
         }
+
+
+
+        // $practice = new PracticeQuestionResource($this->whenLoaded('practice'));
+        // $practices = ['practice' => $practice, 'progress' => $this->questions->count() - $practice->attempts];
+        // }
 
 
         return match ($this->type) {
             'lite' => $lite,
-            'practice' => array_merge($lite, $practice),
+            'practice' => array_merge($lite, $practices),
             default => array_merge($lite, $relations),
         };
     }

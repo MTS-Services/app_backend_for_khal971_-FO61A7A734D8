@@ -21,7 +21,6 @@ class BookmarkController extends Controller
     {
         try {
             $questions = $this->bookmarkService->getBookmarkedQuestions();
-            // return sendResponse(true, 'Bookmarked questions fetched successfully', $questions, Response::HTTP_OK);
             return sendResponse(true, 'Bookmarked questions fetched successfully', BookmarkedQuestionResource::collection($questions), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question List Error: ' . $e->getMessage());

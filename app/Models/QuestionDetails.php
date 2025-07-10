@@ -104,4 +104,11 @@ class QuestionDetails extends BaseModel
     //         'translations' => fn($q) => $q->where('language', $lang)
     //     ]);
     // }
+
+     public function scopeCounts(Builder $query): Builder
+    {
+        return $query->withCount([
+            'questions',           
+        ]);
+    }
 }

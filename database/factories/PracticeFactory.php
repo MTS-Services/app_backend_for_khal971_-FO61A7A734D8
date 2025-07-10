@@ -53,8 +53,7 @@ class PracticeFactory extends Factory
             'user_id' => $userId,
             'practiceable_id' => $practiceableId,
             'practiceable_type' => $selectedType,
-            'attempts' => ($selectedType == Topic::class  || $selectedType == Course::class) ? 0 : $this->faker->numberBetween(1, 5),
-            'status' => ($selectedType == Topic::class  || $selectedType == Course::class) ? Practice::STATUS_NOT_STARTED : $this->faker->randomElement(array_keys(Practice::getStatusList())),
+            'total_attempts' => ($selectedType == Topic::class  || $selectedType == Course::class) ? 0 : $this->faker->numberBetween(1, 5),
         ];
     }
 }
