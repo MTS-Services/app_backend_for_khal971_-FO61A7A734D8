@@ -52,6 +52,9 @@ class CourseController extends Controller
     public function store(CourseRequest $request): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
 
             $Course = $this->courseService->createCourse($validated);
@@ -85,6 +88,9 @@ class CourseController extends Controller
     public function update(CourseRequest $request, Course $course): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $course = $this->courseService->getCourse($course->id);
             if (!$course) {
                 return sendResponse(false, 'Course not found', null, Response::HTTP_NOT_FOUND);
@@ -104,6 +110,9 @@ class CourseController extends Controller
     public function destroy(Course $course): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $course = $this->courseService->getCourse($course->id);
             if (!$course) {
                 return sendResponse(false, 'Course not found', null, Response::HTTP_NOT_FOUND);
@@ -119,6 +128,9 @@ class CourseController extends Controller
     public function toggleStatus(Course $course): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $course = $this->courseService->getCourse($course->id);
             if (!$course) {
                 return sendResponse(false, 'Course not found', null, Response::HTTP_NOT_FOUND);

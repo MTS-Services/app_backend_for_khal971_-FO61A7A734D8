@@ -47,7 +47,10 @@ class QuestionAnswerController extends Controller
      */
     public function store(QuestionAnswerRequest $request)
     {
-        try{    
+        try{  
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }  
             $validated = $request->validated();
             $questionAnswer = $this->questionAnswerService->createQuestionAnswer($validated);
             if (!$questionAnswer) {
@@ -90,6 +93,9 @@ class QuestionAnswerController extends Controller
     public function update(QuestionAnswerRequest $request, QuestionAnswer $question_answer)
     {
         try{
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
             $question_answer = $this->questionAnswerService->updateQuesitonAnswer($validated, $question_answer);
             if (!$question_answer) {
@@ -107,6 +113,9 @@ class QuestionAnswerController extends Controller
     public function destroy(QuestionAnswer $question_answer)
     {
         try{
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $question_answer = $this->questionAnswerService->getQuestionAnswer($question_answer->id);
             if (!$question_answer) {
                 return sendResponse(false, 'Question answer not found', null, Response::HTTP_NOT_FOUND);

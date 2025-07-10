@@ -25,8 +25,8 @@ use App\Http\Controllers\API\UserProgressController;
 
 Route::controller(UserController::class)->group(function () {
     Route::get('user', 'user')->name('user');
-    Route::get('user-access/{id}', 'userAccessByAdmin')->name('user.access');
-    Route::put('user-update/{id}', 'userUpdateByAdmin')->name('user.update');
+    Route::get('user-access/admin/{id}', 'userAccessByAdmin')->name('user.access.admin');
+    Route::put('user-update/admin/{id}', 'userUpdateByAdmin')->name('user.update.admin');
     Route::get('users', 'users')->name('users');
     Route::put('user-update', 'updateUser')->name('user.update');
     Route::delete('user-delete/{id}', 'destroy')->name('user.destroy');
@@ -52,11 +52,8 @@ Route::apiResource('topics', TopicController::class);
 Route::get('course-topics/{course_id}', [TopicController::class, 'courseTopics'])->name('course-topics');
 Route::get('topics/status/{topic}', [TopicController::class, 'toggleStatus'])->name('topics.toggleStatus');
 
-Route::prefix('plans')->group(function () {
-    Route::get('/', [PlanController::class, 'index']);
-    Route::post('/store', [PlanController::class, 'store']);
-    Route::get('/{id}', [PlanController::class, 'show']);
-});
+Route::apiResource('plans', PlanController::class);
+Route::get('plans/status/{plan}', [PlanController::class, 'toggleStatus'])->name('plans.toggleStatus');
 
 Route::apiResource('question-details', QuestionDetailsController::class);
 Route::get('topic-question-details/{topic_id}', [QuestionDetailsController::class, 'topicQuestionDetails'])->name('topic-question-details');

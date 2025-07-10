@@ -43,6 +43,9 @@ class QuizController extends Controller
     {
 
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
             $quiz = $this->quizService->createQuiz($validated);
 
@@ -91,6 +94,9 @@ class QuizController extends Controller
     public function update(QuizRequest $request, Quiz $quiz): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $quiz = $this->quizService->getQuiz($quiz->id);
             if (!$quiz) {
                 return sendResponse(false, ' Quiz not found', null, Response::HTTP_NOT_FOUND);
@@ -110,6 +116,9 @@ class QuizController extends Controller
     public function destroy(Quiz $quiz): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $quiz = $this->quizService->getQuiz($quiz->id);
             if (!$quiz) {
                 return sendResponse(false, ' Quiz not found', null, Response::HTTP_NOT_FOUND);
@@ -125,6 +134,9 @@ class QuizController extends Controller
     public function toggleStatus(Quiz $quiz): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $quiz = $this->quizService->getQuiz($quiz->id);
             if (!$quiz) {
                 return sendResponse(false, ' Quiz not found', null, Response::HTTP_NOT_FOUND);

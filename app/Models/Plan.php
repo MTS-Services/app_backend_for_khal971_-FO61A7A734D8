@@ -3,13 +3,12 @@
 namespace App\Models;
 
 use App\Models\BaseModel;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Plan extends BaseModel
 {
     protected $fillable = [
         'order_index',
-        'name',
-        'description',
         'price',
         'duration',
         'stripe_price_id',
@@ -66,7 +65,7 @@ class Plan extends BaseModel
     {
         return (object) self::getStatusList();
     }
-    public function translations()
+    public function translations(): HasMany
     {
         return $this->hasMany(PlanTranslation::class, 'plan_id', 'id')->select('plan_id', 'language', 'name', 'description');
     }
