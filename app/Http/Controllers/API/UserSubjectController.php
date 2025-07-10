@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\UserSubjectRequest;
+use App\Http\Resources\SubjectResource;
+use App\Http\Resources\UserResource;
 use App\Http\Services\SubjectService;
 use App\Http\Services\UserSubjectService;
 use App\Models\User;
@@ -36,7 +38,7 @@ class UserSubjectController extends Controller
             if (!$user_subjects) {
                 return sendResponse(false, 'User subjects not found', null, Response::HTTP_NOT_FOUND);
             }
-            return sendResponse(true, 'User subjects fetched successfully', $user_subjects, Response::HTTP_OK);
+            return sendResponse(true, 'User subjects fetched successfully', SubjectResource::collection($user_subjects), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('User Subjects Fetch Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch user subjects', null, Response::HTTP_INTERNAL_SERVER_ERROR);
