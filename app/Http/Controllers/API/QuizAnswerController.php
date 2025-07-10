@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuizAnswerRequest;
+use App\Http\Resources\QuizAnswerResource;
 use App\Http\Services\QuizAnswerService;
 use App\Models\QuizAnswer;
 use Illuminate\Support\Facades\Log;
@@ -28,8 +29,8 @@ class QuizAnswerController extends Controller
             if (!$quiz_id) {
                 return sendResponse(false, 'Quiz ID param is required', null, Response::HTTP_BAD_REQUEST);
             }
-            $quiz_answers = $this->quizAnswerService->getQuizAnswers($quiz_id)->with('quiz.topics')->get();
-            return sendResponse(true, 'Quiz Answers Fetched Successfully', $quiz_answers, Response::HTTP_OK);
+            $quiz_answers = $this->quizAnswerService->getQuizAnswers($quiz_id)->get();
+            return sendResponse(true, 'Quiz Answers Fetched Successfully', QuizAnswerResource::collection($quiz_answers), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Quiz Answers Fetch Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch quiz answers', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -48,12 +49,12 @@ class QuizAnswerController extends Controller
             $validated = $request->validated();
             $quizAnswer = $this->quizAnswerService->createQuizAnswer($validated);
             if (!$quizAnswer) {
-                return response()->json(['message' => 'Failed to create Quiz Answer'], 500);
+                return sendResponse(false, 'Failed to create Quiz Answer', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return response()->json(['message' => 'Quiz Answer created successfully', 'data' => $quizAnswer], 201);
+            return sendResponse(true, 'Quiz Answer created successfully', new QuizAnswerResource($quizAnswer), Response::HTTP_CREATED);
         } catch (\Exception $e) {
             Log::error('Quiz Answer Create Error: ' . $e->getMessage());
-            return response()->json(['message' => 'Failed to create Quiz Answer', 'error' => $e->getMessage()], 500);
+            return sendResponse(false, 'Failed to create Quiz Answer', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -63,17 +64,14 @@ class QuizAnswerController extends Controller
     public function show(QuizAnswer $quiz_answer)
     {
         try {
-            $quiz_answer = $this->quizAnswerService->getQuizAnswer($quiz_answer->id)->with('quiz.topics.course.subject', 'user')->first();
+            $quiz_answer = $this->quizAnswerService->getQuizAnswer($quiz_answer->id)->first();
             if (!$quiz_answer) {
-                return response()->json(['message' => 'No Quiz Answer Found'], 404);
+                return sendResponse(false, 'No Quiz Answer Found', null, Response::HTTP_NOT_FOUND);
             }
-            return response()->json(['message' => 'Quiz Answer Fetched Successfully', 'data' => $quiz_answer], 200);
+            return sendResponse(true, 'Quiz Answer Fetched Successfully', new QuizAnswerResource($quiz_answer), Response::HTTP_OK);
         } catch (\Exception $e) {
-            if ($e->getCode() == 404) {
-                return response()->json(['message' => 'No Quiz Answer Found', 'error' => $e->getMessage()], 404);
-            } else {
-                return response()->json(['message' => 'Something went wrong', 'error' => $e->getMessage()], 500);
-            }
+            Log::error('Quiz Answer Fetch Error: ' . $e->getMessage());
+            return sendResponse(false, 'Failed to fetch Quiz Answer', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -98,9 +96,9 @@ class QuizAnswerController extends Controller
             $validated = $request->validated();
             $quizAnswer = $this->quizAnswerService->updateQuesitonAnswer($validated, $quiz_answer);
             if (!$quizAnswer) {
-                return response()->json(['message' => 'Failed to update Quiz Answer'], 500);
+                return sendResponse(false, 'Failed to update Quiz Answer', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return response()->json(['message' => 'Quiz Answer updated successfully', 'data' => $quizAnswer], 200);
+            return sendResponse(true, 'Quiz Answer updated successfully', new QuizAnswerResource($quizAnswer), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Quiz Answer Update Error: ' . $e->getMessage());
             return response()->json(['message' => 'Failed to update Quiz Answer', 'error' => $e->getMessage()], 500);
@@ -118,13 +116,13 @@ class QuizAnswerController extends Controller
             }
             $quiz_answer = $this->quizAnswerService->getQuizAnswer($quiz_answer->id);
             if (!$quiz_answer) {
-                return response()->json(['message' => 'No Quiz Answer Found'], 404);
+                return sendResponse(false, 'No Quiz Answer Found', null, Response::HTTP_NOT_FOUND);
             }
             $this->quizAnswerService->deleteQuizAnswer($quiz_answer);
-            return response()->json(['message' => 'Quiz Answer deleted successfully'], 200);
+            return sendResponse(true, 'Quiz Answer deleted successfully', null, Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Quiz Answer Delete Error: ' . $e->getMessage());
-            return response()->json(['message' => 'Failed to delete Quiz Answer', 'error' => $e->getMessage()], 500);
+            return sendResponse(false, 'Failed to delete Quiz Answer', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

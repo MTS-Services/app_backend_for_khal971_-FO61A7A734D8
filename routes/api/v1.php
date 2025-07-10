@@ -75,6 +75,7 @@ Route::apiResource('quiz-options', QuizOptionController::class);
 Route::get('quiz/options/{quiz_id}', [QuizOptionController::class, 'options'])->name('quiz.options');
 
 Route::apiResource('quiz-answers', QuizAnswerController::class);
+Route::get('quiz-answers/{quiz_id}', [QuizAnswerController::class, 'quizAnswers'])->name('quiz-answers');
 
 // Practice and Bookmark
 Route::get('/bookmarked/questions', [BookmarkController::class, 'bookmarkedQuestions'])->name('bookmark-questions');

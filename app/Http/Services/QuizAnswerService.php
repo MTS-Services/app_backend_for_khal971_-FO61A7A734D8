@@ -29,7 +29,7 @@ class QuizAnswerService
     }
     public function getQuizAnswers( int $quiz_id, string $orderBy = 'order_index', string $direction = 'asc')
     {
-        $query = QuizAnswer::query()->where('quiz_id', $quiz_id);
+        $query = QuizAnswer::where('quiz_id', $quiz_id)->with(['quiz','user','quizOption']);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }
@@ -38,7 +38,7 @@ class QuizAnswerService
     public function getQuizAnswer($param, string $query_field = 'id'): QuizAnswer|null
     {
         $query = QuizAnswer::query();
-        if (!($this->user->is_admin)) {
+        if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->free()->take(12);
         }
         return $query->where($query_field, $param)->first();
