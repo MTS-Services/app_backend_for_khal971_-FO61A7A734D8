@@ -65,7 +65,7 @@ Route::get('questions/status/{question}', [QuestionController::class, 'toggoleSt
 
 
 Route::apiResource('question-answers', QuestionAnswerController::class);
-Route::get('questons/answers/{question_id}', [QuestionAnswerController::class, 'questionAnswers'])->name('questions.answers');
+Route::get('question/answers/{question_id}', [QuestionAnswerController::class, 'questionAnswers'])->name('questions.answers');
 
 Route::apiResource('quizzes', QuizController::class);
 Route::get('topic-quizzes/{topic_id}', [QuizController::class, 'quizzes'])->name('topic-quizzes');
@@ -76,7 +76,7 @@ Route::get('quiz/options/{quiz_id}', [QuizOptionController::class, 'options'])->
 
 Route::apiResource('quiz-answers', QuizAnswerController::class);
 
-// Practice and Bookmark 
+// Practice and Bookmark
 Route::get('/bookmarked/questions', [BookmarkController::class, 'bookmarkedQuestions'])->name('bookmark-questions');
 Route::get('/bookmarked/quizzes', [BookmarkController::class, 'bookmarkedQuizzes'])->name('bookmark-quizzes');
 
