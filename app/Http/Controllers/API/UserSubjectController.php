@@ -28,12 +28,19 @@ class UserSubjectController extends Controller
          */
         $this->userSubjectService = $userSubjectService;
         $this->user = Auth::user();
-
     }
     public function userSubjects(): JsonResponse
     {
-        $userSubjects = !$this->user->is_premium || $this->user->is_admin ? $this->userSubjectService->getUserSubjects()->get() : $userSubjects = $this->subjectService->getSubjects()->get();
-        return response()->json($userSubjects);
+        try {
+            $user_subjects = !$this->user->is_premium || $this->user->is_admin ? $this->userSubjectService->getUserSubjects()->get() : $user_subjects = $this->subjectService->getSubjects()->get();
+            if (!$user_subjects) {
+                return sendResponse(false, 'User subjects not found', null, Response::HTTP_NOT_FOUND);
+            }
+            return sendResponse(true, 'User subjects fetched successfully', $user_subjects, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('User Subjects Fetch Error: ' . $e->getMessage());
+            return sendResponse(false, 'Failed to fetch user subjects', null, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
     public function store(UserSubjectRequest $request): JsonResponse
     {

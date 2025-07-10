@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuestionRequest;
+use App\Http\Resources\QuestionResource;
 use App\Http\Services\QuestionService;
 use App\Http\Services\TopicService;
 use App\Models\Question;
@@ -28,7 +29,7 @@ class QuestionController extends Controller
     {
         try {
             $questions = $this->questionService->getQuestions($question_details_id)->with('questionDetails.topic')->get();
-            return sendResponse(true, 'Question list fetched successfully', $questions, Response::HTTP_OK);
+            return sendResponse(true, 'Question list fetched successfully', QuestionResource::collection($questions), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch question list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -70,11 +71,11 @@ class QuestionController extends Controller
     public function show(Question $question): JsonResponse
     {
         try {
-            $question = $this->questionService->getQuestion($question->id)->load('questionDetails.topic.course.subject');
+            $question = $this->questionService->getQuestion($question->id)->load('questionDetails');
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
             }
-            return sendResponse(true, 'Question fetched successfully', $question, Response::HTTP_OK);
+            return sendResponse(true, 'Question fetched successfully', new QuestionResource($question), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question Fetch Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch question', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -104,7 +105,7 @@ class QuestionController extends Controller
             }
             $validated = $request->validated();
             $question = $this->questionService->updateQuestion($question, $validated);
-            return sendResponse(true, 'Question updated successfully', $question, Response::HTTP_OK);
+            return sendResponse(true, 'Question updated successfully', new QuestionResource($question), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question Update Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to update question', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -114,13 +115,17 @@ class QuestionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Question $question): JsonResponse
+    public function destroy($id): JsonResponse
     {
         try {
+            $question = $this->questionService->getQuestion($id);
+            if (!$question) {
+                return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
+            }
             if (request()->user()->is_admin !== true) {
                 return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
             }
-            $question = $this->questionService->getQuestion($question->id);
+            $question = $this->questionService->getQuestion($id);
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
             }
