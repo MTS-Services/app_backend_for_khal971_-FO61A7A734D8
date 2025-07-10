@@ -52,11 +52,8 @@ Route::apiResource('topics', TopicController::class);
 Route::get('course-topics/{course_id}', [TopicController::class, 'courseTopics'])->name('course-topics');
 Route::get('topics/status/{topic}', [TopicController::class, 'toggleStatus'])->name('topics.toggleStatus');
 
-Route::prefix('plans')->group(function () {
-    Route::get('/', [PlanController::class, 'index']);
-    Route::post('/store', [PlanController::class, 'store']);
-    Route::get('/{id}', [PlanController::class, 'show']);
-});
+Route::apiResource('plans', PlanController::class);
+Route::get('plans/status/{plan}', [PlanController::class, 'toggleStatus'])->name('plans.toggleStatus');
 
 Route::apiResource('question-details', QuestionDetailsController::class);
 Route::get('topic-question-details/{topic_id}', [QuestionDetailsController::class, 'topicQuestionDetails'])->name('topic-question-details');

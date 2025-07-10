@@ -29,8 +29,8 @@ class PlanRequest extends BaseRequest
             'apple_product_id'  => 'nullable|string|max:255',
             'google_product_id' => 'nullable|string|max:255',
             'features'          => 'nullable|array',
-            'features'        => 'string',
-            'status'            => 'required|integer|in:0,1', 
+            'features'          => 'string',
+            // 'status'            => 'required|integer|in:0,1',
             'is_popular'        => 'boolean',
         ];
     }

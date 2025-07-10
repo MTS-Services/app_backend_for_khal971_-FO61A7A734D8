@@ -40,6 +40,9 @@ class TopicController extends Controller
     public function store(TopicRequest $request): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
 
             $topic = $this->topicService->createTopic($validated);
@@ -73,6 +76,9 @@ class TopicController extends Controller
     public function update(TopicRequest $request, topic $topic): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $topic = $this->topicService->getTopic($topic->id);
             if (!$topic) {
                 return sendResponse(false, 'topic not found', null, Response::HTTP_NOT_FOUND);
@@ -92,6 +98,9 @@ class TopicController extends Controller
     public function destroy(Topic $topic): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $topic = $this->topicService->getTopic($topic->id);
             if (!$topic) {
                 return sendResponse(false, 'topic not found', null, Response::HTTP_NOT_FOUND);
@@ -107,6 +116,9 @@ class TopicController extends Controller
     public function toggleStatus(Topic $topic): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $topic = $this->topicService->getTopic($topic->id);
             if (!$topic) {
                 return sendResponse(false, 'topic not found', null, Response::HTTP_NOT_FOUND);

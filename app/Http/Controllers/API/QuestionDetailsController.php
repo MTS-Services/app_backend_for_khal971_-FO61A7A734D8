@@ -40,6 +40,9 @@ class QuestionDetailsController extends Controller
     public function store(QuestionDetailsRequest $request): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
             $question_detail = $this->questionDetailsService->createQuestionDetail($validated);
             if (!$question_detail) {
@@ -81,6 +84,9 @@ class QuestionDetailsController extends Controller
     public function update(QuestionDetailsRequest $request, QuestionDetails $question_detail): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
 
             $question_detail = $this->questionDetailsService->updateQuestionDetail($question_detail, $validated);
@@ -102,6 +108,9 @@ class QuestionDetailsController extends Controller
     public function destroy(string $id): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $question_detail = $this->questionDetailsService->getQuestionDetail($id);
             if (!$question_detail) {
                 return sendResponse(false, 'Question details not found', null, Response::HTTP_NOT_FOUND);
@@ -115,6 +124,9 @@ class QuestionDetailsController extends Controller
     public function toggleStatus(QuestionDetails $question_detail): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $question_detail = $this->questionDetailsService->toggleStatus($question_detail);
             if (!$question_detail) {
                 return sendResponse(false, 'Failed to toggle status', null, Response::HTTP_INTERNAL_SERVER_ERROR);
