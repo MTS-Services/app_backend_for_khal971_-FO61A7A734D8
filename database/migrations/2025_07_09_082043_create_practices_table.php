@@ -17,10 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('practiceable_id')->index();
             $table->string('practiceable_type')->index();
-            $table->integer('attempts')->default(0);
-            $table->string('status')->index()->default(Practice::STATUS_NOT_STARTED);
+            $table->integer('attempts')->default(0)->index();
+            $table->tinyInteger('status')->index()->default(Practice::STATUS_NOT_STARTED);
             $table->timestamps();
-
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->unique(['user_id', 'practiceable_id', 'practiceable_type']);
         });

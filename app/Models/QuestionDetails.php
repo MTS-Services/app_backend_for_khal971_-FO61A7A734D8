@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Facades\Auth;
 
 class QuestionDetails extends BaseModel
 {
@@ -40,10 +42,11 @@ class QuestionDetails extends BaseModel
         return $this->hasMany(Question::class);
     }
 
-    public function practices(): MorphMany
+    public function practice(): MorphOne
     {
-        return $this->morphMany(Practice::class, 'practiceable');
+        return $this->morphOne(Practice::class, 'practiceable')->where('user_id', Auth::user()->id);
     }
+
 
     /* ==================================================================
                         Relations End Here

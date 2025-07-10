@@ -43,12 +43,16 @@ class QuestionDetailResource extends JsonResource
 
 
         $relations = ['topic' => new TopicResource($this->whenLoaded('topic'), 'lite')];
-        $practices = ['practices' => PracticeQuestionResource::collection($this->whenLoaded('practices'))];
+        if ($this->practice) {
+            $practice = ['practice' => new PracticeQuestionResource($this->whenLoaded('practice'))];
+        } else {
+            $practice = ['practice' => 'Not Found'];
+        }
 
 
         return match ($this->type) {
             'lite' => $lite,
-            'practices' => array_merge($lite, $practices),
+            'practice' => array_merge($lite, $practice),
             default => array_merge($lite, $relations),
         };
     }

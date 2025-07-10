@@ -31,7 +31,7 @@ class BookmarkService
             ->latest()
             ->get()
             ->loadMorph('bookmarkable', [
-                QuestionDetails::class => ['translations', 'practices']
+                QuestionDetails::class => ['translations', 'practice']
             ]);
 
         return $questions;
