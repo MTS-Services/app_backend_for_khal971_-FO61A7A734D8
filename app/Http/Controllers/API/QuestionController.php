@@ -28,7 +28,7 @@ class QuestionController extends Controller
     public function questions($question_details_id): JsonResponse
     {
         try {
-            $questions = $this->questionService->getQuestions($question_details_id)->with('questionDetails.topic')->get();
+            $questions = $this->questionService->getQuestions($question_details_id)->get();
             return sendResponse(true, 'Question list fetched successfully', QuestionResource::collection($questions), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question List Error: ' . $e->getMessage());
@@ -58,7 +58,7 @@ class QuestionController extends Controller
             if (!$question) {
                 return sendResponse(false, 'Failed to create question', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, 'Question created successfully', $question, Response::HTTP_CREATED);
+            return sendResponse(true, 'Question created successfully', new QuestionResource($question), Response::HTTP_CREATED);
         } catch (\Exception $e) {
             Log::error('Question Create Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to create question', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -71,7 +71,7 @@ class QuestionController extends Controller
     public function show(Question $question): JsonResponse
     {
         try {
-            $question = $this->questionService->getQuestion($question->id)->load('questionDetails');
+            $question = $this->questionService->getQuestion($question->id);
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
             }
@@ -118,13 +118,10 @@ class QuestionController extends Controller
     public function destroy($id): JsonResponse
     {
         try {
-            $question = $this->questionService->getQuestion($id);
-            if (!$question) {
-                return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
-            }
             if (request()->user()->is_admin !== true) {
                 return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
             }
+
             $question = $this->questionService->getQuestion($id);
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);

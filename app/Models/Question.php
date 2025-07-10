@@ -44,7 +44,7 @@ class Question extends BaseModel
     public function questionDetails(): BelongsTo
     {
         return $this->belongsTo(QuestionDetails::class, 'question_details_id', 'id')->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
+            'translations'
         ]);
     }
 
@@ -57,6 +57,7 @@ class Question extends BaseModel
         parent::__construct($attributes);
         $this->appends = array_merge(parent::getAppends(), [
             'status_label',
+            'status_list',
             // 'hints',
             // 'tags',
         ]);
