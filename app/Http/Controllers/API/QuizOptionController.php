@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuizOptionRequest;
+use App\Http\Resources\QuizOptionResource;
 use App\Http\Services\QuizOptionService;
 use App\Models\QuizOption;
 use Illuminate\Support\Facades\Log;
@@ -30,20 +31,12 @@ class QuizOptionController extends Controller
             if (!$quizOpitons) {
                 return sendResponse(false, 'Failed to fetch Quiz Option list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, ' Quiz Option list fetched successfully', $quizOpitons, Response::HTTP_OK);
+            return sendResponse(true, ' Quiz Option list fetched successfully', QuizOptionResource::collection($quizOpitons), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz Option List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch Quiz Option list', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-    //     //
-    // }
 
     /**
      * Store a newly created resource in storage.
@@ -59,7 +52,7 @@ class QuizOptionController extends Controller
             if (!$quizOption) {
                 return sendResponse(false, 'Failed to create Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, ' Quiz Option created successfully', $quizOption, Response::HTTP_CREATED);
+            return sendResponse(true, ' Quiz Option created successfully', new QuizOptionResource($quizOption), Response::HTTP_CREATED);
         } catch (\Exception $e) {
             Log::error(' Quiz Option Create Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to create Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -76,7 +69,7 @@ class QuizOptionController extends Controller
             if (!$quizOption) {
                 return sendResponse(false, 'Failed to fetch Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, ' Quiz Option fetched successfully', $quizOption, Response::HTTP_OK);
+            return sendResponse(true, ' Quiz Option fetched successfully', new QuizOptionResource($quizOption), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz Option Fetch Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -109,7 +102,7 @@ class QuizOptionController extends Controller
             if (!$quizOption) {
                 return sendResponse(false, 'Failed to update Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
             }
-            return sendResponse(true, ' Quiz Option updated successfully', $quizOption, Response::HTTP_OK);
+            return sendResponse(true, ' Quiz Option updated successfully', new QuizOptionResource($quizOption), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error(' Quiz Option Update Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to update Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);

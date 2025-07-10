@@ -23,7 +23,7 @@ class QuizResource extends JsonResource
             'statusList'  => $this->status_list,
             'language'    => translation($this->translations)->language ?? 'en',
             'title'       => translation($this->translations)->title ?? 'Not Found',
-            'description'      => translation($this->translations)->description ?? 'Not Found',
+            'description' => translation($this->translations)->description ?? 'Not Found',
             'created_at'  => $this->created_at_formatted ?? dateTimeFormat(Carbon::now()),
             'updated_at'  => $this->updated_at_formatted ?? "N/A",
             'created_by'  => $this->creater?->name ?? "System",

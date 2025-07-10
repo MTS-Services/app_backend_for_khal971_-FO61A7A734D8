@@ -34,8 +34,7 @@ class Quiz extends BaseModel
         parent::__construct($attributes);
         $this->appends = array_merge(parent::getAppends(), [
             'status_label',
-            // 'hints',
-            // 'tags',
+            'status_list',
         ]);
     }
 
@@ -79,7 +78,7 @@ class Quiz extends BaseModel
 
     public function getStatusLabelAttribute(): string
     {
-        return array_key_exists($this->status, self::getStatusList()) ? self::getStatusList()[$this->status] : 'Unknown';
+        return self::getStatusList()[$this->status] ?? 'Unknown';
     }
 
     public function getStatusListAttribute(): object
