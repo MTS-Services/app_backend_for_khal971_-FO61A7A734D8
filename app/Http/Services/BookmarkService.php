@@ -6,7 +6,9 @@ use App\Models\Bookmark;
 use App\Models\Practice;
 use App\Models\Question;
 use App\Models\QuestionDetails;
+use App\Models\Quiz;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Auth;
 
 class BookmarkService
@@ -29,17 +31,37 @@ class BookmarkService
         $questions = Bookmark::where('user_id', $this->user->id)
             ->whereHasMorph('bookmarkable', [QuestionDetails::class])
             ->latest()
-            ->get()
-            ->loadMorph('bookmarkable', [
-                QuestionDetails::class => ['translations', 'practices']
-            ]);
+            ->with([
+                'bookmarkable' => function (MorphTo $morphTo) {
+                    $morphTo->morphWith([
+                        QuestionDetails::class => ['translations', 'practice'],
+                    ])->morphWithCount([
+                        QuestionDetails::class => ['questions'],
+                    ]);
+                }
+            ])
+            ->get();
+        // ->get()
+        // ->loadMorph('bookmarkable', [
+        //     QuestionDetails::class => ['translations', 'practice','questions']
+        // ]);
 
         return $questions;
     }
     public function getBookmarkedQuizzes()
     {
         $questions = Bookmark::where('user_id', $this->user->id)
-            ->where('bookmarkable_type', 'App\Models\Quiz')
+            ->whereHasMorph('bookmarkable', [Quiz::class])
+            ->latest()
+            ->with([
+                'bookmarkable' => function (MorphTo $morphTo) {
+                    $morphTo->morphWith([
+                        Quiz::class => ['translations', 'practice'],
+                    ])->morphWithCount([
+                        Quiz::class => ['options'],
+                    ]);
+                }
+            ])
             ->get();
         return $questions;
     }

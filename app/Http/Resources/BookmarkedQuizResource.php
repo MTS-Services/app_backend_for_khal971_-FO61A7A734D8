@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BookmarkedQuestionResource extends JsonResource
+class BookmarkedQuizResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +17,6 @@ class BookmarkedQuestionResource extends JsonResource
         return [
             'id' => $this->id,
             'questions' => new QuestionDetailResource($this->whenLoaded('bookmarkable'), 'practice'),
-            
         ];
     }
 }

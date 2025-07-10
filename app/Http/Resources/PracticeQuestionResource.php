@@ -18,6 +18,10 @@ class PracticeQuestionResource extends JsonResource
         return [
 
             'id' => $this->id ?? 'Not Found',
+            'status' => $this->status_label ?? 'Not Found',
+            'attempts' => $this->attempts ?? 'Not Found',
+            'statusList' => $this->status_list ?? 'Not Found',
+            'options' => $this->practiceable->questions ?? 'Not Found',
         ];
     }
 }

@@ -17,7 +17,6 @@ function sendResponse($status, $message, $data = null, $statusCode = 200, $addit
     return response()->json($responseData, $statusCode);
 }
 
-
 function timeFormat($time)
 {
     return $time ? date('h:i A', strtotime($time)) : null;

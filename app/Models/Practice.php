@@ -70,10 +70,9 @@ class Practice extends BaseModel
     }
 
     // Constants
-    public const STATUS_NOT_STARTED = 'not_started';
-    public const STATUS_IN_PROGRESS = 'in_progress';
-    public const STATUS_COMPLETED = 'completed';
-    public const STATUS_FAILED = 'failed';
+    public const STATUS_NOT_STARTED = '0';
+    public const STATUS_IN_PROGRESS = '1';
+    public const STATUS_COMPLETED = '2';
 
     // Helpers
     public static function getStatusList(): array
@@ -82,7 +81,6 @@ class Practice extends BaseModel
             self::STATUS_NOT_STARTED => 'Not Started',
             self::STATUS_IN_PROGRESS => 'In Progress',
             self::STATUS_COMPLETED => 'Completed',
-            self::STATUS_FAILED => 'Failed',
         ];
     }
 

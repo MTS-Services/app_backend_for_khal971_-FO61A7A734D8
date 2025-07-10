@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\BaseModel;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Facades\Auth;
 
 class Quiz extends BaseModel
 {
@@ -42,11 +44,26 @@ class Quiz extends BaseModel
     /* ================================
              Relationships Start Here
      ================================ */
-    public function practices()
+    public function practice(): MorphOne
     {
-        return $this->morphMany(Practice::class, 'practiceable')->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
+        return $this->morphOne(Practice::class, 'practiceable')->where('user_id', Auth::user()->id);
+    }
+
+    public function topics()
+    {
+        return $this->belongsTo(Topic::class, 'topic_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
         ]);
+    }
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(QuizTranslation::class, 'quiz_id', 'id')->select('quiz_id', 'language', 'title', 'description');
+    }
+
+    public function options(): HasMany
+    {
+        return $this->hasMany(QuizOption::class);
     }
     /* ================================
              Relationships End Here
@@ -83,19 +100,6 @@ class Quiz extends BaseModel
     public function scopeInactive(Builder $query): Builder
     {
         return $query->where('status', self::STATUS_INACTIVE);
-    }
-
-    // Relationships
-    public function topics()
-    {
-        return $this->belongsTo(Topic::class, 'topic_id', 'id')->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
-        ]);
-    }
-
-    public function translations(): HasMany
-    {
-        return $this->hasMany(QuizTranslation::class, 'quiz_id', 'id')->select('quiz_id', 'language', 'title', 'description');
     }
 
     public function translate($language): QuizTranslation|null
