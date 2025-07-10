@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class BookmarkedQuestionResource extends JsonResource
+class PracticeQuestionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,10 +14,10 @@ class BookmarkedQuestionResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        
         return [
-            'id' => $this->id,
-            'questions' => new QuestionDetailResource($this->whenLoaded(['bookmarkable', 'practices'])),
-            
+
+            'id' => $this->id ?? 'Not Found',
         ];
     }
 }

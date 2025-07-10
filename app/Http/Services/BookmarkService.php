@@ -28,6 +28,7 @@ class BookmarkService
     {
         $questions = Bookmark::where('user_id', $this->user->id)
             ->whereHasMorph('bookmarkable', [QuestionDetails::class])
+            ->latest()
             ->get()
             ->loadMorph('bookmarkable', [
                 QuestionDetails::class => ['translations', 'practices']
