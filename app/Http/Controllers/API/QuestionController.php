@@ -49,6 +49,9 @@ class QuestionController extends Controller
     public function store(QuestionRequest $request)
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
             $question = $this->questionService->createQuestion($validated);
             if (!$question) {
@@ -92,6 +95,9 @@ class QuestionController extends Controller
     public function update(QuestionRequest $request, Question $question): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $question = $this->questionService->getQuestion($question->id);
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
@@ -111,6 +117,9 @@ class QuestionController extends Controller
     public function destroy(Question $question): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $question = $this->questionService->getQuestion($question->id);
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);
@@ -125,6 +134,9 @@ class QuestionController extends Controller
     public function toggoleStatus(Question $question): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $question = $this->questionService->getQuestion($question->id);
             if (!$question) {
                 return sendResponse(false, 'Question not found', null, Response::HTTP_NOT_FOUND);

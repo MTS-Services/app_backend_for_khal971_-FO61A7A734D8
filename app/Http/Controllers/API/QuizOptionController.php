@@ -51,6 +51,9 @@ class QuizOptionController extends Controller
     public function store(QuizOptionRequest $request)
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
             $quizOption = $this->quizOptionService->createQuizOption($validated);
             if (!$quizOption) {
@@ -94,6 +97,9 @@ class QuizOptionController extends Controller
     public function update(QuizOptionRequest $request, QuizOption $quiz_option)
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $quiz_option = $this->quizOptionService->getQuizOption($quiz_option->id);
             if (!$quiz_option) {
                 return sendResponse(false, 'Failed to update Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -116,6 +122,9 @@ class QuizOptionController extends Controller
     public function destroy(QuizOption $quiz_option)
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $quiz_option = $this->quizOptionService->getQuizOption($quiz_option->id);
             if (!$quiz_option) {
                 return sendResponse(false, 'Failed to delete Quiz Option', null, Response::HTTP_INTERNAL_SERVER_ERROR);

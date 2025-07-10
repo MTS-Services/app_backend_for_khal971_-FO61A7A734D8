@@ -42,6 +42,9 @@ class QuizAnswerController extends Controller
     public function store(QuizAnswerRequest $request)
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
             $quizAnswer = $this->quizAnswerService->createQuizAnswer($validated);
             if (!$quizAnswer) {
@@ -88,6 +91,9 @@ class QuizAnswerController extends Controller
     public function update(QuizAnswerRequest $request, QuizAnswer $quiz_answer)
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $quiz_answer = $this->quizAnswerService->getQuizAnswer($quiz_answer->id);
             $validated = $request->validated();
             $quizAnswer = $this->quizAnswerService->updateQuesitonAnswer($validated, $quiz_answer);
@@ -107,6 +113,9 @@ class QuizAnswerController extends Controller
     public function destroy(QuizAnswer $quiz_answer)
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $quiz_answer = $this->quizAnswerService->getQuizAnswer($quiz_answer->id);
             if (!$quiz_answer) {
                 return response()->json(['message' => 'No Quiz Answer Found'], 404);

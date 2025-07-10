@@ -48,6 +48,9 @@ class UserClassController extends Controller
     public function store(UserClassRequest $request)
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
             $user_class = $this->userClassService->createUserClass($validated);
             if (!$user_class) {
@@ -91,6 +94,9 @@ class UserClassController extends Controller
     public function update(UserClassRequest $request, UserClass $user_class)
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
             $user_class = $this->userClassService->updateUserClass($user_class, $validated);
             if (!$user_class) {
@@ -109,6 +115,9 @@ class UserClassController extends Controller
     public function destroy(UserClass $user_class)
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $user_class = $this->userClassService->deleteUserClass($user_class);
             if (!$user_class) {
                 return sendResponse(false, 'Failed to delete UserClass', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -123,6 +132,9 @@ class UserClassController extends Controller
     public function toggleStatus(UserClass $user_class): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $user_class = $this->userClassService->toggleStatus($user_class);
             return sendResponse(true, "UserClass {$user_class->status_label}  successfully", ["status" => $user_class->status_label], Response::HTTP_OK);
         } catch (\Exception $e) {

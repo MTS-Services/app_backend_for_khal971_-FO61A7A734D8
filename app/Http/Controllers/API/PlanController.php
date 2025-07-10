@@ -49,6 +49,9 @@ class PlanController extends Controller
     public function store(PlanRequest $request): JsonResponse
     {
         try{
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
             $plan = $this->planService->createPlan($validated);
             if(!$plan){
@@ -63,6 +66,9 @@ class PlanController extends Controller
     public function update(PlanRequest $request, $id): JsonResponse
     {
         try{
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $plan = $this->planService->getPlan($id);
             if(!$plan){
                 return sendResponse(false, 'Plan not found', null, Response::HTTP_NOT_FOUND);
@@ -81,6 +87,9 @@ class PlanController extends Controller
     public function destroy($id): JsonResponse
     {
         try{
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $plan = $this->planService->getPlan($id);
             if(!$plan){
                 return sendResponse(false, 'Plan not found', null, Response::HTTP_NOT_FOUND);
@@ -95,6 +104,9 @@ class PlanController extends Controller
     public function toggleStatus($id): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $plan = $this->planService->getPlan($id);
             if (!$plan) {
                 return sendResponse(false, 'Plan not found', null, Response::HTTP_NOT_FOUND);

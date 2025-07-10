@@ -42,6 +42,9 @@ class SubjectController extends Controller
     {
 
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $validated = $request->validated();
             $file = $request->validated('icon') && $request->hasFile('icon') ? $request->file('icon') : null;
             $subject = $this->subjectService->createSubject($validated, $file);
@@ -89,6 +92,9 @@ class SubjectController extends Controller
     {
 
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $subject = $this->subjectService->getSubject($subject->id);
             if (!$subject) {
                 return sendResponse(false, 'Subject not found', null, Response::HTTP_NOT_FOUND);
@@ -109,6 +115,9 @@ class SubjectController extends Controller
     public function destroy(Subject $subject): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $subject = $this->subjectService->getSubject($subject->id);
             if (!$subject) {
                 return sendResponse(false, 'Subject not found', null, Response::HTTP_NOT_FOUND);
@@ -124,6 +133,9 @@ class SubjectController extends Controller
     public function toggleStatus(Subject $subject): JsonResponse
     {
         try {
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
+            }
             $subject = $this->subjectService->getSubject($subject->id);
             if (!$subject) {
                 return sendResponse(false, 'Subject not found', null, Response::HTTP_NOT_FOUND);
