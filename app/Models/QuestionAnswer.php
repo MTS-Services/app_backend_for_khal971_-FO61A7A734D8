@@ -40,22 +40,22 @@ class QuestionAnswer extends BaseModel
         return $this->hasMany(QuestionAnswerTranslation::class, 'question_answer_id', 'id')->select('question_answer_id', 'language', 'answer', 'match_percentage');
     }
 
-    public function translate($language): QuestionAnswerTranslation|null
-    {
-        return $this->translations->where('language', $language)->first();
-    }
+    // public function translate($language): QuestionAnswerTranslation|null
+    // {
+    //     return $this->translations->where('language', $language)->first();
+    // }
 
-    public function scopeTranslation(Builder $query, $lang): Builder
-    {
-        return $query->with([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function scopeTranslation(Builder $query, $lang): Builder
+    // {
+    //     return $query->with([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 
-    public function loadTranslation($lang)
-    {
-        return $this->load([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function loadTranslation($lang)
+    // {
+    //     return $this->load([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 }
