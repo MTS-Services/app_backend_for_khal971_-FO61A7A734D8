@@ -43,9 +43,9 @@ class QuestionDetailResource extends JsonResource
 
 
         $relations = ['topic' => new TopicResource($this->whenLoaded('topic'), 'lite')];
-        // if ($this->id === 8) {
-        //     dd($this->practices);
-        // }
+        if ($this->id === 8) {
+            dd($this->practices);
+        }
         $practices = ['practices' => new PracticeQuestionResource($this->whenLoaded('practices'))];
 
 
