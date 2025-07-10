@@ -6,13 +6,13 @@ use App\Models\User;
 
 class UserService
 {
-    // protected FileService $fileService;
+    protected FileService $fileService;
 
     public function __construct(FileService $fileService)
     {
-        return $this->fileService = $fileService;
+        $this->fileService = $fileService;
     }
-    public function getUser($pararm, string $query_field = 'id'): User
+    public function getUser($pararm, string $query_field = 'id'): User|null
     {
         return User::where($query_field, $pararm)->first();
 
@@ -24,6 +24,7 @@ class UserService
     }
     public function updateUser(User $user, array $data, $file): User
     {
+        $data['updated_by'] = request()->user()->id;
         $user->update($data);
         if ($file) {
             $data['image'] = $this->fileService->uploadFile($file, 'users', $data['name']);
@@ -32,4 +33,8 @@ class UserService
         return $user->refresh();
     }
 
+    public function deleteUser(User $user): bool
+    {
+        return $user->delete();
+    }
 }

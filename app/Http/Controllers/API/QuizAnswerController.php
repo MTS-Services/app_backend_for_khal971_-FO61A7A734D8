@@ -6,8 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\API\QuizAnswerRequest;
 use App\Http\Services\QuizAnswerService;
 use App\Models\QuizAnswer;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class QuizAnswerController extends Controller
 {
@@ -20,30 +21,20 @@ class QuizAnswerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+
+    public function quizAnswers(int $quiz_id): JsonResponse
     {
         try {
-            $quiz_answers = $this->quizAnswerService->getQuizAnswers()->with('quiz.topics.course.subject', 'user')->get();
-            if (!$quiz_answers) {
-                return response()->json(['message' => 'No Quiz Answers Found'], 404);
+            if (!$quiz_id) {
+                return sendResponse(false, 'Quiz ID param is required', null, Response::HTTP_BAD_REQUEST);
             }
-            return response()->json(['message' => 'Quiz Answers Fetched Successfully', 'data' => $quiz_answers], 200);
+            $quiz_answers = $this->quizAnswerService->getQuizAnswers($quiz_id)->with('quiz.topics')->get();
+            return sendResponse(true, 'Quiz Answers Fetched Successfully', $quiz_answers, Response::HTTP_OK);
         } catch (\Exception $e) {
-            if ($e->getCode() == 404) {
-                return response()->json(['message' => 'No Quiz Answers Found', 'error' => $e->getMessage()], 404);
-            } else {
-                return response()->json(['message' => 'Something went wrong', 'error' => $e->getMessage()], 500);
-            }
+            Log::error('Quiz Answers Fetch Error: ' . $e->getMessage());
+            return sendResponse(false, 'Failed to fetch quiz answers', null, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-    //     //
-    // }
 
     /**
      * Store a newly created resource in storage.
@@ -68,7 +59,7 @@ class QuizAnswerController extends Controller
      */
     public function show(QuizAnswer $quiz_answer)
     {
-        try{
+        try {
             $quiz_answer = $this->quizAnswerService->getQuizAnswer($quiz_answer->id)->with('quiz.topics.course.subject', 'user')->first();
             if (!$quiz_answer) {
                 return response()->json(['message' => 'No Quiz Answer Found'], 404);
@@ -115,7 +106,7 @@ class QuizAnswerController extends Controller
      */
     public function destroy(QuizAnswer $quiz_answer)
     {
-        try{
+        try {
             $quiz_answer = $this->quizAnswerService->getQuizAnswer($quiz_answer->id);
             if (!$quiz_answer) {
                 return response()->json(['message' => 'No Quiz Answer Found'], 404);

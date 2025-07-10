@@ -27,11 +27,11 @@ class QuizAnswerService
     {
         return defaultLang() ?: 'en';
     }
-    public function getQuizAnswers(string $orderBy = 'order_index', string $direction = 'asc')
+    public function getQuizAnswers( int $quiz_id, string $orderBy = 'order_index', string $direction = 'asc')
     {
-        $query = QuizAnswer::query();
-        if (!($this->user->is_admin)) {
-            $query->free()->take(12);
+        $query = QuizAnswer::query()->where('quiz_id', $quiz_id);
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
         }
         return $query->orderBy($orderBy, $direction)->latest();
     }

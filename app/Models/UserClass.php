@@ -10,7 +10,6 @@ class UserClass extends BaseModel
 
     protected $fillable = [
         'order_index',
-        'name',
         'icon',
         'status',
 
@@ -55,7 +54,7 @@ class UserClass extends BaseModel
 
     public function getStatusLabelAttribute(): string
     {
-        return $this->status ? self::getStatusList()[$this->status] : 'Unknown';
+        return self::getStatusList()[$this->status] ?? 'Unknown';
     }
 
     public function getStatusListAttribute(): object
@@ -74,6 +73,48 @@ class UserClass extends BaseModel
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
+    public function translations()
+    {
+        return $this->hasMany(UserClassTranslation::class, 'user_class_id', 'id')->select('user_class_id', 'language', 'name');
+    }
+    public function translate($language): QuizTranslation|null
+    {
+        return $this->translations->where('language', $language)->first();
+    }
 
+    // public function scopeTranslation(Builder $query, $lang): Builder
+    // {
+    //     return $query->with([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 
+    // public function loadTranslation($lang)
+    // {
+    //     return $this->load([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
+
+    //  public function scopeCounts(Builder $query): Builder
+    // {
+    //     return $query->withCount([
+    //         'courses',
+    //         'courses as topics_count' => function (Builder $query) {
+    //             $query->join('topics', 'courses.id', '=', 'topics.course_id')
+    //                 ->selectRaw('count(topics.id)');
+    //         },
+    //         'courses as questions_count' => function (Builder $query) {
+    //             $query->join('topics', 'courses.id', '=', 'topics.course_id')
+    //                 ->join('question_details', 'topics.id', '=', 'question_details.topic_id')
+    //                 ->selectRaw('count(question_details.id)');
+    //         },
+    //         'courses as quizzes_count' => function (Builder $query) {
+    //             $query->join('topics', 'courses.id', '=', 'topics.course_id')
+    //                 ->join('quizzes', 'topics.id', '=', 'quizzes.topic_id')
+    //                 ->selectRaw('count(quizzes.id)');
+    //         },
+    //     ]);
+    // }
+  
 }

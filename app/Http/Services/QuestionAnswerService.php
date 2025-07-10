@@ -31,11 +31,11 @@ class QuestionAnswerService
     {
         return defaultLang() ?: 'en';
     }
-    public function getQuestionAnswers(string $orderBy = 'order_index', string $direction = 'asc')
+    public function getQuestionAnswers(int $question_id, string $orderBy = 'order_index', string $direction = 'asc')
     {
-        $query = QuestionAnswer::translation($this->lang);
-        if (!($this->user->is_admin)) {
-            $query->free()->take(12);
+        $query = QuestionAnswer::translation($this->lang)->where('question_id', $question_id);
+        if (!($this->user->is_premium || $this->user->is_admin)) {
+            $query->take(12);
         }
         return $query->orderBy($orderBy, $direction)->latest();
     }
@@ -56,7 +56,7 @@ class QuestionAnswerService
                 $correctAnswer = QuestionTranslation::where('question_id', $data['question_id'])->where('language', $this->lang)->first()->answer;
                 $userAnswer = $data['answer'];
                 similar_text(strtolower($correctAnswer), strtolower($userAnswer), $percent);
-                if(empty($correctAnswer) || empty($userAnswer)){
+                if (empty($correctAnswer) || empty($userAnswer)) {
                     $percent = 0;
                 }
                 QuestionAnswerTranslation::create([
