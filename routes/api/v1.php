@@ -25,8 +25,8 @@ use App\Http\Controllers\API\UserProgressController;
 
 Route::controller(UserController::class)->group(function () {
     Route::get('user', 'user')->name('user');
-    Route::get('user-access/admin/{id}', 'userAccessByAdmin')->name('user.access');
-    Route::put('user-update/admin/{id}', 'userUpdateByAdmin')->name('user.update');
+    Route::get('user-access/admin/{id}', 'userAccessByAdmin')->name('user.access.admin');
+    Route::put('user-update/admin/{id}', 'userUpdateByAdmin')->name('user.update.admin');
     Route::get('users', 'users')->name('users');
     Route::put('user-update', 'updateUser')->name('user.update');
     Route::delete('user-delete/{id}', 'destroy')->name('user.destroy');
