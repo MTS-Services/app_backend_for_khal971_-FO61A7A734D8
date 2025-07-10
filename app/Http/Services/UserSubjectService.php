@@ -21,9 +21,9 @@ class UserSubjectService
         $query = User::findOrFail(request()->user()->id)->subjects();
         return $query->orderBy($orderBy, $direction)->latest();
     }
-    public function storeSubjectsForUser(int $userId, array $subjectIds, int $creatorId): void
+    public function storeSubjectsForUser(int $userId, array $subjectIds): void
     {
-        DB::transaction(function () use ($userId, $subjectIds, $creatorId) {
+        DB::transaction(function () use ($userId, $subjectIds) {
             // Remove old selections
             UserSubject::where('user_id', $userId)->delete();
 
@@ -33,8 +33,7 @@ class UserSubjectService
                     'order_index' => $index + 1,
                     'user_id' => $userId,
                     'subject_id' => $subjectId,
-                    'created_by' => $creatorId,
-                    'updated_by' => $creatorId,
+                    'created_by' => $userId,
                 ]);
             }
         });

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UserSubjectRequest extends FormRequest
+class UserSubjectRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,35 +16,19 @@ class UserSubjectRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
-     */
     public function rules(): array
     {
-         return [
+        return [
             'subjects' => 'required|array|min:5',
             'subjects.*' => 'required|exists:subjects,id',
         ];
     }
-     public function messages(): array
+    public function messages(): array
     {
         return [
-            'subjects.required' => 'Please select at least one subject.',
-            'subjects.max' => 'You can select up to 5 subjects.',
+            'subjects.required' => 'Subjects are required.',
+            'subjects.min' => 'Please select at least 5 subjects.',
             'subjects.*.exists' => 'One or more selected subjects are invalid.',
         ];
-    }
-
-    protected function failedValidation(Validator $validator): void
-    {
-        $response = response()->json([
-            'success' => false,
-            'token' => null,
-            'data' => $validator->errors()->messages(),
-        ], 422);
-
-        throw new HttpResponseException($response);
     }
 }

@@ -38,13 +38,9 @@ class UserSubjectController extends Controller
     public function store(UserSubjectRequest $request): JsonResponse
     {
         try {
-            if (request()->user()->is_admin !== true) {
-                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
-            }
             $this->userSubjectService->storeSubjectsForUser(
                 $this->user->id,
                 $request->subjects,
-                $this->user->id
             );
             return sendResponse(true, 'Subjects selected successfully.', null, Response::HTTP_OK);
         } catch (\Exception $e) {
