@@ -48,6 +48,17 @@ class Quiz extends BaseModel
             'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', defaultLang())),
         ]);
     }
+    public function topics()
+    {
+        return $this->belongsTo(Topic::class, 'topic_id', 'id')->with([
+            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
+        ]);
+    }
+
+    public function translations(): HasMany
+    {
+        return $this->hasMany(QuizTranslation::class, 'quiz_id', 'id')->select('quiz_id', 'language', 'title', 'description');
+    }
     /* ================================
              Relationships End Here
      ================================ */
@@ -85,35 +96,23 @@ class Quiz extends BaseModel
         return $query->where('status', self::STATUS_INACTIVE);
     }
 
-    // Relationships
-    public function topics()
-    {
-        return $this->belongsTo(Topic::class, 'topic_id', 'id')->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
-        ]);
-    }
+    
+    // public function translate($language): QuizTranslation|null
+    // {
+    //     return $this->translations->where('language', $language)->first();
+    // }
 
-    public function translations(): HasMany
-    {
-        return $this->hasMany(QuizTranslation::class, 'quiz_id', 'id')->select('quiz_id', 'language', 'title', 'description');
-    }
+    // public function scopeTranslation(Builder $query, $lang): Builder
+    // {
+    //     return $query->with([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 
-    public function translate($language): QuizTranslation|null
-    {
-        return $this->translations->where('language', $language)->first();
-    }
-
-    public function scopeTranslation(Builder $query, $lang): Builder
-    {
-        return $query->with([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
-
-    public function loadTranslation($lang)
-    {
-        return $this->load([
-            'translations' => fn($q) => $q->where('language', $lang)
-        ]);
-    }
+    // public function loadTranslation($lang)
+    // {
+    //     return $this->load([
+    //         'translations' => fn($q) => $q->where('language', $lang)
+    //     ]);
+    // }
 }
