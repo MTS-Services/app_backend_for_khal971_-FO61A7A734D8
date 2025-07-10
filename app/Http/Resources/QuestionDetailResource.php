@@ -88,7 +88,7 @@ class QuestionDetailResource extends JsonResource
         return match ($this->type) {
             'lite' => $lite,
             'practice' => array_merge($lite, $practices),
-            default => array_merge($lite, $relations),
+            default => array_merge($lite, $practices, $relations),
         };
     }
 }
