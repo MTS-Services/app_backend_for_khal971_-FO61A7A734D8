@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PlanTranslation extends Model
 {
@@ -13,4 +14,9 @@ class PlanTranslation extends Model
         'name',
         'description'
     ];
+
+    public function plan(): BelongsTo   
+    {
+        return $this->belongsTo(Plan::class, 'plan_id', 'id');
+    }
 }

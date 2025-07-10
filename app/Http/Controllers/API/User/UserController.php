@@ -40,9 +40,12 @@ class UserController extends Controller
             if (!$id) {
                 return sendResponse(false, 'User ID parameter is required.', null, Response::HTTP_BAD_REQUEST);
             }
-            $authenticatedUser = request()->user();
-            if (!$authenticatedUser || !$authenticatedUser->is_admin) {
-                return sendResponse(false, 'Unauthorized access.', null, Response::HTTP_UNAUTHORIZED);
+            // $authenticatedUser = request()->user();
+            // if (!$authenticatedUser || !$authenticatedUser->is_admin) {
+            //     return sendResponse(false, 'Unauthorized access.', null, Response::HTTP_UNAUTHORIZED);
+            // }
+            if (request()->user()->is_admin !== true) {
+                return sendResponse(false, 'Unauthorized access', null, Response::HTTP_UNAUTHORIZED);
             }
             $user = $this->userService->getUser($id);
             if (!$user) {
