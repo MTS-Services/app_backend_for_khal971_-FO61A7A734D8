@@ -68,7 +68,7 @@ class QuestionDetails extends BaseModel
 
     public function getStatusLabelAttribute(): string
     {
-        return self::getStatusList()[$this->status] ?? 'Unknown';
+        return $this->status ? self::getStatusList()[$this->status] :  'Unknown';
     }
 
     public function getStatusListAttribute(): object

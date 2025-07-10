@@ -26,7 +26,7 @@ class BookmarkService
         return defaultLang() ?: 'en';
     }
 
-    public function getBookmarkedQuestions()
+    public function getBookmarkedQuestionDetails()
     {
         $questions = Bookmark::where('user_id', $this->user->id)
             ->whereHasMorph('bookmarkable', [QuestionDetails::class])

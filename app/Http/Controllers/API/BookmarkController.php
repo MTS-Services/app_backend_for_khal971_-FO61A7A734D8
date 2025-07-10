@@ -18,11 +18,11 @@ class BookmarkController extends Controller
         $this->bookmarkService = $bookmarkService;
     }
 
-    public function bookmarkedQuestions()
+    public function bookmarkedQuestionDetails()
     {
         try {
-            $questions = $this->bookmarkService->getBookmarkedQuestions();
-            return sendResponse(true, 'Bookmarked questions fetched successfully', BookmarkedQuestionResource::collection($questions), Response::HTTP_OK);
+            $questions = $this->bookmarkService->getBookmarkedQuestionDetails();
+            return sendResponse(true, 'Bookmarked question details fetched successfully', BookmarkedQuestionResource::collection($questions), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch bookmarked questions', null, Response::HTTP_INTERNAL_SERVER_ERROR);
