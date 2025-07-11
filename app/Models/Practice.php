@@ -60,37 +60,37 @@ class Practice extends BaseModel
 
 
     // Constructor for appends
-    // public function __construct(array $attributes = [])
-    // {
-    //     parent::__construct($attributes);
-    //     $this->appends = array_merge(parent::getAppends(), [
-    //         'status_label',
-    //         'status_list',
-    //     ]);
-    // }
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->appends = array_merge(parent::getAppends(), [
+            'status_label',
+            'status_list',
+        ]);
+    }
 
     // // Constants
-    // public const STATUS_NOT_STARTED = '0';
-    // public const STATUS_IN_PROGRESS = '1';
-    // public const STATUS_COMPLETED = '2';
+    public const STATUS_NOT_STARTED = '0';
+    public const STATUS_IN_PROGRESS = '1';
+    public const STATUS_COMPLETED = '2';
 
     // // Helpers
-    // public static function getStatusList(): array
-    // {
-    //     return [
-    //         self::STATUS_NOT_STARTED => 'Not Started',
-    //         self::STATUS_IN_PROGRESS => 'In Progress',
-    //         self::STATUS_COMPLETED => 'Completed',
-    //     ];
-    // }
+    public static function getStatusList(): array
+    {
+        return [
+            self::STATUS_NOT_STARTED => 'Not Started',
+            self::STATUS_IN_PROGRESS => 'In Progress',
+            self::STATUS_COMPLETED => 'Completed',
+        ];
+    }
 
-    // // Attributes
-    // public function getStatusLabelAttribute(): string
-    // {
-    //     return self::getStatusList()[$this->status];
-    // }
-    // public function getStatusListAttribute(): array
-    // {
-    //     return self::getStatusList();
-    // }
+    // Attributes
+    public function getStatusLabelAttribute(): string
+    {
+        return self::getStatusList()[$this->status];
+    }
+    public function getStatusListAttribute(): array
+    {
+        return self::getStatusList();
+    }
 }

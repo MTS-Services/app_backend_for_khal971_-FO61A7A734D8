@@ -31,40 +31,13 @@ class QuizResource extends JsonResource
         ];
         $relations = ['topics' => new TopicResource($this->whenLoaded('topics'), 'lite')];
 
-
-        if ($this->practice) {
-            $totalQuestions = $this->questions_count ?? 0;
-            $totalAttempts = $this->practice->total_attempts ?? 0;
-            $wrongAttempts = $this->practice->wrong_attempts ?? 0;
-            $correctAttempts = $this->practice->correct_attempts ?? 0;
-
-
-            $progress = $totalQuestions > 0
-                ? min(100, round(($correctAttempts / $totalQuestions) * 100, 2))
-                : 0;
-
-            $progressStatus = match (true) {
-                $totalAttempts === 0 => 'Not Started',
-                $progress >= 100 => 'Completed',
-                default => 'In Progress',
-            };
-
-            $practices = [
-                'totalAttempts' => $totalAttempts,
-                'correctAttempts' => $correctAttempts,
-                'wrongAttempts' => $wrongAttempts,
-                'progress' => $progress,
-                'progressStatus' => $progressStatus,
-            ];
-        } else {
-            $practices = [
-                'totalAttempts' => 0,
-                'correctAttempts' => 0,
-                'wrongAttempts' => 0,
-                'progress' => 0,
-                'progressStatus' => 'Not Started',
-            ];
-        }
+        $practices = [
+            'total_attempts' => $this->practice && $this->practice->total_attempts ? $this->practice->total_attempts : 0,
+            'correct_attempts' => $this->practice && $this->practice->correct_attempts ? $this->practice->correct_attempts : 0,
+            'wrong_attempts' => $this->practice && $this->practice->wrong_attempts ? $this->practice->wrong_attempts : 0,
+            'progress' => $this->practice && $this->practice->progress ? $this->practice->progress : 0,
+            'progress_status' => $this->practice && $this->practice->status ? $this->practice->status_label : 'Not Started',
+        ];
 
         return match ($this->type) {
             'lite' => $lite,
