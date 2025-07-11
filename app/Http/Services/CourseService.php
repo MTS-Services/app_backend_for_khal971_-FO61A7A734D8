@@ -33,7 +33,7 @@ class CourseService
      */
     public function getCourses(int $subject_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
     {
-        $query = Course::counts()->with(['subject', 'translations'])->where('subject_id', $subject_id);
+        $query = Course::counts()->with(['subject', 'translations', 'practice'])->where('subject_id', $subject_id);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }

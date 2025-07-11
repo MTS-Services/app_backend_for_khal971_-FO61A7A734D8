@@ -15,6 +15,8 @@ class BaseModel extends Model
 
         // 'created_at_human',
         // 'updated_at_human',
+        // 'updated_at_formatted',
+        // 'created_at_formatted',
     ];
 
     public function creater(): BelongsTo

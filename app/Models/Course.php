@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\BaseModel;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Facades\Auth;
 
 class Course extends BaseModel
 {
@@ -43,11 +45,9 @@ class Course extends BaseModel
         return $this->belongsTo(Subject::class)->with(['translations']);
     }
 
-    public function practices()
+    public function practice(): MorphOne
     {
-        return $this->morphMany(Practice::class, 'practiceable')->with([
-            'translations' => fn($query) => $query->where('language', request()->header('Accept-Language', self::getDefaultLang())),
-        ]);
+        return $this->morphOne(Practice::class, 'practiceable')->where('user_id', Auth::user()->id);
     }
 
     public function topics(): HasMany

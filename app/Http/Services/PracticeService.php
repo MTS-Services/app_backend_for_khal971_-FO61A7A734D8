@@ -2,9 +2,11 @@
 
 namespace App\Http\Services;
 
+use App\Models\Course;
 use App\Models\Practice;
 use App\Models\QuestionDetails;
 use App\Models\Quiz;
+use App\Models\Topic;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Auth;
@@ -62,7 +64,16 @@ class PracticeService
     public function getTopics()
     {
         $topics = Practice::where('user_id', $this->user->id)
-            ->where('practiceable_type', 'App\Models\Topic')
+            ->whereHasMorph('practiceable', [Topic::class])
+            ->with([
+                'practiceable' => function (MorphTo $morphTo) {
+                    $morphTo->morphWith([
+                        Topic::class => ['translations', 'practice'],
+                    ])->morphWithCount([
+                        Topic::class => ['question_details', 'quizzes'],
+                    ]);
+                }
+            ])
             ->get();
         return $topics;
     }
@@ -70,7 +81,16 @@ class PracticeService
     public function getCourses()
     {
         $courses = Practice::where('user_id', $this->user->id)
-            ->where('practiceable_type', 'App\Models\Course')
+            ->whereHasMorph('practiceable', [Course::class])
+            ->with([
+                'practiceable' => function (MorphTo $morphTo) {
+                    $morphTo->morphWith([
+                        Course::class => ['translations', 'practice'],
+                    ])->morphWithCount([
+                        Course::class => ['topics'],
+                    ]);
+                }
+            ])
             ->get();
         return $courses;
     }

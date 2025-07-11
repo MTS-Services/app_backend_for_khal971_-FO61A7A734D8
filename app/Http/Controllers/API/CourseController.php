@@ -31,6 +31,7 @@ class CourseController extends Controller
             }
             $courses = $this->courseService->getCourses($subject_id)->with('subject')
                 ->get();
+                // dd($courses->toArray());
             return sendResponse(true, 'Course list fetched successfully', CourseResource::collection($courses), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Course List Error: ' . $e->getMessage());

@@ -40,9 +40,18 @@ class TopicResource extends JsonResource
 
         $relations = ['course' => new CourseResource($this->whenLoaded('course'))];
 
+        $practices = [
+            'total_attempts' => $this->practice && $this->practice->total_attempts ? $this->practice->total_attempts : 0,
+            'correct_attempts' => $this->practice && $this->practice->correct_attempts ? $this->practice->correct_attempts : 0,
+            'wrong_attempts' => $this->practice && $this->practice->wrong_attempts ? $this->practice->wrong_attempts : 0,
+            'progress' => $this->practice && $this->practice->progress ? $this->practice->progress : 0,
+            'progress_status' => $this->practice && $this->practice->status ? $this->practice->status_label : 'Not Started',
+        ];
+
         return match ($this->type) {
             'lite' => $lite,
-            default => array_merge($lite, $relations),
+            'practice' => array_merge($lite, $practices),
+            default => array_merge($lite, $practices, $relations),
         };
 
     }

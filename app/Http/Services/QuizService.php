@@ -48,9 +48,8 @@ class QuizService
 
     public function getQuizzes(int $topic_id, string $orderBy = 'order_index', string $direction = 'asc'): Collection
     {
-        $query = Quiz::with('translations')
-            ->where('topic_id', $topic_id)
-            ->with('topics')
+        $query = Quiz::where('topic_id', $topic_id)
+            ->with(['topics', 'translations', 'practice'])
             ->orderBy($orderBy, $direction)
             ->latest();
 

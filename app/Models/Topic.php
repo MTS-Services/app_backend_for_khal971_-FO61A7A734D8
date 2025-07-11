@@ -5,19 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Support\Facades\Auth;
 
 class Topic extends BaseModel
 {
     protected $fillable =
-        [
-            'order_index',
-            'course_id',
-            'status',
+    [
+        'order_index',
+        'course_id',
+        'status',
 
-            'created_by',
-            'updated_by'
+        'created_by',
+        'updated_by'
 
-        ];
+    ];
 
     /**
      * Get the attributes that should be cast.
@@ -53,11 +55,11 @@ class Topic extends BaseModel
         return $this->hasMany(Quiz::class);
     }
 
-    // public function userProgress(): HasMany
-    // {
-    //     return $this->hasMany(UserProgress::class, 'content_id')
-    //         ->where('content_type', 'topic');
-    // }
+    public function practice(): MorphOne
+    {
+        return $this->morphOne(Practice::class, 'practiceable')->where('user_id', Auth::user()->id);
+    }
+
 
     /* ==================================================================
                         Relations End Here

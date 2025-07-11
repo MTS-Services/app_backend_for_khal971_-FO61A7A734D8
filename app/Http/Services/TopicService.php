@@ -37,7 +37,7 @@ class TopicService
 
     public function getTopics(int $course_id, string $orderBy = 'order_index', string $direction = 'asc'): Collection
     {
-        $query = Topic::counts()->with(['translations', 'course.subject'])
+        $query = Topic::counts()->with(['translations', 'course.subject', 'practice'])
             ->where('course_id', $course_id)
             ->orderBy($orderBy, $direction)
             ->latest();

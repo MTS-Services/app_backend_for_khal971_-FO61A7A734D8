@@ -28,7 +28,7 @@ class QuestionDetailsService
     }
     public function getQuestionDetails(int $topic_id, string $orderBy = 'order_index', string $direction = 'asc'): Builder
     {
-        $query = QuestionDetails::withCount('questions')->with(['topic', 'translations'])->where('topic_id', $topic_id);
+        $query = QuestionDetails::withCount('questions')->with(['topic', 'translations', 'practice'])->where('topic_id', $topic_id);
         if (!($this->user->is_premium || $this->user->is_admin)) {
             $query->take(12);
         }

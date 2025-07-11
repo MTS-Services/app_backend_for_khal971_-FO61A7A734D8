@@ -31,16 +31,19 @@ class QuizResource extends JsonResource
         ];
         $relations = ['topics' => new TopicResource($this->whenLoaded('topics'), 'lite')];
 
+        $fetchedPractice = $this->relationLoaded('practice') && !empty($this->practice);
         $practices = [
-            'total_attempts' => $this->practice && $this->practice->total_attempts ? $this->practice->total_attempts : 0,
-            'correct_attempts' => $this->practice && $this->practice->correct_attempts ? $this->practice->correct_attempts : 0,
-            'wrong_attempts' => $this->practice && $this->practice->wrong_attempts ? $this->practice->wrong_attempts : 0,
-            'progress' => $this->practice && $this->practice->progress ? $this->practice->progress : 0,
-            'progress_status' => $this->practice && $this->practice->status ? $this->practice->status_label : 'Not Started',
+            'total_attempts'   => $fetchedPractice ? ($this->practice->total_attempts ?? 0) : 0,
+            'correct_attempts'    => $fetchedPractice ? ($this->practice->correct_attempts ?? 0) : 0,
+            'wrong_attempts'      => $fetchedPractice ? ($this->practice->wrong_attempts ?? 0) : 0,
+            'progress'         => $fetchedPractice ? ($this->practice->progress ?? 0) : 0,
+            'progress_status'  => $fetchedPractice ? ($this->practice->status_label ?? 'Not Started') : 'Not Started',
         ];
+
 
         return match ($this->type) {
             'lite' => $lite,
+            'relations' => array_merge($lite, $relations),
             'practice' => array_merge($lite, $practices),
             default => array_merge($lite, $practices, $relations),
         };

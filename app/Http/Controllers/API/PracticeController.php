@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PracticeCourseResource;
 use App\Http\Resources\PracticeQuestionResource;
 use App\Http\Resources\PracticeQuizResource;
+use App\Http\Resources\PracticeTopicResource;
 use App\Http\Services\PracticeService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -45,7 +47,7 @@ class PracticeController extends Controller
     {
         try {
             $topics = $this->practiceService->getTopics();
-            return sendResponse(true, 'Practice topics fetched successfully', $topics, Response::HTTP_OK);
+            return sendResponse(true, 'Practice topics fetched successfully', PracticeTopicResource::collection($topics), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch bookmarked topics', null, Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -55,7 +57,7 @@ class PracticeController extends Controller
     {
         try {
             $courses = $this->practiceService->getCourses();
-            return sendResponse(true, 'Practice courses fetched successfully', $courses, Response::HTTP_OK);
+            return sendResponse(true, 'Practice courses fetched successfully', PracticeCourseResource::collection($courses), Response::HTTP_OK);
         } catch (\Exception $e) {
             Log::error('Question List Error: ' . $e->getMessage());
             return sendResponse(false, 'Failed to fetch bookmarked courses', null, Response::HTTP_INTERNAL_SERVER_ERROR);
