@@ -81,6 +81,10 @@ Route::apiResource('quiz-answers', QuizAnswerController::class);
 Route::controller(BookmarkController::class)->group(function () {
     Route::get('/bookmarked/question-details', 'bookmarkedQuestionDetails')->name('bookmark-question-details');
     Route::get('/bookmarked/quizzes', 'bookmarkedQuizzes')->name('bookmark-quizzes');
+    Route::post('/bookmarked/add-question-details/{question_id}', 'addQuestionDetailsToBookmark')->name('bookmark-questions');
+    Route::delete('/bookmarked/remove-question-details/{question_id}', 'removeQuestionDetailsFromBookmark')->name('bookmark-questions');
+    Route::post('/bookmarked/add-quiz/{quiz_id}', 'addQuizToBookmark')->name('bookmark-quizzes');
+    Route::delete('/bookmarked/remove-quiz/{quiz_id}', 'removeQuizFromBookmark')->name('bookmark-quizzes');
 });
 
 Route::controller(PracticeController::class)->group(function () {
