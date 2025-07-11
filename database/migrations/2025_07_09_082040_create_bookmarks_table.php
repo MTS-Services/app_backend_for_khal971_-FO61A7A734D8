@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('bookmarks', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('order_index')->default(0);
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('bookmarkable_id')->index();
             $table->string('bookmarkable_type')->index();

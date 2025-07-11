@@ -10,7 +10,10 @@ class Practice extends BaseModel
         'user_id',
         'practiceable_id',
         'practiceable_type',
-        'attempts',
+        'total_attempts',
+        'correct_attempts',
+        'wrong_attempts',
+        'progress',
         'status',
     ];
 

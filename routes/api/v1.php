@@ -16,6 +16,7 @@ use App\Http\Controllers\API\QuizOptionController;
 use App\Http\Controllers\API\User\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\SubjectController;
+use App\Http\Controllers\API\Temporary\ChangeItToOriginalMethod;
 use App\Http\Controllers\API\TopicController;
 use App\Http\Controllers\API\UserSubjectController;
 use App\Http\Controllers\API\UserClassController;
@@ -77,10 +78,20 @@ Route::get('quiz/options/{quiz_id}', [QuizOptionController::class, 'options'])->
 Route::apiResource('quiz-answers', QuizAnswerController::class);
 
 // Practice and Bookmark
-Route::get('/bookmarked/question-details', [BookmarkController::class, 'bookmarkedQuestionDetails'])->name('bookmark-question-details');
-Route::get('/bookmarked/quizzes', [BookmarkController::class, 'bookmarkedQuizzes'])->name('bookmark-quizzes');
+Route::controller(BookmarkController::class)->group(function () {
+    Route::get('/bookmarked/question-details', 'bookmarkedQuestionDetails')->name('bookmark-question-details');
+    Route::get('/bookmarked/quizzes', 'bookmarkedQuizzes')->name('bookmark-quizzes');
+});
 
-Route::get('/practices/quizzes', [PracticeController::class, 'quizzes'])->name('practices.quizzes');
-Route::get('/practices/question-details', [PracticeController::class, 'questionDetails'])->name('practices.question-details');
-Route::get('/practices/topics', [PracticeController::class, 'topics'])->name('practices.topics');
-Route::get('/practices/courses', [PracticeController::class, 'courses'])->name('practices.courses');
+Route::controller(PracticeController::class)->group(function () {
+    Route::get('/practices/question-details', 'questionDetails')->name('practices.question-details');
+    Route::get('/practices/quizzes', 'quizzes')->name('practices.quizzes');
+    Route::get('/practices/topics', 'topics')->name('practices.topics');
+    Route::get('/practices/courses', 'courses')->name('practices.courses');
+});
+
+// Change It To Original Student's Question and Quiz answers Submit Method's
+Route::controller(ChangeItToOriginalMethod::class)->group(function () {
+    Route::post('/question-submit/{id}', 'questionSubmit')->name('question-submit');
+    Route::post('/quiz-submit/{id}', 'quizSubmit')->name('quiz-submit');
+});

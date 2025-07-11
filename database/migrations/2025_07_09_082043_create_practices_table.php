@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('practices', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('order_index')->default(0);
             $table->unsignedBigInteger('user_id')->index();
             $table->unsignedBigInteger('practiceable_id')->index();
             $table->string('practiceable_type')->index();

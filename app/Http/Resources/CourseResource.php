@@ -38,9 +38,9 @@ class CourseResource extends JsonResource
 
         $fetchedPractice = $this->relationLoaded('practice') && !empty($this->practice);
         $practices = [
-            'total_attempts'   => $fetchedPractice ? ($this->practice->total_attempts ?? 0) : 0,
-            'correct_attempts'    => $fetchedPractice ? ($this->practice->correct_attempts ?? 0) : 0,
-            'wrong_attempts'      => $fetchedPractice ? ($this->practice->wrong_attempts ?? 0) : 0,
+            // 'total_attempts'   => $fetchedPractice ? ($this->practice->total_attempts ?? 0) : 0,
+            // 'correct_attempts'    => $fetchedPractice ? ($this->practice->correct_attempts ?? 0) : 0,
+            // 'wrong_attempts'      => $fetchedPractice ? ($this->practice->wrong_attempts ?? 0) : 0,
             'progress'         => $fetchedPractice ? ($this->practice->progress ?? 0) : 0,
             'progress_status'  => $fetchedPractice ? ($this->practice->status_label ?? 'Not Started') : 'Not Started',
         ];
